@@ -29,7 +29,7 @@ const CustomDrawer = ({
     window !== undefined ? () => window().document.body : undefined;
 
   const drawerItems = [
-    { route: "/dashboard", icon: <HomeIcon />, title: "Home" },
+    { route: "/dashboard", icon: <HomeIcon />, title: "Dashboard" },
     { route: "/profile", icon: <AccountBoxIcon />, title: "Profile" },
   ];
 
@@ -57,6 +57,7 @@ const CustomDrawer = ({
               key={element.title}
               component="a"
               onClick={() => handleNavigate(element.route)}
+              selected={router.pathname === element.route}
             >
               <ListItemIcon>{element.icon}</ListItemIcon>
               <ListItemText primary={element.title} />
