@@ -11,7 +11,7 @@ function SignIn() {
   const router = useRouter();
 
   useEffect(() => {
-    if (loggedIn) {
+    if (loggedIn && !loading) {
       router.push("/dashboard");
     }
   }, [loggedIn]);

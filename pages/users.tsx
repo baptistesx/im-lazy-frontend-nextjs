@@ -54,7 +54,7 @@ function Users() {
   const currentUser = sessionUser;
 
   useEffect(() => {
-    if (!loggedIn) {
+    if (!loggedIn && !loading) {
       router.push("/");
     }
   }, [loggedIn]);

@@ -50,15 +50,10 @@ function Profile() {
   const { user, loading, loggedIn } = useUser();
 
   useEffect(() => {
-    if (!loggedIn) {
+    if (!loggedIn && !loading) {
       router.push("/");
     }
   }, [loggedIn]);
-
-  const handleRefresh = async () => {
-    //TODO: getUser
-    // window.location.reload(false);
-  };
 
   const handleSave = async (data: ProfileSubmitFormData) => {
     setIsLoading(true);
@@ -146,16 +141,6 @@ function Profile() {
             }}
           >
             Save
-          </LoadingButton>
-
-          <LoadingButton
-            loading={isLoading}
-            onClick={handleRefresh}
-            sx={{
-              m: 1,
-            }}
-          >
-            Refresh
           </LoadingButton>
         </CardActions>
       </Card>

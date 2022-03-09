@@ -11,7 +11,7 @@ function Dashboard() {
   const { user, loading, error, loggedIn } = useUser();
 
   useEffect(() => {
-    if (!loggedIn) {
+    if (!loggedIn && !loading) {
       router.push("/");
     }
   }, [loggedIn]);
