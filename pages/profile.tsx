@@ -119,7 +119,7 @@ function Profile() {
           {/* //TODO: add feature to change password */}
           {!user?.isPremium ? (
             <Button
-              onClick={() => handleNavigate("/getLicence")}
+              onClick={() => handleNavigate("/get-licence")}
               variant="contained"
               sx={{ m: 1 }}
             >

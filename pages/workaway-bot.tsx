@@ -16,7 +16,7 @@ function WorkawayBot() {
     if (!loggedIn && !loading) {
       router.push("/");
     } else if (!user?.isPremium) {
-      router.replace("/getLicence");
+      router.replace("/get-licence");
     }
   }, [loggedIn]);
 

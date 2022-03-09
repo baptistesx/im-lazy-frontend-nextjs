@@ -85,13 +85,13 @@ const GlobalLayout = (props: any) => {
             </Box>
           ) : (
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Button sx={{ color: "white" }} href="/auth/signIn">
+              <Button sx={{ color: "white" }} href="/auth/sign-in">
                 Sign In
               </Button>
 
               <Typography>|</Typography>
 
-              <Button sx={{ color: "white" }} href="/auth/signUp">
+              <Button sx={{ color: "white" }} href="/auth/sign-up">
                 Sign Up
               </Button>
             </Box>

@@ -109,7 +109,7 @@ function SignInForm() {
           sx={{
             m: 1,
           }}
-          href="/auth/resetPassword"
+          href="/auth/reset-password"
         >
           I forgot my password
         </Button>

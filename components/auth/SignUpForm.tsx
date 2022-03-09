@@ -132,7 +132,7 @@ const SignUpForm = () => {
           sx={{
             m: 1,
           }}
-          href="/auth/signIn"
+          href="/aut/sign-in"
         >
           I already have an account
         </Button>

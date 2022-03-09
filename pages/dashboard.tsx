@@ -30,7 +30,7 @@ function Dashboard() {
 
       {user?.isPremium ? (
         <Button
-          onClick={() => handleNavigate("/workawayBot")}
+          onClick={() => handleNavigate("/workaway-bot")}
           variant="contained"
           sx={{ m: 1 }}
         >
@@ -39,7 +39,7 @@ function Dashboard() {
         </Button>
       ) : (
         <Button
-          onClick={() => handleNavigate("/getLicence")}
+          onClick={() => handleNavigate("/get-licence")}
           variant="contained"
           sx={{ m: 1 }}
         >
