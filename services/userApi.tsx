@@ -1,4 +1,3 @@
-
 import api from "./api";
 import { Fetcher } from "swr";
 import { User } from "../hooks/useUser";
@@ -46,11 +45,7 @@ export const signInWithGoogle = async (access_token: string, cb: Function) => {
 };
 
 export const getUser: Fetcher<User> = async (url: any) => {
-  try {
-    return await api.axiosApiCall(url, "get").then((res) => res.data);
-  } catch (error) {
-    throw new Error("An error occured while getting user");
-  }
+  return await api.axiosApiCall(url, "get").then((res) => res.data);
 };
 
 export const signOut = async (cb: Function) => {

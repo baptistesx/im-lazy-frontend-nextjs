@@ -3,10 +3,12 @@ import useSnackbars from "../../hooks/useSnackbars";
 import { User } from "../../hooks/useUser";
 import { signInWithGoogle } from "../../services/userApi";
 import { GOOGLE_CLIENT_ID } from "../../utils/constants";
-import Router from "next/router";
+import { useRouter } from "next/router";
 
 function GoogleLoginButton({ setIsLoading }: { setIsLoading: Function }) {
   const snackbarsService = useSnackbars();
+
+  const router = useRouter();
 
   //TODO: change any type
   const onGetOauthGoogleTokenSuccess = async (response: any) => {
@@ -20,7 +22,7 @@ function GoogleLoginButton({ setIsLoading }: { setIsLoading: Function }) {
         severity: "success",
       });
 
-      Router.replace("/dashboard");
+      router.replace("/dashboard");
     }).catch((err: Error) => {
       setIsLoading(false);
 

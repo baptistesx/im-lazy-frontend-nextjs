@@ -14,7 +14,7 @@ import useSnackbars from "../../hooks/useSnackbars";
 import { User } from "../../hooks/useUser";
 import signInFormSchema from "../../schemas/signInFormSchema";
 import { signInWithEmailAndPassword } from "../../services/userApi";
-import Router from "next/router";
+import { useRouter } from "next/router";
 import GoogleLoginButton from "./GoogleLoginButton";
 
 type SignInFormData = {
@@ -24,6 +24,8 @@ type SignInFormData = {
 
 function SignInForm() {
   const snackbarsService = useSnackbars();
+
+  const router = useRouter();
 
   const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
 
@@ -52,7 +54,7 @@ function SignInForm() {
         severity: "success",
       });
 
-      Router.replace("/dashboard");
+      router.replace("/dashboard");
     }).catch((err: Error) => {
       setIsSigningIn(false);
 

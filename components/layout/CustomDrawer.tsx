@@ -10,7 +10,7 @@ import ListItemText from "@mui/material/ListItemText";
 import React from "react";
 import useUser from "../../hooks/useUser";
 import { DRAWER_WIDTH } from "../../utils/constants";
-import Router from "next/router";
+import { useRouter } from "next/router";
 
 const CustomDrawer = ({
   handleDrawerToggle,
@@ -22,6 +22,8 @@ const CustomDrawer = ({
   window: any;
 }) => {
   const { user, loading } = useUser();
+
+  const router = useRouter();
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -40,7 +42,7 @@ const CustomDrawer = ({
   }
 
   const handleNavigate = (path: string) => {
-    Router.push(path);
+    router.push(path);
   };
 
   const drawer = (

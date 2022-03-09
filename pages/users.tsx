@@ -33,10 +33,12 @@ import GlobalLayout from "../components/layout/GlobalLayout";
 import EditUserDialog from "../components/users/EditUserDialog";
 import useUser, { User } from "../hooks/useUser";
 import useSnackbars from "../hooks/useSnackbars";
-import Router from "next/router";
+import { useRouter } from "next/router";
 
 function Users() {
   const snackbarsService = useSnackbars();
+
+  const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -47,13 +49,15 @@ function Users() {
 
   const [userSelected, setUserSelected] = useState<User | null>();
 
-  const { user: sessionUser, loading } = useUser();
+  const { user: sessionUser, loading, loggedIn } = useUser();
 
   const currentUser = sessionUser;
 
-  if (!sessionUser) {
-    Router.replace("/");
-  }
+  useEffect(() => {
+    if (!loggedIn) {
+      router.push("/");
+    }
+  }, [loggedIn]);
 
   useEffect(() => {
     fetchData();
@@ -136,7 +140,7 @@ function Users() {
     }
   };
 
-  return loading || !sessionUser ? (
+  return loading || !loggedIn ? (
     <GlobalLayout>
       <CircularProgress />
     </GlobalLayout>

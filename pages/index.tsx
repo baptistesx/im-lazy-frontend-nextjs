@@ -1,17 +1,21 @@
 import { Typography, CircularProgress } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import GlobalLayout from "../components/layout/GlobalLayout";
 import useUser from "../hooks/useUser";
-import Router from "next/router";
+import { useRouter } from "next/router";
 
 function Home() {
-  const { user, loading } = useUser();
+  const { user, loading, error, loggedIn } = useUser();
 
-  if (user) {
-    Router.replace("/dashboard");
-  }
+  const router = useRouter();
 
-  return loading || user ? (
+  useEffect(() => {
+    if (loggedIn) {
+      router.push("/dashboard");
+    }
+  }, [loggedIn]);
+
+  return loading || loggedIn ? (
     <GlobalLayout>
       <CircularProgress />
     </GlobalLayout>

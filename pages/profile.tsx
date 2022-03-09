@@ -13,13 +13,13 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import GlobalLayout from "../components/layout/GlobalLayout";
 import { updateUserById } from "../services/userApi";
 import useSnackbars from "../hooks/useSnackbars";
 import useUser from "../hooks/useUser";
-import Router from "next/router";
+import { useRouter } from "next/router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import editProfileFormSchema from "../schemas/editProfileFormSchema";
 import { capitalizeFirstLetter } from "../utils/functions";
@@ -31,6 +31,8 @@ type ProfileSubmitFormData = {
 
 function Profile() {
   const theme = useTheme();
+
+  const router = useRouter();
 
   const snackbarsService = useSnackbars();
 
@@ -45,11 +47,13 @@ function Profile() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const { user, loading } = useUser();
+  const { user, loading, loggedIn } = useUser();
 
-  if (!user) {
-    Router.replace("/");
-  }
+  useEffect(() => {
+    if (!loggedIn) {
+      router.push("/");
+    }
+  }, [loggedIn]);
 
   const handleRefresh = async () => {
     //TODO: getUser
@@ -81,10 +85,10 @@ function Profile() {
   };
 
   const handleNavigate = (path: string) => {
-    Router.push(path);
+    router.push(path);
   };
 
-  return loading || !user ? (
+  return loading || !loggedIn ? (
     <GlobalLayout>
       <CircularProgress />
     </GlobalLayout>

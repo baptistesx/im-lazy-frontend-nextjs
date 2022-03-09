@@ -1,6 +1,6 @@
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Box, Button, Typography, CircularProgress } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import GlobalLayout from "../components/layout/GlobalLayout";
 import useUser from "../hooks/useUser";
 import { useRouter } from "next/router";
@@ -8,17 +8,19 @@ import { useRouter } from "next/router";
 function Dashboard() {
   const router = useRouter();
 
-  const { user, loading } = useUser();
+  const { user, loading, error, loggedIn } = useUser();
 
-  if (!user && !loading) {
-    router.replace("/");
-  }
+  useEffect(() => {
+    if (!loggedIn) {
+      router.push("/");
+    }
+  }, [loggedIn]);
 
   const handleNavigate = (path: string) => {
     router.push(path);
   };
 
-  return loading || !user ? (
+  return loading || !loggedIn ? (
     <GlobalLayout>
       <CircularProgress />
     </GlobalLayout>
