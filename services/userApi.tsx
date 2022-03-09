@@ -9,7 +9,7 @@ export const signUpWithEmailAndPassword = async (
   cb: Function
 ) => {
   const user = await api
-    .axiosApiCall("/signUp", "post", {
+    .axiosApiCall("signUp", "post", {
       name,
       email,
       password,
@@ -25,7 +25,7 @@ export const signInWithEmailAndPassword = async (
   cb: Function
 ) => {
   const user = await api
-    .axiosApiCall("/signInWithEmailAndPassword", "post", {
+    .axiosApiCall("signInWithEmailAndPassword", "post", {
       email,
       password,
     })
@@ -36,7 +36,7 @@ export const signInWithEmailAndPassword = async (
 
 export const signInWithGoogle = async (access_token: string, cb: Function) => {
   const user = await api
-    .axiosApiCall("/signInWithGoogle", "post", {
+    .axiosApiCall("signInWithGoogle", "post", {
       access_token,
     })
     .then((res) => res.data.user);
@@ -49,13 +49,13 @@ export const getUser: Fetcher<User> = async (url: any) => {
 };
 
 export const signOut = async (cb: Function) => {
-  await api.axiosApiCall("/signOut", "post", {});
+  await api.axiosApiCall("signOut", "post", {});
 
   cb();
 };
 
 export const resetPassword = async (email: string, cb: Function) => {
-  await api.axiosApiCall("/resetPassword", "post", {
+  await api.axiosApiCall("resetPassword", "post", {
     email,
   });
 
@@ -64,7 +64,7 @@ export const resetPassword = async (email: string, cb: Function) => {
 
 export const getUsers = async (cb: Function) => {
   const users = await api
-    .axiosApiCall("/users", "get")
+    .axiosApiCall("users", "get")
     .then((res) => res.data.users)
     .catch((err) => {});
 
@@ -72,19 +72,19 @@ export const getUsers = async (cb: Function) => {
 };
 
 export const deleteUserById = async (id: string, cb: Function) => {
-  await api.axiosApiCall(`/user/${id}`, "delete");
+  await api.axiosApiCall(`user/${id}`, "delete");
 
   cb();
 };
 
 export const toggleAdminRights = async (id: string, cb: Function) => {
-  await api.axiosApiCall(`/toggleAdminRights`, "put", { id });
+  await api.axiosApiCall(`toggleAdminRights`, "put", { id });
 
   cb();
 };
 
 export const updateUserById = async (data: any, cb: Function) => {
-  await api.axiosApiCall(`/user`, "put", {
+  await api.axiosApiCall(`user`, "put", {
     id: data.id,
     email: data.email,
     name: data.name,
@@ -96,7 +96,7 @@ export const updateUserById = async (data: any, cb: Function) => {
 };
 
 export const createUser = async (data: any, cb: Function) => {
-  await api.axiosApiCall(`/user`, "post", {
+  await api.axiosApiCall(`user`, "post", {
     email: data.email,
     isAdmin: data.isAdmin,
     isPremium: data.isPremium,
