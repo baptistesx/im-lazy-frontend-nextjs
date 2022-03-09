@@ -23,11 +23,14 @@ import {
   downloadFileByName,
   deleteFileByName,
 } from "../../services/workawayBotApi";
+import useSnackbars from "../../hooks/useSnackbars";
 
 const FilesSection = () => {
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
   const [filesName, setFilesName] = useState<string[]>([]);
+
+  const snackbarsService = useSnackbars();
 
   useEffect(() => {
     handleRefresh();
@@ -40,6 +43,14 @@ const FilesSection = () => {
       setFilesName([...data]);
 
       setIsRefreshing(false);
+    }).catch((err: Error) => {
+      setIsRefreshing(false);
+
+      snackbarsService?.addAlert({
+        message:
+          "An error occured while getting files name, are you a premium member?",
+        severity: "error",
+      });
     });
   };
 
@@ -62,12 +73,24 @@ const FilesSection = () => {
       a.dispatchEvent(clickEvt);
 
       a.remove();
+    }).catch((err: Error) => {
+      snackbarsService?.addAlert({
+        message:
+          "An error occured while downloading file, are you a premium member?",
+        severity: "error",
+      });
     });
   };
 
   const handleDeleteFile = async (name: string) => {
     await deleteFileByName(name, () => {
       handleRefresh();
+    }).catch((err: Error) => {
+      snackbarsService?.addAlert({
+        message:
+          "An error occured while deleting file, are you a premium member?",
+        severity: "error",
+      });
     });
   };
 

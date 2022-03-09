@@ -10,7 +10,7 @@ import ListItemText from "@mui/material/ListItemText";
 import React from "react";
 import useUser from "../../hooks/useUser";
 import { DRAWER_WIDTH } from "../../utils/constants";
-import Router from "next/router";
+import { useRouter } from "next/router";
 
 const CustomDrawer = ({
   handleDrawerToggle,
@@ -23,11 +23,13 @@ const CustomDrawer = ({
 }) => {
   const { user, loading } = useUser();
 
+  const router = useRouter();
+
   const container =
     window !== undefined ? () => window().document.body : undefined;
 
   const drawerItems = [
-    { route: "/dashboard", icon: <HomeIcon />, title: "Home" },
+    { route: "/dashboard", icon: <HomeIcon />, title: "Dashboard" },
     { route: "/profile", icon: <AccountBoxIcon />, title: "Profile" },
   ];
 
@@ -40,7 +42,7 @@ const CustomDrawer = ({
   }
 
   const handleNavigate = (path: string) => {
-    Router.push(path);
+    router.push(path);
   };
 
   const drawer = (
@@ -55,6 +57,7 @@ const CustomDrawer = ({
               key={element.title}
               component="a"
               onClick={() => handleNavigate(element.route)}
+              selected={router.pathname === element.route}
             >
               <ListItemIcon>{element.icon}</ListItemIcon>
               <ListItemText primary={element.title} />

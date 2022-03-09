@@ -4,19 +4,23 @@ import BotLogs from "../components/workawayBot/BotLogs";
 import FilesSection from "../components/workawayBot/FilesSection";
 import InfoForm from "../components/workawayBot/InfoForm";
 import useUser from "../hooks/useUser";
-import Router from "next/router";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
 
 function WorkawayBot() {
-  const { user, loading } = useUser();
+  const { user, loading, loggedIn } = useUser();
 
-  if (!user) {
-    Router.replace("/");
-  }
-  if (!user?.isPremium) {
-    Router.replace("/getLicence");
-  }
+  const router = useRouter();
 
-  return loading || !user ? (
+  useEffect(() => {
+    if (!loggedIn && !loading) {
+      router.push("/");
+    } else if (!user?.isPremium) {
+      router.replace("/get-licence");
+    }
+  }, [loggedIn]);
+
+  return loading || !loggedIn ? (
     <GlobalLayout>
       <CircularProgress />
     </GlobalLayout>

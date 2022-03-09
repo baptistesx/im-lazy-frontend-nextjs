@@ -16,6 +16,7 @@ import { DEV_MODE, ENDPOINT } from "../../utils/constants";
 import { yupResolver } from "@hookform/resolvers/yup";
 import infoFormSchema from "../../schemas/infoFormSchema";
 import { startBot, stopBot } from "../../services/workawayBotApi";
+import useSnackbars from "../../hooks/useSnackbars";
 
 interface InfoSubmitFormData {
   developmentMode: boolean;
@@ -35,6 +36,8 @@ const InfoForm = () => {
   const [isStarting, setIsStarting] = useState(false);
   const [isStopping, setIsStopping] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
+
+  const snackbarsService = useSnackbars();
 
   const {
     register,
@@ -71,7 +74,13 @@ const InfoForm = () => {
 
         setIsStarting(false);
       }
-    );
+    ).catch((err: Error) => {
+      snackbarsService?.addAlert({
+        message:
+          "An error occured while starting bot, are you a premium member?",
+        severity: "error",
+      });
+    });
   };
 
   const handleStopBot = async () => {
@@ -83,6 +92,12 @@ const InfoForm = () => {
       }
 
       setIsStopping(false);
+    }).catch((err: Error) => {
+      snackbarsService?.addAlert({
+        message:
+          "An error occured while stopping bot, are you a premium member?",
+        severity: "error",
+      });
     });
   };
 
@@ -104,7 +119,7 @@ const InfoForm = () => {
               value
             />
             <FormControlLabel
-              control={<Checkbox  />}
+              control={<Checkbox />}
               label="Headless"
               {...register("headless")}
               sx={{ m: 1 }}

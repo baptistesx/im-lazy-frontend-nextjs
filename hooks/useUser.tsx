@@ -23,6 +23,7 @@ export default function useUser() {
     loading,
     loggedIn,
     user: data,
+    error,
     mutate,
   };
 }

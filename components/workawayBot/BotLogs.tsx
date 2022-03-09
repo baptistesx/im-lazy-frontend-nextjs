@@ -6,6 +6,7 @@ import socketIOClient, { Socket } from "socket.io-client";
 import { ENDPOINT } from "../../utils/constants";
 import { setCity, clearLogs } from "../../services/workawayBotApi";
 import CitiesFormDialog from "./CitiesFormDialog";
+import useSnackbars from "../../hooks/useSnackbars";
 
 let botLogsMessageSentIsFirst = true;
 
@@ -13,6 +14,8 @@ const BotLogs = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isSocketInitialized, setIsSocketInitialized] =
     useState<boolean>(false);
+
+  const snackbarsService = useSnackbars();
 
   const [botLogs, setBotLogs] = useState<string[]>([]);
 
@@ -36,7 +39,13 @@ const BotLogs = () => {
     if (city) {
       setFullCitySelected(city);
 
-      await setCity(city);
+      await setCity(city).catch((err: Error) => {
+        snackbarsService?.addAlert({
+          message:
+            "An error occured while setting the city/country name, are you a premium member?",
+          severity: "error",
+        });
+      });
     }
   };
 
@@ -90,13 +99,23 @@ const BotLogs = () => {
       }
 
       setIsClearingLogs(false);
+    }).catch((err: Error) => {
+      setIsClearingLogs(false);
+
+      snackbarsService?.addAlert({
+        message:
+          "An error occured while clearing logs, are you a premium member?",
+        severity: "error",
+      });
     });
   };
 
   const scrollLogsDown = () => {
     var elem: any = document.querySelector("#logs");
 
-    elem.scrollTop = elem?.scrollHeight;
+    if (elem) {
+      elem.scrollTop = elem?.scrollHeight;
+    }
   };
 
   return (

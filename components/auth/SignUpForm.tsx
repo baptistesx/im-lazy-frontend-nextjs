@@ -14,10 +14,10 @@ import useSnackbars from "../../hooks/useSnackbars";
 import signUpFormSchema from "../../schemas/signUpFormSchema";
 import { signUpWithEmailAndPassword } from "../../services/userApi";
 import GoogleLoginButton from "./GoogleLoginButton";
-import Router from "next/router";
+import { useRouter } from "next/router";
 
 //TODO: on google signin, ask to choose an account and don't directly connect to the last used (remove token?)
-//TODO: implement isDirty
+//TODO: implement isDirty (see profile.tsx)
 
 type SignUpSubmitFormData = {
   name: string;
@@ -28,6 +28,8 @@ type SignUpSubmitFormData = {
 
 const SignUpForm = () => {
   const snackbarsService = useSnackbars();
+
+  const router = useRouter();
 
   const [isSigningUp, setIsSigningUp] = useState(false);
 
@@ -56,7 +58,7 @@ const SignUpForm = () => {
         severity: "success",
       });
 
-      Router.replace("/dashboard");
+      router.replace("/dashboard");
     }).catch((err: Error) => {
       console.log(err.cause);
       setIsSigningUp(false);
@@ -130,7 +132,7 @@ const SignUpForm = () => {
           sx={{
             m: 1,
           }}
-          href="/auth/signIn"
+          href="/aut/sign-in"
         >
           I already have an account
         </Button>

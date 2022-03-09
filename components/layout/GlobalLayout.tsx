@@ -5,7 +5,7 @@ import { IconButton } from "@mui/material";
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material/";
 import CssBaseline from "@mui/material/CssBaseline";
 import React from "react";
-import Router from "next/router";
+import { useRouter } from "next/router";
 import { DRAWER_WIDTH } from "../../utils/constants";
 import CustomDrawer from "./CustomDrawer";
 import ToolBarUserInfo from "./ToolBarUserInfo";
@@ -16,17 +16,19 @@ import useSnackbars from "../../hooks/useSnackbars";
 const GlobalLayout = (props: any) => {
   const theme: Theme = useTheme();
 
-  const { user } = useUser();
+  const router = useRouter();
+
+  const { user, loggedIn } = useUser();
 
   const snackbarsService = useSnackbars();
 
   const { window, children } = props;
 
-  const handleLogoClick = () => Router.push("/");
+  const handleLogoClick = () => router.push("/");
 
   const onLogoutClick = async () =>
     await signOut(() => {
-      Router.push("/");
+      router.push("/");
     }).catch((err: Error) => {
       snackbarsService?.addAlert({
         message: "An error occured while signing out",
@@ -73,7 +75,7 @@ const GlobalLayout = (props: any) => {
             </Typography>
           </Button>
 
-          {user ? (
+          {loggedIn ? (
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <ToolBarUserInfo />
 
@@ -83,13 +85,13 @@ const GlobalLayout = (props: any) => {
             </Box>
           ) : (
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Button sx={{ color: "white" }} href="/auth/signIn">
+              <Button sx={{ color: "white" }} href="/auth/sign-in">
                 Sign In
               </Button>
 
               <Typography>|</Typography>
 
-              <Button sx={{ color: "white" }} href="/auth/signUp">
+              <Button sx={{ color: "white" }} href="/auth/sign-up">
                 Sign Up
               </Button>
             </Box>
@@ -97,11 +99,15 @@ const GlobalLayout = (props: any) => {
         </Toolbar>
       </AppBar>
 
-      <CustomDrawer
-        handleDrawerToggle={() => handleDrawerToggle()}
-        mobileOpen={mobileOpen}
-        window={window}
-      />
+      {loggedIn ? (
+        <CustomDrawer
+          handleDrawerToggle={() => handleDrawerToggle()}
+          mobileOpen={mobileOpen}
+          window={window}
+        />
+      ) : (
+        <Box />
+      )}
 
       <Box
         component="main"

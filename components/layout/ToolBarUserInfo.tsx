@@ -9,7 +9,7 @@ function ToolBarUserInfo() {
   const { user } = useUser();
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
+    <Box sx={{ display: { xs: "none", sm: "flex" }, alignItems: "center" }}>
       {user?.isAdmin ? (
         <Tooltip title="Admin">
           <IconButton>
@@ -28,13 +28,7 @@ function ToolBarUserInfo() {
       ) : (
         <Box />
       )}
-      <Typography
-        sx={{
-          display: { xs: "none", md: "block" },
-        }}
-      >
-        {`${capitalizeFirstLetter(user?.name)} |`}
-      </Typography>
+      <Typography>{`${capitalizeFirstLetter(user?.name)} |`}</Typography>
     </Box>
   );
 }

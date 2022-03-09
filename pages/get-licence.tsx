@@ -1,18 +1,22 @@
 import { Typography, CircularProgress } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import GlobalLayout from "../components/layout/GlobalLayout";
 import { PAYPAL_SANDBOX_CLIENT_ID } from "../utils/constants";
 import CustomPaypalButton from "../components/users/CustomPaypalButton";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import useUser from "../hooks/useUser";
-import Router from "next/router";
+import { useRouter } from "next/router";
 
 function GetLicence() {
-  const { user, loading } = useUser();
+  const { user, loading, loggedIn } = useUser();
 
-  if (!user) {
-    Router.replace("/");
-  }
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loggedIn && !loading) {
+      router.push("/");
+    }
+  }, [loggedIn]);
 
   return loading || !user ? (
     <GlobalLayout>
