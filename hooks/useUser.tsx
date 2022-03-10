@@ -14,7 +14,7 @@ export interface User {
 export default function useUser() {
   const fetcher = (url: RequestInfo) => getUser(url);
 
-  const { data, mutate, error } = useSWR("/user", fetcher);
+  const { data, mutate, error } = useSWR("user", fetcher);
 
   const loading = !data && !error;
   const loggedIn = !error && data;
