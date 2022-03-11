@@ -1,4 +1,4 @@
-import { Box, Typography, CircularProgress } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import GlobalLayout from "../components/layout/GlobalLayout";
 import BotLogs from "../components/workawayBot/BotLogs";
 import FilesSection from "../components/workawayBot/FilesSection";
@@ -6,15 +6,13 @@ import InfoForm from "../components/workawayBot/InfoForm";
 import { User } from "../hooks/useUser";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import api from "../services/api";
+import { getUser } from "../services/userApi";
 
 // This gets called on every request
 export async function getServerSideProps(ctx: any) {
   // Fetch data from external API
   try {
-    const user = await api
-      .axiosApiCall("user", "get", {}, ctx.req.headers.cookie)
-      .then((res) => res.data);
+    const user = await getUser(ctx.req.headers.cookie);
     return { props: { user } };
   } catch (err: any) {
     return {

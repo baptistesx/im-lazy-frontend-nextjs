@@ -31,18 +31,16 @@ import {
 } from "../services/userApi";
 import GlobalLayout from "../components/layout/GlobalLayout";
 import EditUserDialog from "../components/users/EditUserDialog";
-import useUser, { User } from "../hooks/useUser";
+import { User } from "../hooks/useUser";
 import useSnackbars from "../hooks/useSnackbars";
 import { useRouter } from "next/router";
-import api from "../services/api";
+import { getUser } from "../services/userApi";
 
 // This gets called on every request
 export async function getServerSideProps(ctx: any) {
   // Fetch data from external API
   try {
-    const user = await api
-      .axiosApiCall("user", "get", {}, ctx.req.headers.cookie)
-      .then((res) => res.data);
+    const user = await getUser(ctx.req.headers.cookie);
     return { props: { user } };
   } catch (err: any) {
     return {

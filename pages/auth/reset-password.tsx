@@ -1,18 +1,14 @@
 import { Typography, CircularProgress } from "@mui/material";
 import ResetPasswordForm from "../../components/auth/ResetPasswordForm";
 import GlobalLayout from "../../components/layout/GlobalLayout";
-import useUser from "../../hooks/useUser";
-import { useRouter } from "next/router";
-import React, { useEffect } from "react";
-import api from "../../services/api";
+import React from "react";
+import { getUser } from "../../services/userApi";
 
 // This gets called on every request
 export async function getServerSideProps(ctx: any) {
   // Fetch data from external API
   try {
-    const user = await api
-      .axiosApiCall("user", "get", {}, ctx.req.headers.cookie)
-      .then((res) => res.data);
+    const user = await getUser(ctx.req.headers.cookie);
     console.log("should redirect to dashboard");
     return {
       redirect: {

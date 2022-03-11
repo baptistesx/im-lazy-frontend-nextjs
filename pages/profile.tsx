@@ -7,27 +7,23 @@ import {
   CardContent,
   TextField,
   Typography,
-  CircularProgress,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import GlobalLayout from "../components/layout/GlobalLayout";
-import { updateUserById } from "../services/userApi";
+import { getUser, updateUserById } from "../services/userApi";
 import useSnackbars from "../hooks/useSnackbars";
 import useUser, { User } from "../hooks/useUser";
 import { useRouter } from "next/router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import editProfileFormSchema from "../schemas/editProfileFormSchema";
 import { capitalizeFirstLetter } from "../utils/functions";
-import api from "../services/api";
 
 // This gets called on every request
 export async function getServerSideProps(ctx: any) {
   // Fetch data from external API
   try {
-    const user = await api
-      .axiosApiCall("user", "get", {}, ctx.req.headers.cookie)
-      .then((res) => res.data);
+    const user = await getUser(ctx.req.headers.cookie);
     return { props: { user } };
   } catch (err: any) {
     return {

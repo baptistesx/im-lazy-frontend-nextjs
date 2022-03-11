@@ -2,12 +2,13 @@ import { Typography } from "@mui/material";
 import React from "react";
 import GlobalLayout from "../components/layout/GlobalLayout";
 import api from "../services/api";
+import { getUser } from "../services/userApi";
 
 // This gets called on every request
-export async function getServerSideProps() {
+export async function getServerSideProps(ctx: any) {
   // Fetch data from external API
   try {
-    await api.axiosApiCall("user", "get", {}, "").then((res) => res);
+    await getUser(ctx.req.headers.cookie);
 
     return {
       redirect: {

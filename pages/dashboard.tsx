@@ -2,18 +2,15 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Box, Button, Typography, CircularProgress } from "@mui/material";
 import React from "react";
 import GlobalLayout from "../components/layout/GlobalLayout";
-import useUser from "../hooks/useUser";
 import { useRouter } from "next/router";
-import api from "../services/api";
 import { User } from "../hooks/useUser";
+import { getUser } from "../services/userApi";
 
 // This gets called on every request
 export async function getServerSideProps(ctx: any) {
   // Fetch data from external API
   try {
-    const user = await api
-      .axiosApiCall("user", "get", {}, ctx.req.headers.cookie)
-      .then((res) => res.data);
+    const user = await getUser(ctx.req.headers.cookie);
     return { props: { user } };
   } catch (err: any) {
     return {

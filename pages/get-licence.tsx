@@ -5,15 +5,13 @@ import { PAYPAL_SANDBOX_CLIENT_ID } from "../utils/constants";
 import CustomPaypalButton from "../components/users/CustomPaypalButton";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { User } from "../hooks/useUser";
-import api from "../services/api";
+import { getUser } from "../services/userApi";
 
 // This gets called on every request
 export async function getServerSideProps(ctx: any) {
   // Fetch data from external API
   try {
-    const user = await api
-      .axiosApiCall("user", "get", {}, ctx.req.headers.cookie)
-      .then((res) => res.data);
+    const user = await getUser(ctx.req.headers.cookie);
     return { props: { user } };
   } catch (err: any) {
     return {
