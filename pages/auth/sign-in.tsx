@@ -8,6 +8,7 @@ import { getUser } from "../../services/userApi";
 export async function getServerSideProps(ctx: any) {
   // Fetch data from external API
   try {
+    console.log(ctx.req.headers.cookie);
     const user = await getUser(ctx.req.headers.cookie);
     return {
       redirect: {

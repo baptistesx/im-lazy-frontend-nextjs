@@ -10,11 +10,12 @@ import { getUser } from "../services/userApi";
 export async function getServerSideProps(ctx: any) {
   // Fetch data from external API
   try {
+    console.log(ctx.req.headers.cookie);
     const user = await getUser(ctx.req.headers.cookie);
-    console.log("user present")
+    console.log("user present");
     return { props: { user } };
   } catch (err: any) {
-    console.log("iiin dashboard catchh")
+    console.log("iiin dashboard catchh");
     return {
       redirect: {
         destination: "/",
