@@ -6,7 +6,7 @@ import useUser from "../../hooks/useUser";
 import React, { useEffect } from "react";
 
 function SignIn() {
-  const { user, loading, loggedIn } = useUser();
+  const { loading, loggedIn } = useUser();
 
   const router = useRouter();
 
@@ -16,15 +16,17 @@ function SignIn() {
     }
   }, [loggedIn]);
 
-  return loading || loggedIn ? (
+  return (
     <GlobalLayout>
-      <CircularProgress />
-    </GlobalLayout>
-  ) : (
-    <GlobalLayout>
-      <Typography variant="h1">Sign In</Typography>
+      {loading || loggedIn ? (
+        <CircularProgress />
+      ) : (
+        <>
+          <Typography variant="h1">Sign In</Typography>
 
-      <SignInForm />
+          <SignInForm />
+        </>
+      )}
     </GlobalLayout>
   );
 }

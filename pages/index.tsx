@@ -5,7 +5,7 @@ import useUser from "../hooks/useUser";
 import { useRouter } from "next/router";
 
 function Home() {
-  const { user, loading, error, loggedIn } = useUser();
+  const { loading, loggedIn } = useUser();
 
   const router = useRouter();
 
@@ -15,18 +15,20 @@ function Home() {
     }
   }, [loggedIn]);
 
-  return loading || loggedIn ? (
+  return (
     <GlobalLayout>
-      <CircularProgress />
-    </GlobalLayout>
-  ) : (
-    <GlobalLayout>
-      <Typography variant="h1">Home</Typography>
+      {loading || loggedIn ? (
+        <CircularProgress />
+      ) : (
+        <>
+          <Typography variant="h1">Home</Typography>
 
-      <Typography variant="body1">
-        Welcome on ImLazy.dev! You'll find here different ressources to save
-        time in your life...
-      </Typography>
+          <Typography variant="body1">
+            Welcome on ImLazy.dev! You'll find here different ressources to save
+            time in your life...
+          </Typography>
+        </>
+      )}
     </GlobalLayout>
   );
 }

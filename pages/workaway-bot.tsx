@@ -20,26 +20,28 @@ function WorkawayBot() {
     }
   }, [loggedIn]);
 
-  return loading || !loggedIn ? (
+  return (
     <GlobalLayout>
-      <CircularProgress />
-    </GlobalLayout>
-  ) : (
-    <GlobalLayout>
-      <Typography variant="h1">Workaway Bot</Typography>
+      {loading || !loggedIn ? (
+        <CircularProgress />
+      ) : (
+        <>
+          <Typography variant="h1">Workaway Bot</Typography>
 
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-        }}
-      >
-        <InfoForm />
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+            }}
+          >
+            <InfoForm />
 
-        <BotLogs />
-      </Box>
+            <BotLogs />
+          </Box>
 
-      <FilesSection />
+          <FilesSection />
+        </>
+      )}
     </GlobalLayout>
   );
 }

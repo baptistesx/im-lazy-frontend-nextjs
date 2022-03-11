@@ -18,34 +18,36 @@ function GetLicence() {
     }
   }, [loggedIn]);
 
-  return loading || !user ? (
+  return (
     <GlobalLayout>
-      <CircularProgress />
-    </GlobalLayout>
-  ) : (
-    <GlobalLayout>
-      <Typography variant="h1">Get the Premium licence</Typography>
-
-      {user?.isPremium ? (
-        <Typography variant="body1">
-          You are already a premium member
-        </Typography>
+      {loading || !loggedIn ? (
+        <CircularProgress />
       ) : (
         <>
-          <Typography variant="body1">
-            Turn your account Premium for only 5€/month !
-          </Typography>
+          <Typography variant="h1">Get the Premium licence</Typography>
 
-          {/* //TODO: update client-id for production*/}
-          <PayPalScriptProvider
-            options={{
-              "client-id": PAYPAL_SANDBOX_CLIENT_ID ?? "test",
-              components: "buttons",
-              currency: "EUR",
-            }}
-          >
-            <CustomPaypalButton />
-          </PayPalScriptProvider>
+          {user?.isPremium ? (
+            <Typography variant="body1">
+              You are already a premium member
+            </Typography>
+          ) : (
+            <>
+              <Typography variant="body1">
+                Turn your account Premium for only 5€/month !
+              </Typography>
+
+              {/* //TODO: update client-id for production*/}
+              <PayPalScriptProvider
+                options={{
+                  "client-id": PAYPAL_SANDBOX_CLIENT_ID ?? "test",
+                  components: "buttons",
+                  currency: "EUR",
+                }}
+              >
+                <CustomPaypalButton />
+              </PayPalScriptProvider>
+            </>
+          )}
         </>
       )}
     </GlobalLayout>

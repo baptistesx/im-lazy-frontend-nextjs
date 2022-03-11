@@ -1,5 +1,3 @@
-import { useTheme } from "@emotion/react";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import { LoadingButton } from "@mui/lab";
 import {
   Box,
@@ -7,9 +5,7 @@ import {
   Card,
   CardActions,
   CardContent,
-  IconButton,
   TextField,
-  Tooltip,
   Typography,
   CircularProgress,
 } from "@mui/material";
@@ -30,8 +26,6 @@ type ProfileSubmitFormData = {
 };
 
 function Profile() {
-  const theme = useTheme();
-
   const router = useRouter();
 
   const snackbarsService = useSnackbars();
@@ -83,67 +77,69 @@ function Profile() {
     router.push(path);
   };
 
-  return loading || !loggedIn ? (
+  return (
     <GlobalLayout>
-      <CircularProgress />
-    </GlobalLayout>
-  ) : (
-    <GlobalLayout>
-      <Typography variant="h1">Profile</Typography>
+      {loading || !loggedIn ? (
+        <CircularProgress />
+      ) : (
+        <>
+          <Typography variant="h1">Profile</Typography>
 
-      <Card
-        component="form"
-        variant="outlined"
-        onSubmit={handleSubmit(handleSave)}
-      >
-        <CardContent>
-          <TextField
-            fullWidth
-            placeholder="Name"
-            {...register("name")}
-            sx={{ mb: 1 }}
-            defaultValue={capitalizeFirstLetter(user?.name)}
-            error={errors.name != null}
-            helperText={errors.name?.message}
-          />
-
-          <TextField
-            fullWidth
-            placeholder="Email"
-            {...register("email")}
-            sx={{ mb: 1 }}
-            defaultValue={user?.email}
-            error={errors.email != null}
-            helperText={errors.email?.message}
-          />
-          {/* //TODO: add feature to change password */}
-          {!user?.isPremium ? (
-            <Button
-              onClick={() => handleNavigate("/get-licence")}
-              variant="contained"
-              sx={{ m: 1 }}
-            >
-              Get Premium Account to access bots !
-            </Button>
-          ) : (
-            <Box />
-          )}
-        </CardContent>
-
-        <CardActions>
-          <LoadingButton
-            type="submit"
-            variant="contained"
-            disabled={!isDirty}
-            loading={isLoading}
-            sx={{
-              m: 1,
-            }}
+          <Card
+            component="form"
+            variant="outlined"
+            onSubmit={handleSubmit(handleSave)}
           >
-            Save
-          </LoadingButton>
-        </CardActions>
-      </Card>
+            <CardContent>
+              <TextField
+                fullWidth
+                placeholder="Name"
+                {...register("name")}
+                sx={{ mb: 1 }}
+                defaultValue={capitalizeFirstLetter(user?.name)}
+                error={errors.name != null}
+                helperText={errors.name?.message}
+              />
+
+              <TextField
+                fullWidth
+                placeholder="Email"
+                {...register("email")}
+                sx={{ mb: 1 }}
+                defaultValue={user?.email}
+                error={errors.email != null}
+                helperText={errors.email?.message}
+              />
+              {/* //TODO: add feature to change password */}
+              {!user?.isPremium ? (
+                <Button
+                  onClick={() => handleNavigate("/get-licence")}
+                  variant="contained"
+                  sx={{ m: 1 }}
+                >
+                  Get Premium Account to access bots !
+                </Button>
+              ) : (
+                <Box />
+              )}
+            </CardContent>
+
+            <CardActions>
+              <LoadingButton
+                type="submit"
+                variant="contained"
+                disabled={!isDirty}
+                loading={isLoading}
+                sx={{
+                  m: 1,
+                }}
+              >
+                Save
+              </LoadingButton>
+            </CardActions>
+          </Card>
+        </>
+      )}
     </GlobalLayout>
   );
 }

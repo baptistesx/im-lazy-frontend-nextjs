@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 function Dashboard() {
   const router = useRouter();
 
-  const { user, loading, error, loggedIn } = useUser();
+  const { user, loading, loggedIn } = useUser();
 
   useEffect(() => {
     if (!loggedIn && !loading) {
@@ -20,40 +20,40 @@ function Dashboard() {
     router.push(path);
   };
 
-  return loading || !loggedIn ? (
+  return (
     <GlobalLayout>
-      <CircularProgress />
-    </GlobalLayout>
-  ) : (
-    <GlobalLayout>
-      <Typography variant="h1">Dashboard</Typography>
-
-      {user?.isPremium ? (
-        <Button
-          onClick={() => handleNavigate("/workaway-bot")}
-          variant="contained"
-          sx={{ m: 1 }}
-        >
-          Workaway messaging
-          <ArrowForwardIcon />
-        </Button>
+      {loading || !loggedIn ? (
+        <CircularProgress />
       ) : (
-        <Button
-          onClick={() => handleNavigate("/get-licence")}
-          variant="contained"
-          sx={{ m: 1 }}
-        >
-          Get Premium Account to access bots !
-          <ArrowForwardIcon />
-        </Button>
-      )}
-
-      {!user?.isEmailVerified ? (
-        <Typography>
-          Remember to check the confirmation email we sent you.
-        </Typography>
-      ) : (
-        <Box />
+        <>
+          <Typography variant="h1">Dashboard</Typography>
+          {user?.isPremium ? (
+            <Button
+              onClick={() => handleNavigate("/workaway-bot")}
+              variant="contained"
+              sx={{ m: 1 }}
+            >
+              Workaway messaging
+              <ArrowForwardIcon />
+            </Button>
+          ) : (
+            <Button
+              onClick={() => handleNavigate("/get-licence")}
+              variant="contained"
+              sx={{ m: 1 }}
+            >
+              Get Premium Account to access bots !
+              <ArrowForwardIcon />
+            </Button>
+          )}
+          {!user?.isEmailVerified ? (
+            <Typography>
+              Remember to check the confirmation email we sent you.
+            </Typography>
+          ) : (
+            <Box />
+          )}
+        </>
       )}
     </GlobalLayout>
   );

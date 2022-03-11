@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 
 function ResetPassword() {
-  const { user, loading,loggedIn } = useUser();
+  const { loading, loggedIn } = useUser();
 
   const router = useRouter();
 
@@ -16,15 +16,17 @@ function ResetPassword() {
     }
   }, [loggedIn]);
 
-  return loading || loggedIn ? (
+  return (
     <GlobalLayout>
-      <CircularProgress />
-    </GlobalLayout>
-  ) : (
-    <GlobalLayout>
-      <Typography variant="h1">Reset password</Typography>
+      {loading || loggedIn ? (
+        <CircularProgress />
+      ) : (
+        <>
+          <Typography variant="h1">Reset password</Typography>
 
-      <ResetPasswordForm />
+          <ResetPasswordForm />
+        </>
+      )}
     </GlobalLayout>
   );
 }

@@ -140,137 +140,162 @@ function Users() {
     }
   };
 
-  return loading || !loggedIn ? (
+  return (
     <GlobalLayout>
-      <CircularProgress />
-    </GlobalLayout>
-  ) : (
-    <GlobalLayout>
-      <Typography variant="h1">Users</Typography>
-
-      <Card>
-        <CardContent>
-          {users.length === 0 && isLoading ? (
-            <Box />
-          ) : (
-            <Box>
-              <Typography variant="body1">
-                {`${users.length} Available users`}
-              </Typography>
-
-              {users.length === 0 ? (
-                <Typography>No users</Typography>
-              ) : (
-                //TODO: extract compoennt
-                <TableContainer component={Paper}>
-                  <Table aria-label="users table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell align="left">Name</TableCell>
-                        <TableCell align="left">Email</TableCell>
-                        <TableCell align="left">Admin</TableCell>
-                        <TableCell align="left">Premium</TableCell>
-                        <TableCell align="left">Email verified</TableCell>
-                        <TableCell align="left">Actions</TableCell>
-                      </TableRow>
-                    </TableHead>
-
-                    <TableBody>
-                      {users.map((user) => (
-                        <TableRow key={user?.id}>
-                          <TableCell component="th" scope="row">
-                            {user?.name}
-                          </TableCell>
-                          <TableCell component="th" scope="row">
-                            {user?.email}
-                          </TableCell>
-                          <TableCell align="center" component="th" scope="row">
-                            {user?.isAdmin ? <CheckIcon /> : <ClearIcon />}
-                          </TableCell>
-                          <TableCell align="center" component="th" scope="row">
-                            {user?.isPremium ? <CheckIcon /> : <ClearIcon />}
-                          </TableCell>
-                          <TableCell align="center" component="th" scope="row">
-                            {user?.isEmailVerified ? (
-                              <CheckIcon />
-                            ) : (
-                              <ClearIcon />
-                            )}
-                          </TableCell>
-                          <TableCell align="left">
-                            <Tooltip title="Toggle admin rights">
-                              <IconButton
-                                aria-label="toggle-admin-rights"
-                                onClick={() => handleToggleAdminRights(user.id)}
-                                disabled={
-                                  user.email === currentUser?.email || isLoading
-                                }
-                              >
-                                {user.isAdmin ? (
-                                  <RemoveModeratorIcon />
-                                ) : (
-                                  <AddModeratorIcon />
-                                )}
-                              </IconButton>
-                            </Tooltip>
-
-                            <Tooltip title="Edit user">
-                              <IconButton
-                                onClick={() => handleOpenUserDialog(user)}
-                                disabled={isLoading}
-                              >
-                                <EditIcon />
-                              </IconButton>
-                            </Tooltip>
-
-                            <Tooltip title="Delete user">
-                              <IconButton
-                                aria-label="delete"
-                                onClick={() => handleDelete(user.id)}
-                                disabled={
-                                  user.email === currentUser?.email || isLoading
-                                }
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              )}
-            </Box>
-          )}
-        </CardContent>
-
-        <CardActions>
-          <Button variant="contained" onClick={() => handleOpenUserDialog()}>
-            Create a user
-          </Button>
-
-          <LoadingButton
-            loading={isLoading}
-            onClick={onRefreshClick}
-            sx={{
-              m: 1,
-            }}
-          >
-            Refresh
-          </LoadingButton>
-        </CardActions>
-      </Card>
-
-      {userSelected || isEditUserDialogOpen ? (
-        <EditUserDialog
-          keepMounted
-          open={isEditUserDialogOpen}
-          onClose={handleCloseUserDialog}
-          user={userSelected}
-        />
+      {loading || !loggedIn ? (
+        <CircularProgress />
       ) : (
-        <Box></Box>
+        <>
+          <Typography variant="h1">Users</Typography>
+
+          <Card>
+            <CardContent>
+              {users.length === 0 && isLoading ? (
+                <Box />
+              ) : (
+                <Box>
+                  <Typography variant="body1">
+                    {`${users.length} Available users`}
+                  </Typography>
+
+                  {users.length === 0 ? (
+                    <Typography>No users</Typography>
+                  ) : (
+                    //TODO: extract compoennt
+                    <TableContainer component={Paper}>
+                      <Table aria-label="users table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell align="left">Name</TableCell>
+                            <TableCell align="left">Email</TableCell>
+                            <TableCell align="left">Admin</TableCell>
+                            <TableCell align="left">Premium</TableCell>
+                            <TableCell align="left">Email verified</TableCell>
+                            <TableCell align="left">Actions</TableCell>
+                          </TableRow>
+                        </TableHead>
+
+                        <TableBody>
+                          {users.map((user) => (
+                            <TableRow key={user?.id}>
+                              <TableCell component="th" scope="row">
+                                {user?.name}
+                              </TableCell>
+                              <TableCell component="th" scope="row">
+                                {user?.email}
+                              </TableCell>
+                              <TableCell
+                                align="center"
+                                component="th"
+                                scope="row"
+                              >
+                                {user?.isAdmin ? <CheckIcon /> : <ClearIcon />}
+                              </TableCell>
+                              <TableCell
+                                align="center"
+                                component="th"
+                                scope="row"
+                              >
+                                {user?.isPremium ? (
+                                  <CheckIcon />
+                                ) : (
+                                  <ClearIcon />
+                                )}
+                              </TableCell>
+                              <TableCell
+                                align="center"
+                                component="th"
+                                scope="row"
+                              >
+                                {user?.isEmailVerified ? (
+                                  <CheckIcon />
+                                ) : (
+                                  <ClearIcon />
+                                )}
+                              </TableCell>
+                              <TableCell align="left">
+                                <Tooltip title="Toggle admin rights">
+                                  <IconButton
+                                    aria-label="toggle-admin-rights"
+                                    onClick={() =>
+                                      handleToggleAdminRights(user.id)
+                                    }
+                                    disabled={
+                                      user.email === currentUser?.email ||
+                                      isLoading
+                                    }
+                                  >
+                                    {user.isAdmin ? (
+                                      <RemoveModeratorIcon />
+                                    ) : (
+                                      <AddModeratorIcon />
+                                    )}
+                                  </IconButton>
+                                </Tooltip>
+
+                                <Tooltip title="Edit user">
+                                  <IconButton
+                                    onClick={() => handleOpenUserDialog(user)}
+                                    disabled={isLoading}
+                                  >
+                                    <EditIcon />
+                                  </IconButton>
+                                </Tooltip>
+
+                                <Tooltip title="Delete user">
+                                  <IconButton
+                                    aria-label="delete"
+                                    onClick={() => handleDelete(user.id)}
+                                    disabled={
+                                      user.email === currentUser?.email ||
+                                      isLoading
+                                    }
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </Tooltip>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  )}
+                </Box>
+              )}
+            </CardContent>
+
+            <CardActions>
+              <Button
+                variant="contained"
+                onClick={() => handleOpenUserDialog()}
+              >
+                Create a user
+              </Button>
+
+              <LoadingButton
+                loading={isLoading}
+                onClick={onRefreshClick}
+                sx={{
+                  m: 1,
+                }}
+              >
+                Refresh
+              </LoadingButton>
+            </CardActions>
+          </Card>
+
+          {userSelected || isEditUserDialogOpen ? (
+            <EditUserDialog
+              keepMounted
+              open={isEditUserDialogOpen}
+              onClose={handleCloseUserDialog}
+              user={userSelected}
+            />
+          ) : (
+            <Box></Box>
+          )}
+        </>
       )}
     </GlobalLayout>
   );
