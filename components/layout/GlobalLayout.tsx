@@ -10,19 +10,21 @@ import { DRAWER_WIDTH } from "../../utils/constants";
 import CustomDrawer from "./CustomDrawer";
 import ToolBarUserInfo from "./ToolBarUserInfo";
 import { signOut } from "../../services/userApi";
-import useUser from "../../hooks/useUser";
+import { User } from "../../hooks/useUser";
 import useSnackbars from "../../hooks/useSnackbars";
 
-const GlobalLayout = (props: any) => {
+const GlobalLayout = ({
+  user,
+  children,
+}: {
+  user?: User;
+  children: React.ReactNode;
+}) => {
   const theme: Theme = useTheme();
 
   const router = useRouter();
 
-  const { user, loggedIn } = useUser();
-
   const snackbarsService = useSnackbars();
-
-  const { window, children } = props;
 
   const handleLogoClick = () => router.push("/");
 
@@ -75,7 +77,7 @@ const GlobalLayout = (props: any) => {
             </Typography>
           </Button>
 
-          {loggedIn ? (
+          {user ? (
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <ToolBarUserInfo />
 
@@ -99,11 +101,10 @@ const GlobalLayout = (props: any) => {
         </Toolbar>
       </AppBar>
 
-      {loggedIn ? (
+      {user ? (
         <CustomDrawer
           handleDrawerToggle={() => handleDrawerToggle()}
           mobileOpen={mobileOpen}
-          window={window}
         />
       ) : (
         <Box />

@@ -14,18 +14,37 @@ import { useForm } from "react-hook-form";
 import GlobalLayout from "../components/layout/GlobalLayout";
 import { updateUserById } from "../services/userApi";
 import useSnackbars from "../hooks/useSnackbars";
-import useUser from "../hooks/useUser";
+import useUser, { User } from "../hooks/useUser";
 import { useRouter } from "next/router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import editProfileFormSchema from "../schemas/editProfileFormSchema";
 import { capitalizeFirstLetter } from "../utils/functions";
+import api from "../services/api";
+
+// This gets called on every request
+export async function getServerSideProps(ctx: any) {
+  // Fetch data from external API
+  try {
+    const user = await api
+      .axiosApiCall("user", "get", {}, ctx.req.headers.cookie)
+      .then((res) => res.data);
+    return { props: { user } };
+  } catch (err: any) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+}
 
 type ProfileSubmitFormData = {
   email: string;
   name: string;
 };
 
-function Profile() {
+function Profile({ user }: { user: User }) {
   const router = useRouter();
 
   const snackbarsService = useSnackbars();
@@ -40,14 +59,6 @@ function Profile() {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-
-  const { user, loading, loggedIn } = useUser();
-
-  useEffect(() => {
-    if (!loggedIn && !loading) {
-      router.push("/");
-    }
-  }, [loggedIn]);
 
   const handleSave = async (data: ProfileSubmitFormData) => {
     setIsLoading(true);
@@ -78,68 +89,62 @@ function Profile() {
   };
 
   return (
-    <GlobalLayout>
-      {loading || !loggedIn ? (
-        <CircularProgress />
-      ) : (
-        <>
-          <Typography variant="h1">Profile</Typography>
+    <GlobalLayout user={user}>
+      <Typography variant="h1">Profile</Typography>
 
-          <Card
-            component="form"
-            variant="outlined"
-            onSubmit={handleSubmit(handleSave)}
+      <Card
+        component="form"
+        variant="outlined"
+        onSubmit={handleSubmit(handleSave)}
+      >
+        <CardContent>
+          <TextField
+            fullWidth
+            placeholder="Name"
+            {...register("name")}
+            sx={{ mb: 1 }}
+            defaultValue={capitalizeFirstLetter(user?.name)}
+            error={errors.name != null}
+            helperText={errors.name?.message}
+          />
+
+          <TextField
+            fullWidth
+            placeholder="Email"
+            {...register("email")}
+            sx={{ mb: 1 }}
+            defaultValue={user?.email}
+            error={errors.email != null}
+            helperText={errors.email?.message}
+          />
+          {/* //TODO: add feature to change password */}
+          {!user?.isPremium ? (
+            <Button
+              onClick={() => handleNavigate("/get-licence")}
+              variant="contained"
+              sx={{ m: 1 }}
+            >
+              Get Premium Account to access bots !
+            </Button>
+          ) : (
+            <Box />
+          )}
+        </CardContent>
+
+        <CardActions>
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            disabled={!isDirty}
+            loading={isLoading}
+            sx={{
+              m: 1,
+            }}
           >
-            <CardContent>
-              <TextField
-                fullWidth
-                placeholder="Name"
-                {...register("name")}
-                sx={{ mb: 1 }}
-                defaultValue={capitalizeFirstLetter(user?.name)}
-                error={errors.name != null}
-                helperText={errors.name?.message}
-              />
-
-              <TextField
-                fullWidth
-                placeholder="Email"
-                {...register("email")}
-                sx={{ mb: 1 }}
-                defaultValue={user?.email}
-                error={errors.email != null}
-                helperText={errors.email?.message}
-              />
-              {/* //TODO: add feature to change password */}
-              {!user?.isPremium ? (
-                <Button
-                  onClick={() => handleNavigate("/get-licence")}
-                  variant="contained"
-                  sx={{ m: 1 }}
-                >
-                  Get Premium Account to access bots !
-                </Button>
-              ) : (
-                <Box />
-              )}
-            </CardContent>
-
-            <CardActions>
-              <LoadingButton
-                type="submit"
-                variant="contained"
-                disabled={!isDirty}
-                loading={isLoading}
-                sx={{
-                  m: 1,
-                }}
-              >
-                Save
-              </LoadingButton>
-            </CardActions>
-          </Card>
-        </>
-      )}
+            Save
+          </LoadingButton>
+        </CardActions>
+      </Card>
     </GlobalLayout>
   );
 }

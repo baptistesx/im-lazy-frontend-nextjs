@@ -4,29 +4,34 @@ import GlobalLayout from "../../components/layout/GlobalLayout";
 import useUser from "../../hooks/useUser";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
+import api from "../../services/api";
+
+// This gets called on every request
+export async function getServerSideProps(ctx: any) {
+  // Fetch data from external API
+  try {
+    const user = await api
+      .axiosApiCall("user", "get", {}, ctx.req.headers.cookie)
+      .then((res) => res.data);
+    console.log("should redirect to dashboard");
+    return {
+      redirect: {
+        destination: "/dashboard",
+        permanent: false,
+      },
+    };
+  } catch (err: any) {
+    console.log("should not bee heeere");
+    return { props: {} };
+  }
+}
 
 function ResetPassword() {
-  const { loading, loggedIn } = useUser();
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (loggedIn && !loading) {
-      router.push("/dashboard");
-    }
-  }, [loggedIn]);
-
   return (
     <GlobalLayout>
-      {loading || loggedIn ? (
-        <CircularProgress />
-      ) : (
-        <>
-          <Typography variant="h1">Reset password</Typography>
+      <Typography variant="h1">Reset password</Typography>
 
-          <ResetPasswordForm />
-        </>
-      )}
+      <ResetPasswordForm />
     </GlobalLayout>
   );
 }

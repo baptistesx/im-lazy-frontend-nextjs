@@ -15,18 +15,13 @@ import { useRouter } from "next/router";
 const CustomDrawer = ({
   handleDrawerToggle,
   mobileOpen,
-  window,
 }: {
   handleDrawerToggle: any;
   mobileOpen: boolean;
-  window: any;
 }) => {
   const { user, loading } = useUser();
 
   const router = useRouter();
-
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
 
   const drawerItems = [
     { route: "/dashboard", icon: <HomeIcon />, title: "Dashboard" },
@@ -75,7 +70,6 @@ const CustomDrawer = ({
       aria-label="mailbox folders"
     >
       <Drawer
-        container={container}
         variant="temporary"
         open={mobileOpen}
         onClose={handleDrawerToggle}

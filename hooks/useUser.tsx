@@ -1,4 +1,4 @@
-import useSWR, { Fetcher } from "swr";
+import useSWR from "swr";
 
 import { getUser } from "../services/userApi";
 

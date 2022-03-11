@@ -1,32 +1,32 @@
 import { Typography, CircularProgress } from "@mui/material";
 import SignUpForm from "../../components/auth/SignUpForm";
 import GlobalLayout from "../../components/layout/GlobalLayout";
-import { useRouter } from "next/router";
-import useUser from "../../hooks/useUser";
 import React, { useEffect } from "react";
+import api from "../../services/api";
 
+// This gets called on every request
+export async function getServerSideProps(ctx: any) {
+  // Fetch data from external API
+  try {
+    const user = await api
+      .axiosApiCall("user", "get", {}, ctx.req.headers.cookie)
+      .then((res) => res.data);
+    return {
+      redirect: {
+        destination: "/dashboard",
+        permanent: false,
+      },
+    };
+  } catch (err: any) {
+    return { props: {} };
+  }
+}
 function SignUp() {
-  const { loading, loggedIn } = useUser();
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (loggedIn && !loading) {
-      router.push("/dashboard");
-    }
-  }, [loggedIn]);
-
   return (
     <GlobalLayout>
-      {loading || loggedIn ? (
-        <CircularProgress />
-      ) : (
-        <>
-          <Typography variant="h1">Sign Up</Typography>
+      <Typography variant="h1">Sign Up</Typography>
 
-          <SignUpForm />
-        </>
-      )}
+      <SignUpForm />
     </GlobalLayout>
   );
 }
