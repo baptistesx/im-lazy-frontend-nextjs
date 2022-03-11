@@ -54,7 +54,8 @@ function SignInForm() {
         severity: "success",
       });
 
-      router.replace("/dashboard");
+      console.log("navigating to dashboard")
+      router.push("/dashboard");
     }).catch((err: Error) => {
       setIsSigningIn(false);
 
