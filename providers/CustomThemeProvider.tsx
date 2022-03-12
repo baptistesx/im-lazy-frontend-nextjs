@@ -1,10 +1,6 @@
 import { blue, green } from "@mui/material/colors";
-import {
-  createTheme,
-  ThemeProvider,
-} from "@mui/material/styles";
+import { createTheme, ThemeProvider,responsiveFontSizes, Theme as MuiTheme } from "@mui/material/styles";
 import React from "react";
-import { Theme as MuiTheme } from "@mui/material/styles";
 
 declare module "@emotion/react" {
   export interface Theme extends MuiTheme {}
@@ -15,7 +11,7 @@ export const CustomThemeProvider = ({
 }: {
   children: JSX.Element;
 }) => {
-  const theme = createTheme({
+  let theme = createTheme({
     palette: {
       primary: {
         main: blue[900],
@@ -25,9 +21,9 @@ export const CustomThemeProvider = ({
       },
       success: {
         main: green[500],
-      }
+      },
     },
   });
-
+  theme = responsiveFontSizes(theme);
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 };

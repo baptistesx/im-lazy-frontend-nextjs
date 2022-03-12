@@ -12,10 +12,9 @@ export async function getServerSideProps(ctx: any) {
   try {
     console.log(ctx.req.headers.cookie);
     const user = await getUser(ctx.req.headers.cookie);
-    console.log("user present");
+
     return { props: { user } };
   } catch (err: any) {
-    console.log("iiin dashboard catchh");
     return {
       redirect: {
         destination: "/",
