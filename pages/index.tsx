@@ -12,7 +12,7 @@ export async function getServerSideProps(ctx: any) {
 
     return {
       redirect: {
-        destination: "/auth/sign-in",
+        destination: "/dashboard",
         permanent: false,
       },
     };
