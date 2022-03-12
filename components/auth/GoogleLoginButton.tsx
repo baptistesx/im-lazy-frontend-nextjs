@@ -1,4 +1,4 @@
-import GoogleLogin from "react-google-login";
+import GoogleLogin, { GoogleLoginResponse, GoogleLoginResponseOffline } from "react-google-login";
 import useSnackbars from "../../hooks/useSnackbars";
 import { User } from "../../hooks/useUser";
 import { signInWithGoogle } from "../../services/userApi";
@@ -9,28 +9,33 @@ function GoogleLoginButton({ setIsLoading }: { setIsLoading: Function }) {
   const snackbarsService = useSnackbars();
 
   const router = useRouter();
+  
+  const isResponseAGoogleLoginResponse = (response: GoogleLoginResponse | GoogleLoginResponseOffline): response is GoogleLoginResponse => {
+    return (response as GoogleLoginResponse).accessToken !== null
+  }
 
-  //TODO: change any type
-  const onGetOauthGoogleTokenSuccess = async (response: any) => {
+  const onGetOauthGoogleTokenSuccess = async (response:  GoogleLoginResponse | GoogleLoginResponseOffline) => {
     setIsLoading(true);
 
-    signInWithGoogle(response?.accessToken, (user: User) => {
-      setIsLoading(false);
-
-      snackbarsService?.addAlert({
-        message: "Welcome", // TODO: use custom message if new user
-        severity: "success",
+    if(isResponseAGoogleLoginResponse(response)){
+      signInWithGoogle(response.accessToken, (user: User) => {
+        setIsLoading(false);
+  
+        snackbarsService?.addAlert({
+          message: "Welcome", // TODO: use custom message if new user
+          severity: "success",
+        });
+  
+        router.replace("/dashboard");
+      }).catch((err: Error) => {
+        setIsLoading(false);
+  
+        snackbarsService?.addAlert({
+          message: "An error occured while signing in with Google",
+          severity: "error",
+        });
       });
-
-      router.replace("/dashboard");
-    }).catch((err: Error) => {
-      setIsLoading(false);
-
-      snackbarsService?.addAlert({
-        message: "An error occured while signing in with Google",
-        severity: "error",
-      });
-    });
+    }
   };
 
   const onGetOauthGoogleTokenFail = async (error: any) => {
