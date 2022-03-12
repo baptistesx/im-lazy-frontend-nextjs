@@ -11,7 +11,13 @@ export async function getServerSideProps(ctx: any) {
   // Fetch data from external API
   try {
     console.log(ctx.req.headers.cookie);
-    const user = await getUser(ctx.req.headers.cookie);
+    // const user = await getUser(ctx.req.headers.cookie);
+    const user = {
+      name: "test",
+      email: "test@gmail.com",
+      isAdmin: true,
+      isPremium: true,
+    };
 
     return { props: { user } };
   } catch (err: any) {
