@@ -44,6 +44,7 @@ function CustomButton() {
        * }
        */
       return actions.order.capture({}).then((details: any) => {
+        //TODO: store details & data in db
         alert(
           "Transaction completed by" +
             (details?.payer.name.given_name ?? "No details")

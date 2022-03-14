@@ -30,7 +30,11 @@ const GlobalLayout = ({
 
   const snackbarsService = useSnackbars();
 
-  const handleLogoClick = () => router.push("/");
+  const handleLogoClick = () => {
+    if (router.route != "/") {
+      router.push("/");
+    }
+  };
 
   const onLogoutClick = async () =>
     await signOut(() => {
@@ -70,7 +74,11 @@ const GlobalLayout = ({
             <MenuIcon />
           </IconButton>
 
-          <Button onClick={handleLogoClick} style={{ textDecoration: "none" }}>
+          <Button
+            href={
+              router.route !== "/" && router.route !== "/dashboard" ? "/" : ""
+            }
+          >
             <Image src="/logo_light.png" height={50} width={100} />
           </Button>
 
@@ -85,13 +93,19 @@ const GlobalLayout = ({
               </Box>
             ) : (
               <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Button sx={{ color: "white" }} href="/auth/sign-in">
+                <Button
+                  sx={{ color: "white" }}
+                  href={router.route !== "/auth/sign-in" ? "/auth/sign-in" : ""}
+                >
                   Sign In
                 </Button>
 
                 <Typography>|</Typography>
 
-                <Button sx={{ color: "white" }} href="/auth/sign-up">
+                <Button
+                  sx={{ color: "white" }}
+                  href={router.route !== "/auth/sign-up" ? "/auth/sign-up" : ""}
+                >
                   Sign Up
                 </Button>
               </Box>
