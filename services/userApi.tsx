@@ -65,12 +65,12 @@ export const getUser = async (cookies: any) => {
     })
     .then((res) => res.data);
 
-    return user
+  return user;
 };
 
 export const signOut = async (cb: Function) => {
   await api.axiosApiCall({ url: "signOut", method: "post" });
-
+  console.log("well logged out");
   cb();
 };
 

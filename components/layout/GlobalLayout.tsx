@@ -30,6 +30,7 @@ const GlobalLayout = ({
 
   const onLogoutClick = async () =>
     await signOut(() => {
+      console.log("in cb, will push '/'");
       router.push("/");
     }).catch((err: Error) => {
       snackbarsService?.addAlert({
