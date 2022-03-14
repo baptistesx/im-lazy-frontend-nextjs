@@ -12,12 +12,13 @@ import ToolBarUserInfo from "./ToolBarUserInfo";
 import { signOut } from "../../services/userApi";
 import { User } from "../../hooks/useUser";
 import useSnackbars from "../../hooks/useSnackbars";
+import Image from "next/image";
 
 //TODO: is there a way to not use showToolbarRightBox param (used for 404 error page as user is not requested, the page doesn't know if user is logged in)?
 const GlobalLayout = ({
   user,
   children,
-  showToolbarRightBox=true,
+  showToolbarRightBox = true,
 }: {
   user?: User;
   showToolbarRightBox?: boolean;
@@ -33,7 +34,6 @@ const GlobalLayout = ({
 
   const onLogoutClick = async () =>
     await signOut(() => {
-      console.log("in cb, will push '/'");
       router.push("/");
     }).catch((err: Error) => {
       snackbarsService?.addAlert({
@@ -71,14 +71,7 @@ const GlobalLayout = ({
           </IconButton>
 
           <Button onClick={handleLogoClick} style={{ textDecoration: "none" }}>
-            <Typography
-              variant="h6"
-              component="div"
-              noWrap
-              sx={{ color: "white" }}
-            >
-              Im-Lazy
-            </Typography>
+            <Image src="/logo_light.png" height={50} width={100} />
           </Button>
 
           {showToolbarRightBox ? (
