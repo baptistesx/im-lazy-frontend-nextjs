@@ -13,11 +13,14 @@ import { signOut } from "../../services/userApi";
 import { User } from "../../hooks/useUser";
 import useSnackbars from "../../hooks/useSnackbars";
 
+//TODO: is there a way to not use showToolbarRightBox param (used for 404 error page as user is not requested, the page doesn't know if user is logged in)?
 const GlobalLayout = ({
   user,
   children,
+  showToolbarRightBox=true,
 }: {
   user?: User;
+  showToolbarRightBox?: boolean;
   children: React.ReactNode;
 }) => {
   const theme: Theme = useTheme();
@@ -78,26 +81,30 @@ const GlobalLayout = ({
             </Typography>
           </Button>
 
-          {user ? (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <ToolBarUserInfo />
+          {showToolbarRightBox ? (
+            user ? (
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <ToolBarUserInfo />
 
-              <Button sx={{ color: "white" }} onClick={onLogoutClick}>
-                Logout
-              </Button>
-            </Box>
+                <Button sx={{ color: "white" }} onClick={onLogoutClick}>
+                  Logout
+                </Button>
+              </Box>
+            ) : (
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Button sx={{ color: "white" }} href="/auth/sign-in">
+                  Sign In
+                </Button>
+
+                <Typography>|</Typography>
+
+                <Button sx={{ color: "white" }} href="/auth/sign-up">
+                  Sign Up
+                </Button>
+              </Box>
+            )
           ) : (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Button sx={{ color: "white" }} href="/auth/sign-in">
-                Sign In
-              </Button>
-
-              <Typography>|</Typography>
-
-              <Button sx={{ color: "white" }} href="/auth/sign-up">
-                Sign Up
-              </Button>
-            </Box>
+            <Box />
           )}
         </Toolbar>
       </AppBar>
