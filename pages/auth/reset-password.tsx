@@ -1,29 +1,26 @@
 import { Typography, CircularProgress } from "@mui/material";
 import ResetPasswordForm from "../../components/auth/ResetPasswordForm";
 import GlobalLayout from "../../components/layout/GlobalLayout";
-import React from "react";
-import { getUser } from "../../services/userApi";
-
-// This gets called on every request
-export async function getServerSideProps(ctx: any) {
-  // Fetch data from external API
-  try {
-    const user = await getUser(ctx.req.headers.cookie);
-    console.log("should redirect to dashboard");
-    return {
-      redirect: {
-        destination: "/dashboard",
-        permanent: false,
-      },
-    };
-  } catch (err: any) {
-    console.log("should not bee heeere");
-    return { props: {} };
-  }
-}
+import useUser from "../../hooks/useUser";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
 
 function ResetPassword() {
-  return (
+  const { user, loading, loggedIn } = useUser();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (loggedIn && !loading) {
+      router.push("/dashboard");
+    }
+  }, [loggedIn]);
+
+  return loading || loggedIn ? (
+    <GlobalLayout>
+      <CircularProgress />
+    </GlobalLayout>
+  ) : (
     <GlobalLayout>
       <Typography variant="h1">Reset password</Typography>
 

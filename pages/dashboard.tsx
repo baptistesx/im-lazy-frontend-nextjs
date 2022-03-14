@@ -1,38 +1,31 @@
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Box, Button, Typography, CircularProgress } from "@mui/material";
-import React from "react";
 import GlobalLayout from "../components/layout/GlobalLayout";
 import { useRouter } from "next/router";
-import { User } from "../hooks/useUser";
-import { getUser } from "../services/userApi";
 import Link from "next/link";
+import React, { useEffect } from "react";
+import useUser from "../hooks/useUser";
 
-// This gets called on every request
-export async function getServerSideProps(ctx: any) {
-  // Fetch data from external API
-  try {
-    console.log(ctx.req.headers.cookie);
-    const user = await getUser(ctx.req.headers.cookie);
-    console.log("GOT USER");
-    return { props: { user } };
-  } catch (err: any) {
-    console.log("NO USER, no token from cookie?");
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-}
-
-function Dashboard({ user }: { user: User }) {
+function Dashboard() {
   const router = useRouter();
 
-  return (
-    <GlobalLayout user={user}>
+  const { user, loading, error, loggedIn } = useUser();
+
+  useEffect(() => {
+    if (!loggedIn && !loading) {
+      router.push("/");
+    }
+  }, [loggedIn]);
+
+  return loading || !loggedIn ? (
+    <GlobalLayout>
+      <CircularProgress />
+    </GlobalLayout>
+  ) : (
+    <GlobalLayout>
       <Typography variant="h1">Dashboard</Typography>
-      {user?.isPremium ? (
+
+      {loggedIn && user?.isPremium ? (
         <Link href="/workaway-bot">
           <Button variant="contained" sx={{ m: 1 }}>
             Workaway messaging
@@ -47,7 +40,8 @@ function Dashboard({ user }: { user: User }) {
           </Button>
         </Link>
       )}
-      {!user?.isEmailVerified ? (
+
+      {loggedIn && !user?.isEmailVerified ? (
         <Typography>
           Remember to check the confirmation email we sent you.
         </Typography>

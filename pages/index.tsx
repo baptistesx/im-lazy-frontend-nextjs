@@ -1,28 +1,25 @@
-import { Typography } from "@mui/material";
-import React from "react";
+import { Typography, CircularProgress } from "@mui/material";
+import React, { useEffect } from "react";
 import GlobalLayout from "../components/layout/GlobalLayout";
-import api from "../services/api";
-import { getUser } from "../services/userApi";
-
-// This gets called on every request
-export async function getServerSideProps(ctx: any) {
-  // Fetch data from external API
-  try {
-    await getUser(ctx.req.headers.cookie);
-
-    return {
-      redirect: {
-        destination: "/dashboard",
-        permanent: false,
-      },
-    };
-  } catch (err: any) {
-    return { props: {} };
-  }
-}
+import useUser from "../hooks/useUser";
+import { useRouter } from "next/router";
 
 function Home() {
-  return (
+  const { user, loading, error, loggedIn } = useUser();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (loggedIn && !loading) {
+      router.push("/dashboard");
+    }
+  }, [loggedIn]);
+
+  return loading || loggedIn ? (
+    <GlobalLayout>
+      <CircularProgress />
+    </GlobalLayout>
+  ) : (
     <GlobalLayout>
       <Typography variant="h1">Home</Typography>
 

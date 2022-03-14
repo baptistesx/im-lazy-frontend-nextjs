@@ -1,26 +1,26 @@
-import { Typography } from "@mui/material";
+import { Typography, CircularProgress } from "@mui/material";
 import SignUpForm from "../../components/auth/SignUpForm";
 import GlobalLayout from "../../components/layout/GlobalLayout";
-import React from "react";
-import { getUser } from "../../services/userApi";
+import { useRouter } from "next/router";
+import useUser from "../../hooks/useUser";
+import React, { useEffect } from "react";
 
-// This gets called on every request
-export async function getServerSideProps(ctx: any) {
-  // Fetch data from external API
-  try {
-    const user = await getUser(ctx.req.headers.cookie);
-    return {
-      redirect: {
-        destination: "/dashboard",
-        permanent: false,
-      },
-    };
-  } catch (err: any) {
-    return { props: {} };
-  }
-}
 function SignUp() {
-  return (
+  const { user, loading, loggedIn } = useUser();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (loggedIn && !loading) {
+      router.push("/dashboard");
+    }
+  }, [loggedIn]);
+
+  return loading || loggedIn ? (
+    <GlobalLayout>
+      <CircularProgress />
+    </GlobalLayout>
+  ) : (
     <GlobalLayout>
       <Typography variant="h1">Sign Up</Typography>
 
