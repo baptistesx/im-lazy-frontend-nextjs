@@ -16,6 +16,7 @@ import signInFormSchema from "../../schemas/signInFormSchema";
 import { signInWithEmailAndPassword } from "../../services/userApi";
 import { useRouter } from "next/router";
 import GoogleLoginButton from "./GoogleLoginButton";
+import Link from "next/link";
 
 type SignInFormData = {
   email: string;
@@ -54,7 +55,6 @@ function SignInForm() {
         severity: "success",
       });
 
-      console.log("navigating to dashboard")
       router.push("/dashboard");
     }).catch((err: Error) => {
       setIsSigningIn(false);
@@ -106,14 +106,15 @@ function SignInForm() {
           Sign In
         </LoadingButton>
 
-        <Button
-          sx={{
-            m: 1,
-          }}
-          href="/auth/reset-password"
-        >
-          I forgot my password
-        </Button>
+        <Link href="/auth/reset-password">
+          <Button
+            sx={{
+              m: 1,
+            }}
+          >
+            I forgot my password
+          </Button>
+        </Link>
       </CardActions>
 
       <Divider>or</Divider>

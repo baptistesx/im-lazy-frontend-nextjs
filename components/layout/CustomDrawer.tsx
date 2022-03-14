@@ -11,6 +11,7 @@ import React from "react";
 import useUser from "../../hooks/useUser";
 import { DRAWER_WIDTH } from "../../utils/constants";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const CustomDrawer = ({
   handleDrawerToggle,
@@ -36,10 +37,6 @@ const CustomDrawer = ({
     });
   }
 
-  const handleNavigate = (path: string) => {
-    router.push(path);
-  };
-
   const drawer = (
     <div>
       <Toolbar />
@@ -47,16 +44,16 @@ const CustomDrawer = ({
       <Box sx={{ overflow: "auto" }}>
         <List>
           {drawerItems.map((element) => (
-            <ListItem
-              button
-              key={element.title}
-              component="a"
-              onClick={() => handleNavigate(element.route)}
-              selected={router.pathname === element.route}
-            >
-              <ListItemIcon>{element.icon}</ListItemIcon>
-              <ListItemText primary={element.title} />
-            </ListItem>
+            <Link href={element.route}>
+              <ListItem
+                button
+                key={element.title}
+                selected={router.pathname === element.route}
+              >
+                <ListItemIcon>{element.icon}</ListItemIcon>
+                <ListItemText primary={element.title} />
+              </ListItem>
+            </Link>
           ))}
         </List>
       </Box>

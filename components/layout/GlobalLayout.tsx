@@ -13,6 +13,7 @@ import { signOut } from "../../services/userApi";
 import { User } from "../../hooks/useUser";
 import useSnackbars from "../../hooks/useSnackbars";
 import Image from "next/image";
+import Link from "next/link";
 
 //TODO: is there a way to not use showToolbarRightBox param (used for 404 error page as user is not requested, the page doesn't know if user is logged in)?
 const GlobalLayout = ({
@@ -29,12 +30,6 @@ const GlobalLayout = ({
   const router = useRouter();
 
   const snackbarsService = useSnackbars();
-
-  const handleLogoClick = () => {
-    if (router.route != "/") {
-      router.push("/");
-    }
-  };
 
   const onLogoutClick = async () =>
     await signOut(() => {
@@ -74,13 +69,11 @@ const GlobalLayout = ({
             <MenuIcon />
           </IconButton>
 
-          <Button
-            href={
-              router.route !== "/" && router.route !== "/dashboard" ? "/" : ""
-            }
-          >
-            <Image src="/logo_light.png" height={50} width={100} />
-          </Button>
+          <Link href="/">
+            <Button>
+              <Image src="/logo_light.png" height={50} width={100} />
+            </Button>
+          </Link>
 
           {showToolbarRightBox ? (
             user ? (
@@ -93,21 +86,15 @@ const GlobalLayout = ({
               </Box>
             ) : (
               <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Button
-                  sx={{ color: "white" }}
-                  href={router.route !== "/auth/sign-in" ? "/auth/sign-in" : ""}
-                >
-                  Sign In
-                </Button>
+                <Link href="/auth/sign-in">
+                  <Button sx={{ color: "white" }}>Sign In</Button>
+                </Link>
 
                 <Typography>|</Typography>
 
-                <Button
-                  sx={{ color: "white" }}
-                  href={router.route !== "/auth/sign-up" ? "/auth/sign-up" : ""}
-                >
-                  Sign Up
-                </Button>
+                <Link href="/auth/sign-up">
+                  <Button sx={{ color: "white" }}>Sign Up</Button>
+                </Link>
               </Box>
             )
           ) : (

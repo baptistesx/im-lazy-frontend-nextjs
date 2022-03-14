@@ -15,6 +15,7 @@ import signUpFormSchema from "../../schemas/signUpFormSchema";
 import { signUpWithEmailAndPassword } from "../../services/userApi";
 import GoogleLoginButton from "./GoogleLoginButton";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 //TODO: on google signin, ask to choose an account and don't directly connect to the last used (remove token?)
 //TODO: implement isDirty (see profile.tsx)
@@ -128,14 +129,15 @@ const SignUpForm = () => {
           Sign up
         </LoadingButton>
 
-        <Button
-          sx={{
-            m: 1,
-          }}
-          href="/aut/sign-in"
-        >
-          I already have an account
-        </Button>
+        <Link href="/auth/sign-in">
+          <Button
+            sx={{
+              m: 1,
+            }}
+          >
+            I already have an account
+          </Button>
+        </Link>
       </CardActions>
 
       <Divider>or</Divider>

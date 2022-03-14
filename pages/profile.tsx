@@ -18,6 +18,7 @@ import { useRouter } from "next/router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import editProfileFormSchema from "../schemas/editProfileFormSchema";
 import { capitalizeFirstLetter } from "../utils/functions";
+import Link from "next/link";
 
 // This gets called on every request
 export async function getServerSideProps(ctx: any) {
@@ -80,10 +81,6 @@ function Profile({ user }: { user: User }) {
     );
   };
 
-  const handleNavigate = (path: string) => {
-    router.push(path);
-  };
-
   return (
     <GlobalLayout user={user}>
       <Typography variant="h1">Profile</Typography>
@@ -115,13 +112,11 @@ function Profile({ user }: { user: User }) {
           />
           {/* //TODO: add feature to change password */}
           {!user?.isPremium ? (
-            <Button
-              onClick={() => handleNavigate("/get-licence")}
-              variant="contained"
-              sx={{ m: 1 }}
-            >
-              Get Premium Account to access bots !
-            </Button>
+            <Link href="/get-licence">
+              <Button variant="contained" sx={{ m: 1 }}>
+                Get Premium Account to access bots !
+              </Button>
+            </Link>
           ) : (
             <Box />
           )}
