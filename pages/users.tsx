@@ -145,7 +145,7 @@ function Users() {
       <CircularProgress />
     </GlobalLayout>
   ) : (
-    <GlobalLayout user={sessionUser}>
+    <GlobalLayout>
       <Typography variant="h1">Users</Typography>
 
       <Card>

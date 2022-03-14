@@ -26,7 +26,7 @@ function WorkawayBot() {
       <CircularProgress />
     </GlobalLayout>
   ) : (
-    <GlobalLayout user={user}>
+    <GlobalLayout>
       <Typography variant="h1">Workaway Bot</Typography>
 
       <Box
