@@ -5,13 +5,14 @@ import {
   Card,
   CardActions,
   CardContent,
+  CircularProgress,
   TextField,
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import GlobalLayout from "../components/layout/GlobalLayout";
-import { getUser, updateUserById } from "../services/userApi";
+import { updateUserById } from "../services/userApi";
 import useSnackbars from "../hooks/useSnackbars";
 import useUser, { User } from "../hooks/useUser";
 import { useRouter } from "next/router";
@@ -20,28 +21,12 @@ import editProfileFormSchema from "../schemas/editProfileFormSchema";
 import { capitalizeFirstLetter } from "../utils/functions";
 import Link from "next/link";
 
-// This gets called on every request
-export async function getServerSideProps(ctx: any) {
-  // Fetch data from external API
-  try {
-    const user = await getUser(ctx.req.headers.cookie);
-    return { props: { user } };
-  } catch (err: any) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-}
-
 type ProfileSubmitFormData = {
   email: string;
   name: string;
 };
 
-function Profile({ user }: { user: User }) {
+function Profile() {
   const router = useRouter();
 
   const snackbarsService = useSnackbars();
@@ -56,6 +41,14 @@ function Profile({ user }: { user: User }) {
   });
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const { user, loading, loggedIn } = useUser();
+
+  useEffect(() => {
+    if (!loggedIn && !loading) {
+      router.push("/");
+    }
+  }, [loggedIn]);
 
   const handleSave = async (data: ProfileSubmitFormData) => {
     setIsLoading(true);
@@ -81,8 +74,12 @@ function Profile({ user }: { user: User }) {
     );
   };
 
-  return (
-    <GlobalLayout user={user}>
+  return loading || !loggedIn ? (
+    <GlobalLayout>
+      <CircularProgress />
+    </GlobalLayout>
+  ) : (
+    <GlobalLayout>
       <Typography variant="h1">Profile</Typography>
 
       <Card

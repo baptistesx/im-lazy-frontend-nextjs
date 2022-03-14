@@ -1,30 +1,29 @@
-import { Typography } from "@mui/material";
-import React from "react";
+import { Typography, CircularProgress } from "@mui/material";
+import React, { useEffect } from "react";
 import GlobalLayout from "../components/layout/GlobalLayout";
 import { PAYPAL_SANDBOX_CLIENT_ID } from "../utils/constants";
 import CustomPaypalButton from "../components/users/CustomPaypalButton";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
-import { User } from "../hooks/useUser";
-import { getUser } from "../services/userApi";
+import useUser from "../hooks/useUser";
+import { useRouter } from "next/router";
 
-// This gets called on every request
-export async function getServerSideProps(ctx: any) {
-  // Fetch data from external API
-  try {
-    const user = await getUser(ctx.req.headers.cookie);
-    return { props: { user } };
-  } catch (err: any) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-}
-function GetLicence({ user }: { user: User }) {
-  return (
-    <GlobalLayout user={user}>
+function GetLicence() {
+  const { user, loading, loggedIn } = useUser();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loggedIn && !loading) {
+      router.push("/");
+    }
+  }, [loggedIn]);
+
+  return loading || !user ? (
+    <GlobalLayout>
+      <CircularProgress />
+    </GlobalLayout>
+  ) : (
+    <GlobalLayout>
       <Typography variant="h1">Get the Premium licence</Typography>
 
       {user?.isPremium ? (

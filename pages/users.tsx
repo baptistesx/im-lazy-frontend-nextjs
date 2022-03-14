@@ -31,28 +31,12 @@ import {
 } from "../services/userApi";
 import GlobalLayout from "../components/layout/GlobalLayout";
 import EditUserDialog from "../components/users/EditUserDialog";
-import { User } from "../hooks/useUser";
+import useUser, { User } from "../hooks/useUser";
 import useSnackbars from "../hooks/useSnackbars";
 import { useRouter } from "next/router";
 import { getUser } from "../services/userApi";
 
-// This gets called on every request
-export async function getServerSideProps(ctx: any) {
-  // Fetch data from external API
-  try {
-    const user = await getUser(ctx.req.headers.cookie);
-    return { props: { user } };
-  } catch (err: any) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-}
-
-function Users({ user }: { user: User }) {
+function Users() {
   const snackbarsService = useSnackbars();
 
   const router = useRouter();
@@ -65,8 +49,15 @@ function Users({ user }: { user: User }) {
     useState<boolean>(false);
 
   const [userSelected, setUserSelected] = useState<User | null>();
+  const { user: sessionUser, loading, loggedIn } = useUser();
 
-  const currentUser = user;
+  const currentUser = sessionUser;
+
+  useEffect(() => {
+    if (!loggedIn && !loading) {
+      router.push("/");
+    }
+  }, [loggedIn]);
 
   useEffect(() => {
     fetchData();
@@ -149,8 +140,12 @@ function Users({ user }: { user: User }) {
     }
   };
 
-  return (
-    <GlobalLayout user={user}>
+  return loading || !loggedIn ? (
+    <GlobalLayout>
+      <CircularProgress />
+    </GlobalLayout>
+  ) : (
+    <GlobalLayout user={sessionUser}>
       <Typography variant="h1">Users</Typography>
 
       <Card>

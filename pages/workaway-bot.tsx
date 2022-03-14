@@ -1,39 +1,31 @@
-import { Box, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import GlobalLayout from "../components/layout/GlobalLayout";
 import BotLogs from "../components/workawayBot/BotLogs";
 import FilesSection from "../components/workawayBot/FilesSection";
 import InfoForm from "../components/workawayBot/InfoForm";
-import { User } from "../hooks/useUser";
+import useUser, { User } from "../hooks/useUser";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { getUser } from "../services/userApi";
 
-// This gets called on every request
-export async function getServerSideProps(ctx: any) {
-  // Fetch data from external API
-  try {
-    const user = await getUser(ctx.req.headers.cookie);
-    return { props: { user } };
-  } catch (err: any) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-}
+function WorkawayBot() {
+  const { user, loading, loggedIn } = useUser();
 
-function WorkawayBot({ user }: { user: User }) {
   const router = useRouter();
 
   useEffect(() => {
-    if (!user?.isPremium) {
+    if (!loggedIn && !loading) {
+      router.push("/");
+    } else if (!user?.isPremium) {
       router.replace("/get-licence");
     }
-  }, []);
+  }, [loggedIn]);
 
-  return (
+  return loading || !loggedIn ? (
+    <GlobalLayout>
+      <CircularProgress />
+    </GlobalLayout>
+  ) : (
     <GlobalLayout user={user}>
       <Typography variant="h1">Workaway Bot</Typography>
 

@@ -5,7 +5,7 @@ import Link from "next/link";
 
 function ResetPassword() {
   return (
-    <GlobalLayout showToolbarRightBox={false}>
+    <GlobalLayout>
       <Typography variant="h1">Page not found (Error 404)</Typography>
 
       <Link href="/">

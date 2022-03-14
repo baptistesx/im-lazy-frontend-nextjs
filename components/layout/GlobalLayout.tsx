@@ -10,29 +10,23 @@ import { DRAWER_WIDTH } from "../../utils/constants";
 import CustomDrawer from "./CustomDrawer";
 import ToolBarUserInfo from "./ToolBarUserInfo";
 import { signOut } from "../../services/userApi";
-import { User } from "../../hooks/useUser";
+import useUser from "../../hooks/useUser";
 import useSnackbars from "../../hooks/useSnackbars";
 import Image from "next/image";
 import Link from "next/link";
 
-//TODO: is there a way to not use showToolbarRightBox param (used for 404 error page as user is not requested, the page doesn't know if user is logged in)?
-const GlobalLayout = ({
-  user,
-  children,
-  showToolbarRightBox = true,
-}: {
-  user?: User;
-  showToolbarRightBox?: boolean;
-  children: React.ReactNode;
-}) => {
+const GlobalLayout = ({ children }: { children: React.ReactNode }) => {
   const theme: Theme = useTheme();
 
   const router = useRouter();
+
+  const { user, loggedIn } = useUser();
 
   const snackbarsService = useSnackbars();
 
   const onLogoutClick = async () =>
     await signOut(() => {
+      console.log("pusshing home");
       router.push("/");
     }).catch((err: Error) => {
       snackbarsService?.addAlert({
@@ -69,41 +63,37 @@ const GlobalLayout = ({
             <MenuIcon />
           </IconButton>
 
-          <Link href="/">
+          <Link href={loggedIn ? "/dashboard" : "/"}>
             <Button>
               <Image src="/logo_light.png" height={50} width={100} />
             </Button>
           </Link>
 
-          {showToolbarRightBox ? (
-            user ? (
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <ToolBarUserInfo />
+          {loggedIn ? (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <ToolBarUserInfo />
 
-                <Button sx={{ color: "white" }} onClick={onLogoutClick}>
-                  Logout
-                </Button>
-              </Box>
-            ) : (
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Link href="/auth/sign-in">
-                  <Button sx={{ color: "white" }}>Sign In</Button>
-                </Link>
-
-                <Typography>|</Typography>
-
-                <Link href="/auth/sign-up">
-                  <Button sx={{ color: "white" }}>Sign Up</Button>
-                </Link>
-              </Box>
-            )
+              <Button sx={{ color: "white" }} onClick={onLogoutClick}>
+                Logout
+              </Button>
+            </Box>
           ) : (
-            <Box />
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Link href="/auth/sign-in">
+                <Button sx={{ color: "white" }}>Sign In</Button>
+              </Link>
+
+              <Typography>|</Typography>
+
+              <Link href="/auth/sign-up">
+                <Button sx={{ color: "white" }}>Sign Up</Button>
+              </Link>
+            </Box>
           )}
         </Toolbar>
       </AppBar>
 
-      {user ? (
+      {loggedIn ? (
         <CustomDrawer
           handleDrawerToggle={() => handleDrawerToggle()}
           mobileOpen={mobileOpen}
