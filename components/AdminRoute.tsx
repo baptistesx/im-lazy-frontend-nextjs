@@ -2,7 +2,7 @@ import { CircularProgress } from "@mui/material";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useAuth } from "../providers/AuthProvider";
-import GlobalLayout from "./layout/GlobalLayout";
+import SignedInLayout from "./layout/SignedInLayout";
 
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   const auth = useAuth();
@@ -24,11 +24,11 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   return auth?.status === "loading" ||
     (router.isReady && auth?.status !== "connected") ||
     (router.isReady && auth?.status === "connected" && !auth?.user?.isAdmin) ? (
-    <GlobalLayout>
+    <SignedInLayout>
       <CircularProgress />
-    </GlobalLayout>
+    </SignedInLayout>
   ) : (
-    <GlobalLayout>{children}</GlobalLayout>
+    <SignedInLayout>{children}</SignedInLayout>
   );
 };
 
