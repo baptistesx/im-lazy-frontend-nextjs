@@ -1,9 +1,13 @@
-import { useState, useEffect } from "react";
-import {
-  SnackbarContext,
-  AlertContextInterface,
-} from "../contexts/snackbarContext";
-import { Snackbar, Alert, Box, AlertColor } from "@mui/material";
+import { Alert, AlertColor, Box, Snackbar } from "@mui/material";
+import { createContext, useContext, useEffect, useState } from "react";
+
+export interface AlertContextInterface {
+  addAlert: Function;
+}
+
+export const SnackbarContext = createContext<AlertContextInterface | null>(
+  null
+);
 
 const AUTO_DISMISS = 5000;
 
@@ -50,3 +54,4 @@ export function SnackBarProvider({ children }: { children: React.ReactNode }) {
     </SnackbarContext.Provider>
   );
 }
+export const useSnackbars = () => useContext(SnackbarContext);

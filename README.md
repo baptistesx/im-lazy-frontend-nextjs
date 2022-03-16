@@ -1,34 +1,60 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ImLazy app frontend
+
+## Context
+
+ImLazy was at the beggining only a Node.js bot using [Puppeteer](https://github.com/puppeteer/puppeteer) module to invite Workaway members in the area to meetup during my roadtrip in Spain and Portugal.
+
+> **Workaway**: a woofing platform to find hosts and meet other workawayers, see [`workaway.info`](https://www.workaway.info/)
+
+I chosed to make this peronal project evolve with a ReactJs UI in order to make it easier to set bot parameters.
+Then I added a console working with websockets to see backend logs (to follow the bot steps).
+
+In the begining of march, I migrated the frontend app to NextJs and Typescript. Currently setting the app up as a SaaS to learn different important aspects of a web app as roles navigation (with protected routes), authentication, OAuth2, SSR, CRUD, clean architecture...
+
+> This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 
-First, run the development server:
+- First, clone the repo :
+
+```bash
+git clone https://github.com/baptistesx/im-lazy-frontend-nextjs
+```
+
+- Move into the folder:
+
+```bash
+cd im-lazy-frontend-nextjs
+```
+
+- Install the dependencies:
+
+```bash
+npm install
+```
+
+- Dupplicate ".env.dist" file and rename it as ".env.local"
+- Ask Baptiste for the environment variables and fill up ".env.local" with received data
+- Run the development server:
 
 ```bash
 npm run dev
-# or
+```
+
+or
+
+```bash
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

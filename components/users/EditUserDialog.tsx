@@ -1,3 +1,4 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
 import {
   Button,
@@ -12,11 +13,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { updateUserById, createUser } from "../../services/userApi";
-import useSnackbars from "../../hooks/useSnackbars";
-import useUser, { User } from "../../hooks/useUser";
+import { useAuth, User } from "../../providers/AuthProvider";
+import { useSnackbars } from "../../providers/SnackbarProvider";
 import editUserFormSchema from "../../schemas/editUserFormSchema";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { createUser, updateUserById } from "../../services/userApi";
 import { capitalizeFirstLetter } from "../../utils/functions";
 
 interface EditUserDialogFormData {
@@ -37,7 +37,7 @@ interface EditUserDialogProps {
 function EditUserDialog(props: EditUserDialogProps) {
   const { onClose, open, user, ...other } = props;
 
-  const { user: sessionUser } = useUser();
+  const auth = useAuth();
 
   const snackbarsService = useSnackbars();
 
@@ -51,7 +51,8 @@ function EditUserDialog(props: EditUserDialogProps) {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { isDirty, errors },
+    reset,
   } = useForm<EditUserDialogFormData>({
     resolver: yupResolver(editUserFormSchema),
   });
@@ -95,6 +96,12 @@ function EditUserDialog(props: EditUserDialogProps) {
             message: "User well updated",
             severity: "success",
           });
+
+          if (currentUser?.id === auth?.user?.id) {
+            auth.fetchCurrentUser();
+          }
+
+          reset(data);
         }
       ).catch((err: Error) => {
         setIsSaving(false);
@@ -122,6 +129,8 @@ function EditUserDialog(props: EditUserDialogProps) {
             message: "User well created",
             severity: "success",
           });
+
+          reset(data);
         }
       ).catch((err: Error) => {
         snackbarsService?.addAlert({
@@ -137,7 +146,9 @@ function EditUserDialog(props: EditUserDialogProps) {
       TransitionProps={{ onEntering: handleEntering }}
       open={open}
       {...other}
-      onClose={()=>{onClose({ modified: false });}}
+      onClose={() => {
+        onClose({ modified: false });
+      }}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogTitle>{currentUser?.id ? "Edit" : "Create"} user</DialogTitle>
@@ -163,9 +174,7 @@ function EditUserDialog(props: EditUserDialogProps) {
           />
 
           <FormControlLabel
-            disabled={
-              sessionUser?.isAdmin && currentUser?.id === sessionUser?.id
-            }
+            disabled={auth?.user?.isAdmin && currentUser?.id === auth?.user?.id}
             control={<Checkbox defaultChecked={currentUser?.isAdmin} />}
             label="Is Admin"
             {...register("isAdmin")}
@@ -185,6 +194,7 @@ function EditUserDialog(props: EditUserDialogProps) {
           <LoadingButton
             type="submit"
             variant="contained"
+            disabled={!isDirty}
             loading={isSaving}
             sx={{
               m: 1,

@@ -1,22 +1,22 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
 import {
+  Card,
   CardActions,
   CardContent,
   Checkbox,
   FormControlLabel,
-  Card,
   MenuItem,
   TextField,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { DEV_MODE, ENDPOINT } from "../../utils/constants";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useSnackbars } from "../../providers/SnackbarProvider";
 import infoFormSchema from "../../schemas/infoFormSchema";
 import { startBot, stopBot } from "../../services/workawayBotApi";
-import useSnackbars from "../../hooks/useSnackbars";
+import { DEV_MODE } from "../../utils/constants";
 
 interface InfoSubmitFormData {
   developmentMode: boolean;

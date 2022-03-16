@@ -1,10 +1,10 @@
+import { PayPalButtonsComponentOptions } from "@paypal/paypal-js/types/components/buttons";
+import { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 import {
-  PayPalScriptProvider,
   PayPalButtons,
+  PayPalScriptProvider,
   usePayPalScriptReducer,
 } from "@paypal/react-paypal-js";
-import { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
-import { PayPalButtonsComponentOptions } from "@paypal/paypal-js/types/components/buttons";
 import { PAYPAL_SANDBOX_CLIENT_ID } from "../../utils/constants";
 
 const paypalScriptOptions: PayPalScriptOptions = {
@@ -44,6 +44,7 @@ function CustomButton() {
        * }
        */
       return actions.order.capture({}).then((details: any) => {
+        //TODO: store details & data in db
         alert(
           "Transaction completed by" +
             (details?.payer.name.given_name ?? "No details")

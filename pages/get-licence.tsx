@@ -1,33 +1,18 @@
 import { Typography } from "@mui/material";
-import React from "react";
-import GlobalLayout from "../components/layout/GlobalLayout";
-import { PAYPAL_SANDBOX_CLIENT_ID } from "../utils/constants";
-import CustomPaypalButton from "../components/users/CustomPaypalButton";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
-import { User } from "../hooks/useUser";
-import { getUser } from "../services/userApi";
+import SignedInRoute from "../components/SignedInRoute";
+import CustomPaypalButton from "../components/users/CustomPaypalButton";
+import { useAuth } from "../providers/AuthProvider";
+import { PAYPAL_SANDBOX_CLIENT_ID } from "../utils/constants";
 
-// This gets called on every request
-export async function getServerSideProps(ctx: any) {
-  // Fetch data from external API
-  try {
-    const user = await getUser(ctx.req.headers.cookie);
-    return { props: { user } };
-  } catch (err: any) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-}
-function GetLicence({ user }: { user: User }) {
+function GetLicence() {
+  const auth = useAuth();
+
   return (
-    <GlobalLayout user={user}>
+    <SignedInRoute>
       <Typography variant="h1">Get the Premium licence</Typography>
 
-      {user?.isPremium ? (
+      {auth?.user?.isPremium ? (
         <Typography variant="body1">
           You are already a premium member
         </Typography>
@@ -49,7 +34,7 @@ function GetLicence({ user }: { user: User }) {
           </PayPalScriptProvider>
         </>
       )}
-    </GlobalLayout>
+    </SignedInRoute>
   );
 }
 

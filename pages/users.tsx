@@ -21,38 +21,20 @@ import {
   TableRow,
   Tooltip,
   Typography,
-  CircularProgress,
 } from "@mui/material";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import AdminRoute from "../components/AdminRoute";
+import EditUserDialog from "../components/users/EditUserDialog";
+import { useAuth, User } from "../providers/AuthProvider";
+import { useSnackbars } from "../providers/SnackbarProvider";
 import {
-  getUsers,
   deleteUserById,
+  getUsers,
   toggleAdminRights,
 } from "../services/userApi";
-import GlobalLayout from "../components/layout/GlobalLayout";
-import EditUserDialog from "../components/users/EditUserDialog";
-import { User } from "../hooks/useUser";
-import useSnackbars from "../hooks/useSnackbars";
-import { useRouter } from "next/router";
-import { getUser } from "../services/userApi";
 
-// This gets called on every request
-export async function getServerSideProps(ctx: any) {
-  // Fetch data from external API
-  try {
-    const user = await getUser(ctx.req.headers.cookie);
-    return { props: { user } };
-  } catch (err: any) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-}
-
-function Users({ user }: { user: User }) {
+function Users() {
   const snackbarsService = useSnackbars();
 
   const router = useRouter();
@@ -65,8 +47,9 @@ function Users({ user }: { user: User }) {
     useState<boolean>(false);
 
   const [userSelected, setUserSelected] = useState<User | null>();
+  const auth = useAuth();
 
-  const currentUser = user;
+  const currentUser = auth?.user;
 
   useEffect(() => {
     fetchData();
@@ -150,7 +133,7 @@ function Users({ user }: { user: User }) {
   };
 
   return (
-    <GlobalLayout user={user}>
+    <AdminRoute>
       <Typography variant="h1">Users</Typography>
 
       <Card>
@@ -166,7 +149,7 @@ function Users({ user }: { user: User }) {
               {users.length === 0 ? (
                 <Typography>No users</Typography>
               ) : (
-                //TODO: extract compoennt
+                //TODO: refacto (extract component)
                 <TableContainer component={Paper}>
                   <Table aria-label="users table">
                     <TableHead>
@@ -277,7 +260,7 @@ function Users({ user }: { user: User }) {
       ) : (
         <Box></Box>
       )}
-    </GlobalLayout>
+    </AdminRoute>
   );
 }
 

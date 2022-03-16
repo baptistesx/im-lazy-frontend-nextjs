@@ -1,16 +1,16 @@
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import GroupIcon from "@mui/icons-material/Group";
 import HomeIcon from "@mui/icons-material/Home";
-import { Box, Toolbar, CircularProgress } from "@mui/material/";
+import { Box, CircularProgress, Toolbar } from "@mui/material/";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import React from "react";
-import useUser from "../../hooks/useUser";
-import { DRAWER_WIDTH } from "../../utils/constants";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import { useAuth } from "../../providers/AuthProvider";
+import { DRAWER_WIDTH } from "../../utils/constants";
 
 const CustomDrawer = ({
   handleDrawerToggle,
@@ -19,7 +19,7 @@ const CustomDrawer = ({
   handleDrawerToggle: any;
   mobileOpen: boolean;
 }) => {
-  const { user, loading } = useUser();
+  const auth = useAuth();
 
   const router = useRouter();
 
@@ -28,17 +28,13 @@ const CustomDrawer = ({
     { route: "/profile", icon: <AccountBoxIcon />, title: "Profile" },
   ];
 
-  if (user && user?.isAdmin) {
+  if (auth?.user && auth?.user?.isAdmin) {
     drawerItems.push({
       route: "/users",
       icon: <GroupIcon />,
       title: "Users",
     });
   }
-
-  const handleNavigate = (path: string) => {
-    router.push(path);
-  };
 
   const drawer = (
     <div>
@@ -47,23 +43,23 @@ const CustomDrawer = ({
       <Box sx={{ overflow: "auto" }}>
         <List>
           {drawerItems.map((element) => (
-            <ListItem
-              button
-              key={element.title}
-              component="a"
-              onClick={() => handleNavigate(element.route)}
-              selected={router.pathname === element.route}
-            >
-              <ListItemIcon>{element.icon}</ListItemIcon>
-              <ListItemText primary={element.title} />
-            </ListItem>
+            <Link href={element.route}>
+              <ListItem
+                button
+                key={element.title}
+                selected={router.pathname === element.route}
+              >
+                <ListItemIcon>{element.icon}</ListItemIcon>
+                <ListItemText primary={element.title} />
+              </ListItem>
+            </Link>
           ))}
         </List>
       </Box>
     </div>
   );
 
-  return user ? (
+  return auth?.user ? (
     <Box
       component="nav"
       sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
@@ -98,7 +94,7 @@ const CustomDrawer = ({
         }}
         open
       >
-        {loading ? <CircularProgress /> : drawer}
+        {auth?.status === "loading" ? <CircularProgress /> : drawer}
       </Drawer>
     </Box>
   ) : (

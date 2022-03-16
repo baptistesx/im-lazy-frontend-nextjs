@@ -1,36 +1,32 @@
-import GoogleLogin from "react-google-login";
-import useSnackbars from "../../hooks/useSnackbars";
-import { User } from "../../hooks/useUser";
-import { signInWithGoogle } from "../../services/userApi";
+import GoogleLogin, {
+  GoogleLoginResponse,
+  GoogleLoginResponseOffline,
+} from "react-google-login";
+import { useAuth } from "../../providers/AuthProvider";
+import { useSnackbars } from "../../providers/SnackbarProvider";
 import { GOOGLE_CLIENT_ID } from "../../utils/constants";
-import { useRouter } from "next/router";
 
 function GoogleLoginButton({ setIsLoading }: { setIsLoading: Function }) {
   const snackbarsService = useSnackbars();
 
-  const router = useRouter();
+  const auth = useAuth();
 
-  //TODO: change any type
-  const onGetOauthGoogleTokenSuccess = async (response: any) => {
+  const isResponseAGoogleLoginResponse = (
+    response: GoogleLoginResponse | GoogleLoginResponseOffline
+  ): response is GoogleLoginResponse => {
+    return (response as GoogleLoginResponse).accessToken !== null;
+  };
+
+  const onGetOauthGoogleTokenSuccess = async (
+    response: GoogleLoginResponse | GoogleLoginResponseOffline
+  ) => {
     setIsLoading(true);
 
-    signInWithGoogle(response?.accessToken, (user: User) => {
-      setIsLoading(false);
-
-      snackbarsService?.addAlert({
-        message: "Welcome", // TODO: use custom message if new user
-        severity: "success",
+    if (isResponseAGoogleLoginResponse(response)) {
+      auth?.loginWithGoogle(response.accessToken, () => {
+        setIsLoading(false);
       });
-
-      router.replace("/dashboard");
-    }).catch((err: Error) => {
-      setIsLoading(false);
-
-      snackbarsService?.addAlert({
-        message: "An error occured while signing in with Google",
-        severity: "error",
-      });
-    });
+    }
   };
 
   const onGetOauthGoogleTokenFail = async (error: any) => {
@@ -43,7 +39,7 @@ function GoogleLoginButton({ setIsLoading }: { setIsLoading: Function }) {
   return (
     <GoogleLogin
       clientId={`${GOOGLE_CLIENT_ID}`}
-      buttonText="Sign up with Google"
+      buttonText="Sign in with Google"
       onSuccess={onGetOauthGoogleTokenSuccess}
       onFailure={onGetOauthGoogleTokenFail}
     />

@@ -1,11 +1,18 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
-import { Card, CardActions, CardContent, TextField } from "@mui/material";
-import React, { useState, useEffect } from "react";
-import { resetPassword } from "../../services/userApi";
-import useSnackbars from "../../hooks/useSnackbars";
-import resetPasswordFormSchema from "../../schemas/resetPasswordFormSchema";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Link,
+  TextField,
+} from "@mui/material";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSnackbars } from "../../providers/SnackbarProvider";
+import resetPasswordFormSchema from "../../schemas/resetPasswordFormSchema";
+import { resetPassword } from "../../services/userApi";
 
 type ResetPasswordFormData = {
   email: string;
@@ -20,7 +27,8 @@ const ResetPasswordForm = () => {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { isDirty, errors },
+    reset,
   } = useForm<ResetPasswordFormData>({
     resolver: yupResolver(resetPasswordFormSchema),
   });
@@ -40,6 +48,8 @@ const ResetPasswordForm = () => {
         message: "If email is valid, a reset password email has been sent",
         severity: "success",
       });
+
+      reset(data);
     }).catch((err: Error) => {
       setIsLoading(false);
 
@@ -69,10 +79,21 @@ const ResetPasswordForm = () => {
           }}
           type="submit"
           variant="contained"
+          disabled={!isDirty}
           loading={isLoading}
         >
           Reset password
         </LoadingButton>
+
+        <Link href="/auth/sign-in">
+          <Button
+            sx={{
+              m: 1,
+            }}
+          >
+            Back
+          </Button>
+        </Link>
       </CardActions>
     </Card>
   );

@@ -8,13 +8,11 @@ import {
   Divider,
   TextField,
 } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import useSnackbars from "../../hooks/useSnackbars";
-import { User } from "../../hooks/useUser";
+import { useAuth } from "../../providers/AuthProvider";
 import signInFormSchema from "../../schemas/signInFormSchema";
-import { signInWithEmailAndPassword } from "../../services/userApi";
-import { useRouter } from "next/router";
 import GoogleLoginButton from "./GoogleLoginButton";
 
 type SignInFormData = {
@@ -23,9 +21,7 @@ type SignInFormData = {
 };
 
 function SignInForm() {
-  const snackbarsService = useSnackbars();
-
-  const router = useRouter();
+  const auth = useAuth();
 
   const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
 
@@ -33,7 +29,8 @@ function SignInForm() {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { isDirty, errors },
+    reset,
   } = useForm<SignInFormData>({
     resolver: yupResolver(signInFormSchema),
   });
@@ -45,25 +42,10 @@ function SignInForm() {
 
   const onSubmit = (data: SignInFormData) => {
     setIsSigningIn(true);
-
-    signInWithEmailAndPassword(data.email, data.password, (user: User) => {
+    auth?.login(data.email, data.password, () => {
       setIsSigningIn(false);
 
-      snackbarsService?.addAlert({
-        message: "Welcome", // TODO: use custom message if new user
-        severity: "success",
-      });
-
-      router.replace("/dashboard");
-    }).catch((err: Error) => {
-      setIsSigningIn(false);
-
-      //TODO: add internet connection checker and customize message error
-      snackbarsService?.addAlert({
-        message:
-          "Check your internet connection or email/password might be invalid",
-        severity: "error",
-      });
+      reset(data);
     });
   };
 
@@ -97,6 +79,7 @@ function SignInForm() {
         <LoadingButton
           type="submit"
           variant="contained"
+          disabled={!isDirty}
           loading={isSigningIn}
           sx={{
             m: 1,
@@ -105,14 +88,15 @@ function SignInForm() {
           Sign In
         </LoadingButton>
 
-        <Button
-          sx={{
-            m: 1,
-          }}
-          href="/auth/reset-password"
-        >
-          I forgot my password
-        </Button>
+        <Link href="/auth/reset-password">
+          <Button
+            sx={{
+              m: 1,
+            }}
+          >
+            I forgot my password
+          </Button>
+        </Link>
       </CardActions>
 
       <Divider>or</Divider>
@@ -120,6 +104,15 @@ function SignInForm() {
       <CardActions
         sx={{ display: "flex", justifyContent: "center", mt: 1, mb: 1 }}
       >
+        <Link href="/auth/sign-up">
+          <Button
+            sx={{
+              m: 1,
+            }}
+          >
+            Sign Up
+          </Button>
+        </Link>
         <GoogleLoginButton setIsLoading={setIsSigningIn} />
       </CardActions>
     </Card>

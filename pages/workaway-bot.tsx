@@ -1,40 +1,12 @@
 import { Box, Typography } from "@mui/material";
-import GlobalLayout from "../components/layout/GlobalLayout";
+import PremiumRoute from "../components/PremiumRoute";
 import BotLogs from "../components/workawayBot/BotLogs";
 import FilesSection from "../components/workawayBot/FilesSection";
 import InfoForm from "../components/workawayBot/InfoForm";
-import { User } from "../hooks/useUser";
-import { useRouter } from "next/router";
-import React, { useEffect } from "react";
-import { getUser } from "../services/userApi";
 
-// This gets called on every request
-export async function getServerSideProps(ctx: any) {
-  // Fetch data from external API
-  try {
-    const user = await getUser(ctx.req.headers.cookie);
-    return { props: { user } };
-  } catch (err: any) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-}
-
-function WorkawayBot({ user }: { user: User }) {
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!user?.isPremium) {
-      router.replace("/get-licence");
-    }
-  }, []);
-
+function WorkawayBot() {
   return (
-    <GlobalLayout user={user}>
+    <PremiumRoute>
       <Typography variant="h1">Workaway Bot</Typography>
 
       <Box
@@ -49,7 +21,7 @@ function WorkawayBot({ user }: { user: User }) {
       </Box>
 
       <FilesSection />
-    </GlobalLayout>
+    </PremiumRoute>
   );
 }
 

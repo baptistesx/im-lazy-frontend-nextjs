@@ -1,42 +1,23 @@
 import { useTheme } from "@emotion/react";
-import { Theme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton } from "@mui/material";
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material/";
 import CssBaseline from "@mui/material/CssBaseline";
+import { Theme } from "@mui/material/styles";
+import Image from "next/image";
+import Link from "next/link";
 import React from "react";
-import { useRouter } from "next/router";
+import { useAuth } from "../../providers/AuthProvider";
 import { DRAWER_WIDTH } from "../../utils/constants";
 import CustomDrawer from "./CustomDrawer";
 import ToolBarUserInfo from "./ToolBarUserInfo";
-import { signOut } from "../../services/userApi";
-import { User } from "../../hooks/useUser";
-import useSnackbars from "../../hooks/useSnackbars";
 
-const GlobalLayout = ({
-  user,
-  children,
-}: {
-  user?: User;
-  children: React.ReactNode;
-}) => {
+const SignedInLayout = ({ children }: { children: React.ReactNode }) => {
   const theme: Theme = useTheme();
 
-  const router = useRouter();
+  const auth = useAuth();
 
-  const snackbarsService = useSnackbars();
-
-  const handleLogoClick = () => router.push("/");
-
-  const onLogoutClick = async () =>
-    await signOut(() => {
-      router.push("/");
-    }).catch((err: Error) => {
-      snackbarsService?.addAlert({
-        message: "An error occured while signing out",
-        severity: "error",
-      });
-    });
+  const onLogoutClick = async () => auth?.logout();
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -61,23 +42,21 @@ const GlobalLayout = ({
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: user ? { sm: "none" } : { xs: "none" } }}
+            sx={{
+              mr: 2,
+              display: auth?.user ? { sm: "none" } : { xs: "none" },
+            }}
           >
             <MenuIcon />
           </IconButton>
 
-          <Button onClick={handleLogoClick} style={{ textDecoration: "none" }}>
-            <Typography
-              variant="h6"
-              component="div"
-              noWrap
-              sx={{ color: "white" }}
-            >
-              Im-Lazy
-            </Typography>
-          </Button>
+          <Link href={auth?.status === "connected" ? "/dashboard" : "/"}>
+            <Button>
+              <Image src="/logo_light.png" height={50} width={100} />
+            </Button>
+          </Link>
 
-          {user ? (
+          {auth?.status === "connected" ? (
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <ToolBarUserInfo />
 
@@ -87,21 +66,21 @@ const GlobalLayout = ({
             </Box>
           ) : (
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Button sx={{ color: "white" }} href="/auth/sign-in">
-                Sign In
-              </Button>
+              <Link href="/auth/sign-in">
+                <Button sx={{ color: "white" }}>Sign In</Button>
+              </Link>
 
               <Typography>|</Typography>
 
-              <Button sx={{ color: "white" }} href="/auth/sign-up">
-                Sign Up
-              </Button>
+              <Link href="/auth/sign-up">
+                <Button sx={{ color: "white" }}>Sign Up</Button>
+              </Link>
             </Box>
           )}
         </Toolbar>
       </AppBar>
 
-      {user ? (
+      {auth?.status === "connected" ? (
         <CustomDrawer
           handleDrawerToggle={() => handleDrawerToggle()}
           mobileOpen={mobileOpen}
@@ -123,4 +102,4 @@ const GlobalLayout = ({
   );
 };
 
-export default GlobalLayout;
+export default SignedInLayout;

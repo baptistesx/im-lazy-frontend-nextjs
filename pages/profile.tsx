@@ -1,3 +1,4 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
 import {
   Box,
@@ -8,40 +9,24 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import GlobalLayout from "../components/layout/GlobalLayout";
-import { getUser, updateUserById } from "../services/userApi";
-import useSnackbars from "../hooks/useSnackbars";
-import useUser, { User } from "../hooks/useUser";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import SignedInRoute from "../components/SignedInRoute";
+import { useAuth } from "../providers/AuthProvider";
+import { useSnackbars } from "../providers/SnackbarProvider";
 import editProfileFormSchema from "../schemas/editProfileFormSchema";
+import { updateUserById } from "../services/userApi";
 import { capitalizeFirstLetter } from "../utils/functions";
-
-// This gets called on every request
-export async function getServerSideProps(ctx: any) {
-  // Fetch data from external API
-  try {
-    const user = await getUser(ctx.req.headers.cookie);
-    return { props: { user } };
-  } catch (err: any) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-}
 
 type ProfileSubmitFormData = {
   email: string;
   name: string;
 };
 
-function Profile({ user }: { user: User }) {
-  const router = useRouter();
+function Profile() {
+  const auth = useAuth();
 
   const snackbarsService = useSnackbars();
 
@@ -61,10 +46,10 @@ function Profile({ user }: { user: User }) {
 
     updateUserById(
       {
-        id: user?.id,
+        id: auth?.user?.id,
         email: data.email,
-        isAdmin: user?.isAdmin, //TODO security issue => pass this param optional
-        isPremium: user?.isPremium, //TODO security issue => pass this param optional
+        isAdmin: auth?.user?.isAdmin, //TODO security issue => pass this param optional
+        isPremium: auth?.user?.isPremium, //TODO security issue => pass this param optional
         name: data.name,
       },
       () => {
@@ -75,17 +60,15 @@ function Profile({ user }: { user: User }) {
           severity: "success",
         });
 
+        auth?.fetchCurrentUser();
+
         reset(data);
       }
     );
   };
 
-  const handleNavigate = (path: string) => {
-    router.push(path);
-  };
-
   return (
-    <GlobalLayout user={user}>
+    <SignedInRoute>
       <Typography variant="h1">Profile</Typography>
 
       <Card
@@ -99,7 +82,7 @@ function Profile({ user }: { user: User }) {
             placeholder="Name"
             {...register("name")}
             sx={{ mb: 1 }}
-            defaultValue={capitalizeFirstLetter(user?.name)}
+            defaultValue={capitalizeFirstLetter(auth?.user?.name)}
             error={errors.name != null}
             helperText={errors.name?.message}
           />
@@ -109,19 +92,17 @@ function Profile({ user }: { user: User }) {
             placeholder="Email"
             {...register("email")}
             sx={{ mb: 1 }}
-            defaultValue={user?.email}
+            defaultValue={auth?.user?.email}
             error={errors.email != null}
             helperText={errors.email?.message}
           />
           {/* //TODO: add feature to change password */}
-          {!user?.isPremium ? (
-            <Button
-              onClick={() => handleNavigate("/get-licence")}
-              variant="contained"
-              sx={{ m: 1 }}
-            >
-              Get Premium Account to access bots !
-            </Button>
+          {!auth?.user?.isPremium ? (
+            <Link href="/get-licence">
+              <Button variant="contained" sx={{ m: 1 }}>
+                Get Premium Account to access bots !
+              </Button>
+            </Link>
           ) : (
             <Box />
           )}
@@ -141,7 +122,7 @@ function Profile({ user }: { user: User }) {
           </LoadingButton>
         </CardActions>
       </Card>
-    </GlobalLayout>
+    </SignedInRoute>
   );
 }
 

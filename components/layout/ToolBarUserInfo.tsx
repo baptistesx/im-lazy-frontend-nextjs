@@ -1,16 +1,15 @@
-import { Box, IconButton, Tooltip, Typography } from "@mui/material/";
-import React from "react";
-import useUser from "../../hooks/useUser";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material/";
+import { useAuth } from "../../providers/AuthProvider";
 import { capitalizeFirstLetter } from "../../utils/functions";
 
 function ToolBarUserInfo() {
-  const { user } = useUser();
+  const auth = useAuth();
 
   return (
     <Box sx={{ display: { xs: "none", sm: "flex" }, alignItems: "center" }}>
-      {user?.isAdmin ? (
+      {auth?.user?.isAdmin ? (
         <Tooltip title="Admin">
           <IconButton>
             <AdminPanelSettingsIcon sx={{ color: "white" }} />
@@ -19,7 +18,7 @@ function ToolBarUserInfo() {
       ) : (
         <Box />
       )}
-      {user?.isPremium ? (
+      {auth?.user?.isPremium ? (
         <Tooltip title="Premium">
           <IconButton>
             <WorkspacePremiumIcon sx={{ color: "white" }} />
@@ -28,7 +27,7 @@ function ToolBarUserInfo() {
       ) : (
         <Box />
       )}
-      <Typography>{`${capitalizeFirstLetter(user?.name)} |`}</Typography>
+      <Typography>{`${capitalizeFirstLetter(auth?.user?.name)} |`}</Typography>
     </Box>
   );
 }
