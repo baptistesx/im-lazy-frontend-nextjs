@@ -60,6 +60,8 @@ function Profile() {
           severity: "success",
         });
 
+        auth?.fetchCurrentUser();
+
         reset(data);
       }
     );
