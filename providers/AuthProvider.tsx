@@ -62,11 +62,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(user);
       setStatus("connected");
     }).catch((err: Error) => {
-      setStatus("error");
-      snackbarsService?.addAlert({
-        message: "An error occured while fetching user.",
-        severity: "error",
-      });
+      setStatus("not-connected");
+
+      // TODO: there is probably a better way to get NotSignedInRoutes
+      if (
+        router.route !== "/" &&
+        router.route !== "/auth/sign-in" &&
+        router.route !== "/auth/sign-up" &&
+        router.route !== "/auth/reset-password"
+      ) {
+        snackbarsService?.addAlert({
+          message: "An error occured while fetching user.",
+          severity: "error",
+        });
+      }
     });
   };
 
@@ -76,7 +85,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setStatus("not-connected");
       router.push("/");
     }).catch((err: Error) => {
-      setStatus("error");
+      setStatus("not-connected");
       snackbarsService?.addAlert({
         message: "An error occured while signing out",
         severity: "error",
@@ -126,7 +135,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }).catch((err: Error) => {
       cb();
       setUser(null);
-      setStatus("error");
+      setStatus("not-connected");
       snackbarsService?.addAlert({
         message: "An error occured while signing in with Google",
         severity: "error",
@@ -156,7 +165,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       cb();
 
       setUser(null);
-      setStatus("error");
+      setStatus("not-connected");
 
       snackbarsService?.addAlert({
         message:
