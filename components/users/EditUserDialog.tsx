@@ -51,7 +51,8 @@ function EditUserDialog(props: EditUserDialogProps) {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { isDirty, errors },
+    reset,
   } = useForm<EditUserDialogFormData>({
     resolver: yupResolver(editUserFormSchema),
   });
@@ -99,6 +100,8 @@ function EditUserDialog(props: EditUserDialogProps) {
           if (currentUser?.id === auth?.user?.id) {
             auth.fetchCurrentUser();
           }
+
+          reset(data);
         }
       ).catch((err: Error) => {
         setIsSaving(false);
@@ -126,6 +129,8 @@ function EditUserDialog(props: EditUserDialogProps) {
             message: "User well created",
             severity: "success",
           });
+
+          reset(data);
         }
       ).catch((err: Error) => {
         snackbarsService?.addAlert({
@@ -189,6 +194,7 @@ function EditUserDialog(props: EditUserDialogProps) {
           <LoadingButton
             type="submit"
             variant="contained"
+            disabled={!isDirty}
             loading={isSaving}
             sx={{
               m: 1,

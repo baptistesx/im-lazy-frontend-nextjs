@@ -20,7 +20,8 @@ const ResetPasswordForm = () => {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { isDirty, errors },
+    reset,
   } = useForm<ResetPasswordFormData>({
     resolver: yupResolver(resetPasswordFormSchema),
   });
@@ -40,6 +41,8 @@ const ResetPasswordForm = () => {
         message: "If email is valid, a reset password email has been sent",
         severity: "success",
       });
+
+      reset(data);
     }).catch((err: Error) => {
       setIsLoading(false);
 
@@ -69,6 +72,7 @@ const ResetPasswordForm = () => {
           }}
           type="submit"
           variant="contained"
+          disabled={!isDirty}
           loading={isLoading}
         >
           Reset password

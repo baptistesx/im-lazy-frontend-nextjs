@@ -29,7 +29,8 @@ function SignInForm() {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { isDirty, errors },
+    reset,
   } = useForm<SignInFormData>({
     resolver: yupResolver(signInFormSchema),
   });
@@ -43,6 +44,8 @@ function SignInForm() {
     setIsSigningIn(true);
     auth?.login(data.email, data.password, () => {
       setIsSigningIn(false);
+
+      reset(data);
     });
   };
 
@@ -76,6 +79,7 @@ function SignInForm() {
         <LoadingButton
           type="submit"
           variant="contained"
+          disabled={!isDirty}
           loading={isSigningIn}
           sx={{
             m: 1,

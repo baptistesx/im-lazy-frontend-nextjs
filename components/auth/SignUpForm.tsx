@@ -16,7 +16,6 @@ import signUpFormSchema from "../../schemas/signUpFormSchema";
 import GoogleLoginButton from "./GoogleLoginButton";
 
 //TODO: on google signin, ask to choose an account and don't directly connect to the last used (remove token?)
-//TODO: implement isDirty (see profile.tsx)
 
 type SignUpSubmitFormData = {
   name: string;
@@ -34,7 +33,8 @@ const SignUpForm = () => {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { isDirty, errors },
+    reset,
   } = useForm<SignUpSubmitFormData>({
     resolver: yupResolver(signUpFormSchema),
   });
@@ -49,6 +49,8 @@ const SignUpForm = () => {
 
     auth?.register(data.name, data.email, data.password, () => {
       setIsSigningUp(false);
+
+      reset(data);
     });
   };
 
@@ -101,6 +103,7 @@ const SignUpForm = () => {
         <LoadingButton
           type="submit"
           variant="contained"
+          disabled={!isDirty}
           loading={isSigningUp}
           sx={{
             m: 1,
