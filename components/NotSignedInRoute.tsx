@@ -1,4 +1,4 @@
-import { CircularProgress, Typography } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useAuth } from "../providers/AuthProvider";
@@ -27,13 +27,7 @@ const NotSignedInRoute = ({
       <CircularProgress sx={{ color: "white" }} />
     </NotSignedInLayout>
   ) : (
-    <NotSignedInLayout>
-      <Typography variant="h1" sx={{ textAlign: "center", color: "white" }}>
-        {title}
-      </Typography>
-
-      {children}
-    </NotSignedInLayout>
+    <NotSignedInLayout title={title}>{children}</NotSignedInLayout>
   );
 };
 
