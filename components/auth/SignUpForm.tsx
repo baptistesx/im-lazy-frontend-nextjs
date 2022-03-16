@@ -128,6 +128,16 @@ const SignUpForm = () => {
       <CardActions
         sx={{ display: "flex", justifyContent: "center", mt: 1, mb: 1 }}
       >
+        <Link href="/auth/sign-in">
+          <Button
+            sx={{
+              m: 1,
+            }}
+          >
+            Sign In
+          </Button>
+        </Link>
+
         <GoogleLoginButton setIsLoading={setIsSigningUp} />
       </CardActions>
     </Card>
