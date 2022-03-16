@@ -1,13 +1,16 @@
-import "../styles/globals.css";
 import type { AppProps } from "next/app";
+import { AuthProvider } from "../providers/AuthProvider";
 import { CustomThemeProvider } from "../providers/CustomThemeProvider";
 import { SnackBarProvider } from "../providers/SnackbarProvider";
+import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <CustomThemeProvider>
       <SnackBarProvider>
-        <Component {...pageProps} />
+        <AuthProvider>
+          <Component {...pageProps} />
+        </AuthProvider>
       </SnackBarProvider>
     </CustomThemeProvider>
   );

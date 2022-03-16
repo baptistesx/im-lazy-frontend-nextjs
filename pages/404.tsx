@@ -1,7 +1,6 @@
-import { Typography, Button } from "@mui/material";
-import GlobalLayout from "../components/layout/GlobalLayout";
-import React from "react";
+import { Button, Typography } from "@mui/material";
 import Link from "next/link";
+import GlobalLayout from "../components/layout/GlobalLayout";
 
 function ResetPassword() {
   return (

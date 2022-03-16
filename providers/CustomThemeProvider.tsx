@@ -1,6 +1,10 @@
 import { blue, green } from "@mui/material/colors";
-import { createTheme, ThemeProvider,responsiveFontSizes, Theme as MuiTheme } from "@mui/material/styles";
-import React from "react";
+import {
+  createTheme,
+  responsiveFontSizes,
+  Theme as MuiTheme,
+  ThemeProvider,
+} from "@mui/material/styles";
 
 declare module "@emotion/react" {
   export interface Theme extends MuiTheme {}

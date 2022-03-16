@@ -1,6 +1,4 @@
 import api from "./api";
-import { Fetcher } from "swr";
-import { User } from "../hooks/useUser";
 
 export const signUpWithEmailAndPassword = async (
   name: string,
@@ -56,16 +54,15 @@ export const signInWithGoogle = async (access_token: string, cb: Function) => {
   cb(user);
 };
 
-export const getUser = async (cookies: any) => {
-  const user = await api
+export const getUser = async (cb: Function) => {
+  await api
     .axiosApiCall({
       url: "user",
       method: "get",
-      cookies,
     })
-    .then((res) => res.data);
-
-  return user;
+    .then((res) => {
+      cb(res.data);
+    });
 };
 
 export const signOut = async (cb: Function) => {

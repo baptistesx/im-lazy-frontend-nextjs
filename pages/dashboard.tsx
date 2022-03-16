@@ -1,31 +1,17 @@
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { Box, Button, Typography, CircularProgress } from "@mui/material";
-import GlobalLayout from "../components/layout/GlobalLayout";
-import { useRouter } from "next/router";
+import { Box, Button, Typography } from "@mui/material";
 import Link from "next/link";
-import React, { useEffect } from "react";
-import useUser from "../hooks/useUser";
+import SignedInRoute from "../components/SignedInRoute";
+import { useAuth } from "../providers/AuthProvider";
 
 function Dashboard() {
-  const router = useRouter();
+  const auth = useAuth();
 
-  const { user, loading, error, loggedIn } = useUser();
-
-  useEffect(() => {
-    if (!loggedIn && !loading) {
-      router.push("/");
-    }
-  }, [loggedIn]);
-
-  return loading || !loggedIn ? (
-    <GlobalLayout>
-      <CircularProgress />
-    </GlobalLayout>
-  ) : (
-    <GlobalLayout>
+  return (
+    <SignedInRoute>
       <Typography variant="h1">Dashboard</Typography>
 
-      {loggedIn && user?.isPremium ? (
+      {auth?.user?.isPremium ? (
         <Link href="/workaway-bot">
           <Button variant="contained" sx={{ m: 1 }}>
             Workaway messaging
@@ -41,14 +27,14 @@ function Dashboard() {
         </Link>
       )}
 
-      {loggedIn && !user?.isEmailVerified ? (
+      {!auth?.user?.isEmailVerified ? (
         <Typography>
           Remember to check the confirmation email we sent you.
         </Typography>
       ) : (
         <Box />
       )}
-    </GlobalLayout>
+    </SignedInRoute>
   );
 }
 

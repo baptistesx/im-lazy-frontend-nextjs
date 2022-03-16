@@ -1,3 +1,4 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
 import {
   Button,
@@ -12,11 +13,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { updateUserById, createUser } from "../../services/userApi";
-import useSnackbars from "../../hooks/useSnackbars";
 import useUser, { User } from "../../hooks/useUser";
+import { useSnackbars } from "../../providers/SnackbarProvider";
 import editUserFormSchema from "../../schemas/editUserFormSchema";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { createUser, updateUserById } from "../../services/userApi";
 import { capitalizeFirstLetter } from "../../utils/functions";
 
 interface EditUserDialogFormData {
@@ -137,7 +137,9 @@ function EditUserDialog(props: EditUserDialogProps) {
       TransitionProps={{ onEntering: handleEntering }}
       open={open}
       {...other}
-      onClose={()=>{onClose({ modified: false });}}
+      onClose={() => {
+        onClose({ modified: false });
+      }}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogTitle>{currentUser?.id ? "Edit" : "Create"} user</DialogTitle>

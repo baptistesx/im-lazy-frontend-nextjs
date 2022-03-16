@@ -21,20 +21,18 @@ import {
   TableRow,
   Tooltip,
   Typography,
-  CircularProgress,
 } from "@mui/material";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import AdminRoute from "../components/AdminRoute";
+import EditUserDialog from "../components/users/EditUserDialog";
+import { useAuth, User } from "../providers/AuthProvider";
+import { useSnackbars } from "../providers/SnackbarProvider";
 import {
-  getUsers,
   deleteUserById,
+  getUsers,
   toggleAdminRights,
 } from "../services/userApi";
-import GlobalLayout from "../components/layout/GlobalLayout";
-import EditUserDialog from "../components/users/EditUserDialog";
-import useUser, { User } from "../hooks/useUser";
-import useSnackbars from "../hooks/useSnackbars";
-import { useRouter } from "next/router";
-import { getUser } from "../services/userApi";
 
 function Users() {
   const snackbarsService = useSnackbars();
@@ -49,15 +47,9 @@ function Users() {
     useState<boolean>(false);
 
   const [userSelected, setUserSelected] = useState<User | null>();
-  const { user: sessionUser, loading, loggedIn } = useUser();
+  const auth = useAuth();
 
-  const currentUser = sessionUser;
-
-  useEffect(() => {
-    if (!loggedIn && !loading) {
-      router.push("/");
-    }
-  }, [loggedIn]);
+  const currentUser = auth?.user;
 
   useEffect(() => {
     fetchData();
@@ -140,12 +132,8 @@ function Users() {
     }
   };
 
-  return loading || !loggedIn ? (
-    <GlobalLayout>
-      <CircularProgress />
-    </GlobalLayout>
-  ) : (
-    <GlobalLayout>
+  return (
+    <AdminRoute>
       <Typography variant="h1">Users</Typography>
 
       <Card>
@@ -272,7 +260,7 @@ function Users() {
       ) : (
         <Box></Box>
       )}
-    </GlobalLayout>
+    </AdminRoute>
   );
 }
 

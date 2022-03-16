@@ -15,14 +15,13 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import * as React from "react";
 import { useEffect, useState } from "react";
+import { useSnackbars } from "../../providers/SnackbarProvider";
 import {
-  getFilesName,
-  downloadFileByName,
   deleteFileByName,
+  downloadFileByName,
+  getFilesName,
 } from "../../services/workawayBotApi";
-import useSnackbars from "../../hooks/useSnackbars";
 
 const FilesSection = () => {
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);

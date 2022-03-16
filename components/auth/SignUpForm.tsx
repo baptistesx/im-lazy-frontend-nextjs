@@ -8,14 +8,12 @@ import {
   Divider,
   TextField,
 } from "@mui/material";
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import useSnackbars from "../../hooks/useSnackbars";
-import signUpFormSchema from "../../schemas/signUpFormSchema";
-import { signUpWithEmailAndPassword } from "../../services/userApi";
-import GoogleLoginButton from "./GoogleLoginButton";
-import { useRouter } from "next/router";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useAuth } from "../../providers/AuthProvider";
+import signUpFormSchema from "../../schemas/signUpFormSchema";
+import GoogleLoginButton from "./GoogleLoginButton";
 
 //TODO: on google signin, ask to choose an account and don't directly connect to the last used (remove token?)
 //TODO: implement isDirty (see profile.tsx)
@@ -28,9 +26,7 @@ type SignUpSubmitFormData = {
 };
 
 const SignUpForm = () => {
-  const snackbarsService = useSnackbars();
-
-  const router = useRouter();
+  const auth = useAuth();
 
   const [isSigningUp, setIsSigningUp] = useState(false);
 
@@ -51,24 +47,8 @@ const SignUpForm = () => {
   const onSubmit = (data: SignUpSubmitFormData) => {
     setIsSigningUp(true);
 
-    signUpWithEmailAndPassword(data.name, data.email, data.password, () => {
+    auth?.register(data.name, data.email, data.password, () => {
       setIsSigningUp(false);
-
-      snackbarsService?.addAlert({
-        message: "Welcome", // TODO: use custom message if new user
-        severity: "success",
-      });
-
-      router.replace("/dashboard");
-    }).catch((err: Error) => {
-      console.log(err.cause);
-      setIsSigningUp(false);
-
-      snackbarsService?.addAlert({
-        message:
-          "An error occured while signing up. This email might be used already",
-        severity: "error",
-      });
     });
   };
 

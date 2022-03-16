@@ -2,16 +2,14 @@ import GoogleLogin, {
   GoogleLoginResponse,
   GoogleLoginResponseOffline,
 } from "react-google-login";
-import useSnackbars from "../../hooks/useSnackbars";
-import { User } from "../../hooks/useUser";
-import { signInWithGoogle } from "../../services/userApi";
+import { useAuth } from "../../providers/AuthProvider";
+import { useSnackbars } from "../../providers/SnackbarProvider";
 import { GOOGLE_CLIENT_ID } from "../../utils/constants";
-import { useRouter } from "next/router";
 
 function GoogleLoginButton({ setIsLoading }: { setIsLoading: Function }) {
   const snackbarsService = useSnackbars();
 
-  const router = useRouter();
+  const auth = useAuth();
 
   const isResponseAGoogleLoginResponse = (
     response: GoogleLoginResponse | GoogleLoginResponseOffline
@@ -25,22 +23,8 @@ function GoogleLoginButton({ setIsLoading }: { setIsLoading: Function }) {
     setIsLoading(true);
 
     if (isResponseAGoogleLoginResponse(response)) {
-      signInWithGoogle(response.accessToken, (user: User) => {
+      auth?.loginWithGoogle(response.accessToken, () => {
         setIsLoading(false);
-
-        snackbarsService?.addAlert({
-          message: "Welcome", // TODO: use custom message if new user
-          severity: "success",
-        });
-
-        router.replace("/dashboard");
-      }).catch((err: Error) => {
-        setIsLoading(false);
-
-        snackbarsService?.addAlert({
-          message: "An error occured while signing in with Google",
-          severity: "error",
-        });
       });
     }
   };

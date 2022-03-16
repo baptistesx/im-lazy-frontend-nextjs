@@ -1,31 +1,14 @@
-import { Typography, CircularProgress } from "@mui/material";
+import { Typography } from "@mui/material";
 import ResetPasswordForm from "../../components/auth/ResetPasswordForm";
-import GlobalLayout from "../../components/layout/GlobalLayout";
-import useUser from "../../hooks/useUser";
-import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import NotSignedInRoute from "../../components/NotSignedInRoute";
 
 function ResetPassword() {
-  const { user, loading, loggedIn } = useUser();
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (loggedIn && !loading) {
-      router.push("/dashboard");
-    }
-  }, [loggedIn]);
-
-  return loading || loggedIn ? (
-    <GlobalLayout>
-      <CircularProgress />
-    </GlobalLayout>
-  ) : (
-    <GlobalLayout>
+  return (
+    <NotSignedInRoute>
       <Typography variant="h1">Reset password</Typography>
 
       <ResetPasswordForm />
-    </GlobalLayout>
+    </NotSignedInRoute>
   );
 }
 

@@ -1,32 +1,18 @@
-import { Typography, CircularProgress } from "@mui/material";
-import React, { useEffect } from "react";
-import GlobalLayout from "../components/layout/GlobalLayout";
-import { PAYPAL_SANDBOX_CLIENT_ID } from "../utils/constants";
-import CustomPaypalButton from "../components/users/CustomPaypalButton";
+import { Typography } from "@mui/material";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
-import useUser from "../hooks/useUser";
-import { useRouter } from "next/router";
+import SignedInRoute from "../components/SignedInRoute";
+import CustomPaypalButton from "../components/users/CustomPaypalButton";
+import { useAuth } from "../providers/AuthProvider";
+import { PAYPAL_SANDBOX_CLIENT_ID } from "../utils/constants";
 
 function GetLicence() {
-  const { user, loading, loggedIn } = useUser();
+  const auth = useAuth();
 
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loggedIn && !loading) {
-      router.push("/");
-    }
-  }, [loggedIn]);
-
-  return loading || !user ? (
-    <GlobalLayout>
-      <CircularProgress />
-    </GlobalLayout>
-  ) : (
-    <GlobalLayout>
+  return (
+    <SignedInRoute>
       <Typography variant="h1">Get the Premium licence</Typography>
 
-      {user?.isPremium ? (
+      {auth?.user?.isPremium ? (
         <Typography variant="body1">
           You are already a premium member
         </Typography>
@@ -48,7 +34,7 @@ function GetLicence() {
           </PayPalScriptProvider>
         </>
       )}
-    </GlobalLayout>
+    </SignedInRoute>
   );
 }
 

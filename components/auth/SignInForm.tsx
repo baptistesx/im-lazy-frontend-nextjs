@@ -8,15 +8,12 @@ import {
   Divider,
   TextField,
 } from "@mui/material";
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import useSnackbars from "../../hooks/useSnackbars";
-import { User } from "../../hooks/useUser";
-import signInFormSchema from "../../schemas/signInFormSchema";
-import { signInWithEmailAndPassword } from "../../services/userApi";
-import { useRouter } from "next/router";
-import GoogleLoginButton from "./GoogleLoginButton";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useAuth } from "../../providers/AuthProvider";
+import signInFormSchema from "../../schemas/signInFormSchema";
+import GoogleLoginButton from "./GoogleLoginButton";
 
 type SignInFormData = {
   email: string;
@@ -24,9 +21,7 @@ type SignInFormData = {
 };
 
 function SignInForm() {
-  const snackbarsService = useSnackbars();
-
-  const router = useRouter();
+  const auth = useAuth();
 
   const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
 
@@ -46,25 +41,8 @@ function SignInForm() {
 
   const onSubmit = (data: SignInFormData) => {
     setIsSigningIn(true);
-
-    signInWithEmailAndPassword(data.email, data.password, (user: User) => {
+    auth?.login(data.email, data.password, () => {
       setIsSigningIn(false);
-
-      snackbarsService?.addAlert({
-        message: "Welcome", // TODO: use custom message if new user
-        severity: "success",
-      });
-
-      router.push("/dashboard");
-    }).catch((err: Error) => {
-      setIsSigningIn(false);
-
-      //TODO: add internet connection checker and customize message error
-      snackbarsService?.addAlert({
-        message:
-          "Check your internet connection or email/password might be invalid",
-        severity: "error",
-      });
     });
   };
 

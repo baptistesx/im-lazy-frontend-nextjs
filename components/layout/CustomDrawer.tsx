@@ -1,17 +1,16 @@
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import GroupIcon from "@mui/icons-material/Group";
 import HomeIcon from "@mui/icons-material/Home";
-import { Box, Toolbar, CircularProgress } from "@mui/material/";
+import { Box, CircularProgress, Toolbar } from "@mui/material/";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import React from "react";
-import useUser from "../../hooks/useUser";
-import { DRAWER_WIDTH } from "../../utils/constants";
-import { useRouter } from "next/router";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useAuth } from "../../providers/AuthProvider";
+import { DRAWER_WIDTH } from "../../utils/constants";
 
 const CustomDrawer = ({
   handleDrawerToggle,
@@ -20,7 +19,7 @@ const CustomDrawer = ({
   handleDrawerToggle: any;
   mobileOpen: boolean;
 }) => {
-  const { user, loading } = useUser();
+  const auth = useAuth();
 
   const router = useRouter();
 
@@ -29,7 +28,7 @@ const CustomDrawer = ({
     { route: "/profile", icon: <AccountBoxIcon />, title: "Profile" },
   ];
 
-  if (user && user?.isAdmin) {
+  if (auth?.user && auth?.user?.isAdmin) {
     drawerItems.push({
       route: "/users",
       icon: <GroupIcon />,
@@ -60,7 +59,7 @@ const CustomDrawer = ({
     </div>
   );
 
-  return user ? (
+  return auth?.user ? (
     <Box
       component="nav"
       sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
@@ -95,7 +94,7 @@ const CustomDrawer = ({
         }}
         open
       >
-        {loading ? <CircularProgress /> : drawer}
+        {auth?.status === "loading" ? <CircularProgress /> : drawer}
       </Drawer>
     </Box>
   ) : (

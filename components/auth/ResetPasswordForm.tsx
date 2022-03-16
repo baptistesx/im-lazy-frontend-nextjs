@@ -1,11 +1,11 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
 import { Card, CardActions, CardContent, TextField } from "@mui/material";
-import React, { useState, useEffect } from "react";
-import { resetPassword } from "../../services/userApi";
-import useSnackbars from "../../hooks/useSnackbars";
-import resetPasswordFormSchema from "../../schemas/resetPasswordFormSchema";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSnackbars } from "../../providers/SnackbarProvider";
+import resetPasswordFormSchema from "../../schemas/resetPasswordFormSchema";
+import { resetPassword } from "../../services/userApi";
 
 type ResetPasswordFormData = {
   email: string;

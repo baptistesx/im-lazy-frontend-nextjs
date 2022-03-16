@@ -1,10 +1,10 @@
+import { PayPalButtonsComponentOptions } from "@paypal/paypal-js/types/components/buttons";
+import { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 import {
-  PayPalScriptProvider,
   PayPalButtons,
+  PayPalScriptProvider,
   usePayPalScriptReducer,
 } from "@paypal/react-paypal-js";
-import { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
-import { PayPalButtonsComponentOptions } from "@paypal/paypal-js/types/components/buttons";
 import { PAYPAL_SANDBOX_CLIENT_ID } from "../../utils/constants";
 
 const paypalScriptOptions: PayPalScriptOptions = {

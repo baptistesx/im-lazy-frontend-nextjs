@@ -1,31 +1,14 @@
-import { Typography, CircularProgress } from "@mui/material";
+import { Typography } from "@mui/material";
 import SignUpForm from "../../components/auth/SignUpForm";
-import GlobalLayout from "../../components/layout/GlobalLayout";
-import { useRouter } from "next/router";
-import useUser from "../../hooks/useUser";
-import React, { useEffect } from "react";
+import NotSignedInRoute from "../../components/NotSignedInRoute";
 
 function SignUp() {
-  const { user, loading, loggedIn } = useUser();
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (loggedIn && !loading) {
-      router.push("/dashboard");
-    }
-  }, [loggedIn]);
-
-  return loading || loggedIn ? (
-    <GlobalLayout>
-      <CircularProgress />
-    </GlobalLayout>
-  ) : (
-    <GlobalLayout>
+  return (
+    <NotSignedInRoute>
       <Typography variant="h1">Sign Up</Typography>
 
       <SignUpForm />
-    </GlobalLayout>
+    </NotSignedInRoute>
   );
 }
 

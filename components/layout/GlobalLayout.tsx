@@ -1,39 +1,25 @@
 import { useTheme } from "@emotion/react";
-import { Theme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton } from "@mui/material";
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material/";
 import CssBaseline from "@mui/material/CssBaseline";
-import React from "react";
+import { Theme } from "@mui/material/styles";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import React from "react";
+import { useAuth } from "../../providers/AuthProvider";
+import { useSnackbars } from "../../providers/SnackbarProvider";
 import { DRAWER_WIDTH } from "../../utils/constants";
 import CustomDrawer from "./CustomDrawer";
 import ToolBarUserInfo from "./ToolBarUserInfo";
-import { signOut } from "../../services/userApi";
-import useUser from "../../hooks/useUser";
-import useSnackbars from "../../hooks/useSnackbars";
-import Image from "next/image";
-import Link from "next/link";
 
 const GlobalLayout = ({ children }: { children: React.ReactNode }) => {
   const theme: Theme = useTheme();
 
-  const router = useRouter();
+  const auth = useAuth();
 
-  const { user, loggedIn } = useUser();
-
-  const snackbarsService = useSnackbars();
-
-  const onLogoutClick = async () =>
-    await signOut(() => {
-      console.log("pusshing home");
-      router.push("/");
-    }).catch((err: Error) => {
-      snackbarsService?.addAlert({
-        message: "An error occured while signing out",
-        severity: "error",
-      });
-    });
+  const onLogoutClick = async () => auth?.logout();
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -58,18 +44,21 @@ const GlobalLayout = ({ children }: { children: React.ReactNode }) => {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: user ? { sm: "none" } : { xs: "none" } }}
+            sx={{
+              mr: 2,
+              display: auth?.user ? { sm: "none" } : { xs: "none" },
+            }}
           >
             <MenuIcon />
           </IconButton>
 
-          <Link href={loggedIn ? "/dashboard" : "/"}>
+          <Link href={auth?.status === "connected" ? "/dashboard" : "/"}>
             <Button>
               <Image src="/logo_light.png" height={50} width={100} />
             </Button>
           </Link>
 
-          {loggedIn ? (
+          {auth?.status === "connected" ? (
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <ToolBarUserInfo />
 
@@ -93,7 +82,7 @@ const GlobalLayout = ({ children }: { children: React.ReactNode }) => {
         </Toolbar>
       </AppBar>
 
-      {loggedIn ? (
+      {auth?.status === "connected" ? (
         <CustomDrawer
           handleDrawerToggle={() => handleDrawerToggle()}
           mobileOpen={mobileOpen}

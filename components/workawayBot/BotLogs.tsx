@@ -1,12 +1,11 @@
 import { LoadingButton } from "@mui/lab";
 import { Box, Card, Typography } from "@mui/material";
-import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import socketIOClient, { Socket } from "socket.io-client";
+import { useSnackbars } from "../../providers/SnackbarProvider";
+import { clearLogs, setCity } from "../../services/workawayBotApi";
 import { ENDPOINT } from "../../utils/constants";
-import { setCity, clearLogs } from "../../services/workawayBotApi";
 import CitiesFormDialog from "./CitiesFormDialog";
-import useSnackbars from "../../hooks/useSnackbars";
 
 let botLogsMessageSentIsFirst = true;
 

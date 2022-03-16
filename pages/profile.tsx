@@ -1,3 +1,4 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
 import {
   Box,
@@ -5,21 +6,19 @@ import {
   Card,
   CardActions,
   CardContent,
-  CircularProgress,
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import GlobalLayout from "../components/layout/GlobalLayout";
-import { updateUserById } from "../services/userApi";
-import useSnackbars from "../hooks/useSnackbars";
-import useUser, { User } from "../hooks/useUser";
-import { useRouter } from "next/router";
-import { yupResolver } from "@hookform/resolvers/yup";
-import editProfileFormSchema from "../schemas/editProfileFormSchema";
-import { capitalizeFirstLetter } from "../utils/functions";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import SignedInRoute from "../components/SignedInRoute";
+import { useAuth } from "../providers/AuthProvider";
+import { useSnackbars } from "../providers/SnackbarProvider";
+import editProfileFormSchema from "../schemas/editProfileFormSchema";
+import { updateUserById } from "../services/userApi";
+import { capitalizeFirstLetter } from "../utils/functions";
 
 type ProfileSubmitFormData = {
   email: string;
@@ -27,7 +26,7 @@ type ProfileSubmitFormData = {
 };
 
 function Profile() {
-  const router = useRouter();
+  const auth = useAuth();
 
   const snackbarsService = useSnackbars();
 
@@ -42,23 +41,15 @@ function Profile() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const { user, loading, loggedIn } = useUser();
-
-  useEffect(() => {
-    if (!loggedIn && !loading) {
-      router.push("/");
-    }
-  }, [loggedIn]);
-
   const handleSave = async (data: ProfileSubmitFormData) => {
     setIsLoading(true);
 
     updateUserById(
       {
-        id: user?.id,
+        id: auth?.user?.id,
         email: data.email,
-        isAdmin: user?.isAdmin, //TODO security issue => pass this param optional
-        isPremium: user?.isPremium, //TODO security issue => pass this param optional
+        isAdmin: auth?.user?.isAdmin, //TODO security issue => pass this param optional
+        isPremium: auth?.user?.isPremium, //TODO security issue => pass this param optional
         name: data.name,
       },
       () => {
@@ -74,12 +65,8 @@ function Profile() {
     );
   };
 
-  return loading || !loggedIn ? (
-    <GlobalLayout>
-      <CircularProgress />
-    </GlobalLayout>
-  ) : (
-    <GlobalLayout>
+  return (
+    <SignedInRoute>
       <Typography variant="h1">Profile</Typography>
 
       <Card
@@ -93,7 +80,7 @@ function Profile() {
             placeholder="Name"
             {...register("name")}
             sx={{ mb: 1 }}
-            defaultValue={capitalizeFirstLetter(user?.name)}
+            defaultValue={capitalizeFirstLetter(auth?.user?.name)}
             error={errors.name != null}
             helperText={errors.name?.message}
           />
@@ -103,12 +90,12 @@ function Profile() {
             placeholder="Email"
             {...register("email")}
             sx={{ mb: 1 }}
-            defaultValue={user?.email}
+            defaultValue={auth?.user?.email}
             error={errors.email != null}
             helperText={errors.email?.message}
           />
           {/* //TODO: add feature to change password */}
-          {!user?.isPremium ? (
+          {!auth?.user?.isPremium ? (
             <Link href="/get-licence">
               <Button variant="contained" sx={{ m: 1 }}>
                 Get Premium Account to access bots !
@@ -133,7 +120,7 @@ function Profile() {
           </LoadingButton>
         </CardActions>
       </Card>
-    </GlobalLayout>
+    </SignedInRoute>
   );
 }
 
