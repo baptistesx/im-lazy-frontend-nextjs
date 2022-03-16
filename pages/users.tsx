@@ -1,9 +1,7 @@
-import AddModeratorIcon from "@mui/icons-material/AddModerator";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import RemoveModeratorIcon from "@mui/icons-material/RemoveModerator";
 import { LoadingButton } from "@mui/lab";
 import {
   Box,
@@ -28,11 +26,8 @@ import AdminRoute from "../components/AdminRoute";
 import EditUserDialog from "../components/users/EditUserDialog";
 import { useAuth, User } from "../providers/AuthProvider";
 import { useSnackbars } from "../providers/SnackbarProvider";
-import {
-  deleteUserById,
-  getUsers,
-  toggleAdminRights,
-} from "../services/userApi";
+import { deleteUserById, getUsers } from "../services/userApi";
+import { isAdmin, isPremium } from "../utils/functions";
 
 function Users() {
   const snackbarsService = useSnackbars();
@@ -97,26 +92,6 @@ function Users() {
     });
   };
 
-  const handleToggleAdminRights = async (userId: string) => {
-    setIsLoading(true);
-
-    toggleAdminRights(userId, () => {
-      fetchData();
-
-      setIsLoading(false);
-
-      snackbarsService?.addAlert({
-        message: "User well updated",
-        severity: "success",
-      });
-    }).catch((err: Error) => {
-      snackbarsService?.addAlert({
-        message: "An error occured while toggling user admin rights",
-        severity: "error",
-      });
-    });
-  };
-
   const handleOpenUserDialog = (userToEdit?: User) => {
     setUserSelected(userToEdit ?? null);
 
@@ -173,10 +148,10 @@ function Users() {
                             {user?.email}
                           </TableCell>
                           <TableCell align="center" component="th" scope="row">
-                            {user?.isAdmin ? <CheckIcon /> : <ClearIcon />}
+                            {isAdmin(user) ? <CheckIcon /> : <ClearIcon />}
                           </TableCell>
                           <TableCell align="center" component="th" scope="row">
-                            {user?.isPremium ? <CheckIcon /> : <ClearIcon />}
+                            {isPremium(user) ? <CheckIcon /> : <ClearIcon />}
                           </TableCell>
                           <TableCell align="center" component="th" scope="row">
                             {user?.isEmailVerified ? (
@@ -186,22 +161,6 @@ function Users() {
                             )}
                           </TableCell>
                           <TableCell align="left">
-                            <Tooltip title="Toggle admin rights">
-                              <IconButton
-                                aria-label="toggle-admin-rights"
-                                onClick={() => handleToggleAdminRights(user.id)}
-                                disabled={
-                                  user.email === currentUser?.email || isLoading
-                                }
-                              >
-                                {user.isAdmin ? (
-                                  <RemoveModeratorIcon />
-                                ) : (
-                                  <AddModeratorIcon />
-                                )}
-                              </IconButton>
-                            </Tooltip>
-
                             <Tooltip title="Edit user">
                               <IconButton
                                 onClick={() => handleOpenUserDialog(user)}

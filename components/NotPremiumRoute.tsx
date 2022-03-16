@@ -2,6 +2,7 @@ import { CircularProgress } from "@mui/material";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useAuth } from "../providers/AuthProvider";
+import { isPremium } from "../utils/functions";
 import SignedInLayout from "./layout/SignedInLayout";
 
 const NotPremiumRoute = ({ children }: { children: React.ReactNode }) => {
@@ -15,7 +16,7 @@ const NotPremiumRoute = ({ children }: { children: React.ReactNode }) => {
     } else if (
       router.isReady &&
       auth?.status === "connected" &&
-      auth?.user?.isPremium
+      isPremium(auth?.user)
     ) {
       router.push("/dashboard");
     }
@@ -25,7 +26,7 @@ const NotPremiumRoute = ({ children }: { children: React.ReactNode }) => {
     (router.isReady && auth?.status !== "connected") ||
     (router.isReady &&
       auth?.status === "connected" &&
-      auth?.user?.isPremium) ? (
+      isPremium(auth?.user)) ? (
     <SignedInLayout>
       <CircularProgress />
     </SignedInLayout>

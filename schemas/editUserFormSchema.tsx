@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import { Role } from "../providers/AuthProvider";
 
 const editUserFormSchema = yup
   .object({
@@ -12,8 +13,9 @@ const editUserFormSchema = yup
       .email("Must be a valid email")
       .max(255)
       .required("Email is required"),
-    isAdmin: yup.bool(),
-    isPremium: yup.bool(),
+    role: yup
+      .mixed<Role>()
+      .oneOf(Object.values(["admin", "premium", "classic"])),
   })
   .required();
 

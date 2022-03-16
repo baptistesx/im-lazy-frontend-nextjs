@@ -3,6 +3,7 @@ import { Box, Button, Typography } from "@mui/material";
 import Link from "next/link";
 import SignedInRoute from "../components/SignedInRoute";
 import { useAuth } from "../providers/AuthProvider";
+import { isPremium } from '../utils/functions';
 
 function Dashboard() {
   const auth = useAuth();
@@ -11,7 +12,7 @@ function Dashboard() {
     <SignedInRoute>
       <Typography variant="h1">Dashboard</Typography>
 
-      {auth?.user?.isPremium ? (
+      {isPremium(auth?.user) ? (
         <Link href="/workaway-bot">
           <Button variant="contained" sx={{ m: 1 }}>
             Workaway messaging
