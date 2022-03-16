@@ -149,7 +149,7 @@ function Users() {
               {users.length === 0 ? (
                 <Typography>No users</Typography>
               ) : (
-                //TODO: extract compoennt
+                //TODO: refacto (extract component)
                 <TableContainer component={Paper}>
                   <Table aria-label="users table">
                     <TableHead>

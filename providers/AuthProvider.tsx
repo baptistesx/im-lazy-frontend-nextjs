@@ -101,9 +101,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(user);
       setStatus("connected");
       snackbarsService?.addAlert({
-        message: "Welcome", // TODO: use custom message if new user
+        message: !user.lastLogin ? "Welcome to ImLazy app !" : "Welcome back !",
         severity: "success",
       });
+
       router.push("/dashboard");
     }).catch((err: Error) => {
       cb();
@@ -127,7 +128,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setStatus("connected");
 
       snackbarsService?.addAlert({
-        message: !user.lastLogin ? "Welcome to ImLazy app !" : "Welcome back !", // TODO: use custom message if new user
+        message: !user.lastLogin ? "Welcome to ImLazy app !" : "Welcome back !",
         severity: "success",
       });
 
@@ -156,7 +157,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(user);
       setStatus("connected");
       snackbarsService?.addAlert({
-        message: "Welcome", // TODO: use custom message if new user
+        message: "Welcome to ImLazy app !",
         severity: "success",
       });
 
