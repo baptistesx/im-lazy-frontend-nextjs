@@ -1,10 +1,16 @@
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useAuth } from "../providers/AuthProvider";
-import GlobalLayout from "./layout/GlobalLayout";
+import NotSignedInLayout from "./layout/NotSignInedLayout";
 
-const NotSignedInRoute = ({ children }: { children: React.ReactNode }) => {
+const NotSignedInRoute = ({
+  children,
+  title,
+}: {
+  children: React.ReactNode;
+  title: string;
+}) => {
   const auth = useAuth();
 
   const router = useRouter();
@@ -17,11 +23,17 @@ const NotSignedInRoute = ({ children }: { children: React.ReactNode }) => {
 
   return auth?.status === "loading" ||
     (router.isReady && auth?.status === "connected") ? (
-    <GlobalLayout>
-      <CircularProgress />
-    </GlobalLayout>
+    <NotSignedInLayout>
+      <CircularProgress sx={{ color: "white" }} />
+    </NotSignedInLayout>
   ) : (
-    <GlobalLayout>{children}</GlobalLayout>
+    <NotSignedInLayout>
+      <Typography variant="h1" sx={{ textAlign: "center", color: "white" }}>
+        {title}
+      </Typography>
+
+      {children}
+    </NotSignedInLayout>
   );
 };
 

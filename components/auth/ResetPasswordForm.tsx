@@ -1,6 +1,13 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
-import { Card, CardActions, CardContent, TextField } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Link,
+  TextField,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSnackbars } from "../../providers/SnackbarProvider";
@@ -77,6 +84,16 @@ const ResetPasswordForm = () => {
         >
           Reset password
         </LoadingButton>
+
+        <Link href="/auth/sign-in">
+          <Button
+            sx={{
+              m: 1,
+            }}
+          >
+            Back
+          </Button>
+        </Link>
       </CardActions>
     </Card>
   );

@@ -6,15 +6,13 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { Theme } from "@mui/material/styles";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
 import { useAuth } from "../../providers/AuthProvider";
-import { useSnackbars } from "../../providers/SnackbarProvider";
 import { DRAWER_WIDTH } from "../../utils/constants";
 import CustomDrawer from "./CustomDrawer";
 import ToolBarUserInfo from "./ToolBarUserInfo";
 
-const GlobalLayout = ({ children }: { children: React.ReactNode }) => {
+const SignedInLayout = ({ children }: { children: React.ReactNode }) => {
   const theme: Theme = useTheme();
 
   const auth = useAuth();
@@ -104,4 +102,4 @@ const GlobalLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default GlobalLayout;
+export default SignedInLayout;

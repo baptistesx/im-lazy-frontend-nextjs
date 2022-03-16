@@ -39,7 +39,7 @@ function GoogleLoginButton({ setIsLoading }: { setIsLoading: Function }) {
   return (
     <GoogleLogin
       clientId={`${GOOGLE_CLIENT_ID}`}
-      buttonText="Sign up with Google"
+      buttonText="Sign in with Google"
       onSuccess={onGetOauthGoogleTokenSuccess}
       onFailure={onGetOauthGoogleTokenFail}
     />

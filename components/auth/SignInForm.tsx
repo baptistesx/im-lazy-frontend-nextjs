@@ -104,6 +104,15 @@ function SignInForm() {
       <CardActions
         sx={{ display: "flex", justifyContent: "center", mt: 1, mb: 1 }}
       >
+        <Link href="/auth/sign-up">
+          <Button
+            sx={{
+              m: 1,
+            }}
+          >
+            Sign Up
+          </Button>
+        </Link>
         <GoogleLoginButton setIsLoading={setIsSigningIn} />
       </CardActions>
     </Card>
