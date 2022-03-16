@@ -22,6 +22,7 @@ export interface User {
   isAdmin: boolean;
   isPremium: boolean;
   isEmailVerified: boolean;
+  lastLogin: Date;
 }
 
 type AuthStatus = "loading" | "connected" | "not-connected" | "error";
@@ -38,6 +39,7 @@ type AuthValue = {
     cb: Function
   ) => void;
   loginWithGoogle: (token: string, cb: Function) => void;
+  fetchCurrentUser: () => void;
 };
 
 const AuthContext = createContext<AuthValue | undefined>(undefined);
@@ -52,6 +54,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     setStatus("loading");
+    fetchCurrentUser();
+  }, []);
+
+  const fetchCurrentUser = () => {
     getUser((user: User) => {
       setUser(user);
       setStatus("connected");
@@ -62,11 +68,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         severity: "error",
       });
     });
-  }, []);
+  };
 
   const logout = async () => {
     await signOut(() => {
-      console.log("pusshing home");
       setUser(null);
       setStatus("not-connected");
       router.push("/");
@@ -163,7 +168,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, status, logout, login, loginWithGoogle, register }}
+      value={{
+        user,
+        status,
+        logout,
+        login,
+        loginWithGoogle,
+        register,
+        fetchCurrentUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

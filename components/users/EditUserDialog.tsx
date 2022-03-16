@@ -13,7 +13,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import useUser, { User } from "../../hooks/useUser";
+import { useAuth, User } from "../../providers/AuthProvider";
 import { useSnackbars } from "../../providers/SnackbarProvider";
 import editUserFormSchema from "../../schemas/editUserFormSchema";
 import { createUser, updateUserById } from "../../services/userApi";
@@ -37,7 +37,7 @@ interface EditUserDialogProps {
 function EditUserDialog(props: EditUserDialogProps) {
   const { onClose, open, user, ...other } = props;
 
-  const { user: sessionUser } = useUser();
+  const auth = useAuth();
 
   const snackbarsService = useSnackbars();
 
@@ -95,6 +95,10 @@ function EditUserDialog(props: EditUserDialogProps) {
             message: "User well updated",
             severity: "success",
           });
+
+          if (currentUser?.id === auth?.user?.id) {
+            auth.fetchCurrentUser();
+          }
         }
       ).catch((err: Error) => {
         setIsSaving(false);
@@ -165,9 +169,7 @@ function EditUserDialog(props: EditUserDialogProps) {
           />
 
           <FormControlLabel
-            disabled={
-              sessionUser?.isAdmin && currentUser?.id === sessionUser?.id
-            }
+            disabled={auth?.user?.isAdmin && currentUser?.id === auth?.user?.id}
             control={<Checkbox defaultChecked={currentUser?.isAdmin} />}
             label="Is Admin"
             {...register("isAdmin")}
