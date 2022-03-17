@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useAuth } from "../providers/AuthProvider";
 import SignedInLayout from "./layout/SignedInLayout";
+import { isAdmin } from "../utils/functions";
 
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   const auth = useAuth();
@@ -15,7 +16,7 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
     } else if (
       router.isReady &&
       auth?.status === "connected" &&
-      !auth?.user?.isAdmin
+      !isAdmin(auth?.user)
     ) {
       router.push("/dashboard");
     }
@@ -23,7 +24,7 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
 
   return auth?.status === "loading" ||
     (router.isReady && auth?.status !== "connected") ||
-    (router.isReady && auth?.status === "connected" && !auth?.user?.isAdmin) ? (
+    (router.isReady && auth?.status === "connected" && !isAdmin(auth?.user)) ? (
     <SignedInLayout>
       <CircularProgress />
     </SignedInLayout>

@@ -15,15 +15,15 @@ import {
 } from "../services/userApi";
 import { useSnackbars } from "./SnackbarProvider";
 
-export interface User {
+export type Role = "admin" | "premium" | "classic";
+export type User = {
   id: string;
   name: string;
   email: string;
-  isAdmin: boolean;
-  isPremium: boolean;
+  role: Role;
   isEmailVerified: boolean;
   lastLogin: Date;
-}
+};
 
 type AuthStatus = "loading" | "connected" | "not-connected" | "error";
 

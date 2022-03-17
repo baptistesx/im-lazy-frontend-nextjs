@@ -2,18 +2,17 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
-  FormControlLabel,
+  MenuItem,
   TextField,
 } from "@mui/material";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useAuth, User } from "../../providers/AuthProvider";
+import { Controller, useForm } from "react-hook-form";
+import { Role, useAuth, User } from "../../providers/AuthProvider";
 import { useSnackbars } from "../../providers/SnackbarProvider";
 import editUserFormSchema from "../../schemas/editUserFormSchema";
 import { createUser, updateUserById } from "../../services/userApi";
@@ -21,8 +20,7 @@ import { capitalizeFirstLetter } from "../../utils/functions";
 
 interface EditUserDialogFormData {
   name: string;
-  isAdmin: boolean;
-  isPremium: boolean;
+  role: Role;
   email: string;
   password: string;
 }
@@ -51,6 +49,7 @@ function EditUserDialog(props: EditUserDialogProps) {
     register,
     handleSubmit,
     watch,
+    control,
     formState: { isDirty, errors },
     reset,
   } = useForm<EditUserDialogFormData>({
@@ -83,8 +82,7 @@ function EditUserDialog(props: EditUserDialogProps) {
         {
           id: currentUser.id,
           email: data.email,
-          isAdmin: data.isAdmin,
-          isPremium: data.isPremium,
+          role: data.role,
           name: data.name,
         },
         () => {
@@ -116,8 +114,7 @@ function EditUserDialog(props: EditUserDialogProps) {
       createUser(
         {
           email: data.email,
-          isAdmin: data.isAdmin,
-          isPremium: data.isPremium,
+          role: data.role,
           name: data.name,
         },
         () => {
@@ -168,23 +165,34 @@ function EditUserDialog(props: EditUserDialogProps) {
             fullWidth
             placeholder="Email"
             {...register("email")}
+            sx={{ mb: 1 }}
             defaultValue={currentUser?.email}
             error={errors.email != null}
             helperText={errors.email?.message}
           />
 
-          <FormControlLabel
-            disabled={auth?.user?.isAdmin && currentUser?.id === auth?.user?.id}
-            control={<Checkbox defaultChecked={currentUser?.isAdmin} />}
-            label="Is Admin"
-            {...register("isAdmin")}
-            value
-          />
-          <FormControlLabel
-            control={<Checkbox defaultChecked={currentUser?.isPremium} />}
-            label="Is premium"
-            {...register("isPremium")}
-            value
+          {/* //TODO: add register to fit in EditUserFormSchema */}
+          <Controller
+            name="role"
+            control={control}
+            rules={{ required: "Role needed" }}
+            render={({ field: { onChange, value } }) => (
+              <TextField
+                fullWidth
+                select
+                label="Role"
+                value={value}
+                onChange={onChange}
+                defaultValue={currentUser?.role}
+                disabled={currentUser?.id === auth?.user?.id}
+              >
+                {["admin", "premium", "classic"].map((role) => (
+                  <MenuItem key={role} value={role}>
+                    {capitalizeFirstLetter(role)}
+                  </MenuItem>
+                ))}
+              </TextField>
+            )}
           />
         </DialogContent>
 
