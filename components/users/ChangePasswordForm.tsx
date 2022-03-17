@@ -51,6 +51,8 @@ const ChangePasswordForm = () => {
         reset();
       }
     ).catch((err: Error) => {
+      setIsLoading(false);
+
       snackbarsService?.addAlert({
         message: "Error while updating password, check your current password.",
         severity: "error",
