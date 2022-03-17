@@ -1,9 +1,10 @@
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { Box, Button, Typography } from "@mui/material";
+import { Alert, Box, Button, Typography } from "@mui/material";
 import Link from "next/link";
 import SignedInRoute from "../components/SignedInRoute";
+import GetLicenceButton from "../components/users/GetLicenceButton";
 import { useAuth } from "../providers/AuthProvider";
-import { isPremium } from '../utils/functions';
+import { isPremium } from "../utils/functions";
 
 function Dashboard() {
   const auth = useAuth();
@@ -20,18 +21,13 @@ function Dashboard() {
           </Button>
         </Link>
       ) : (
-        <Link href="/get-licence">
-          <Button variant="contained" sx={{ m: 1 }}>
-            Get Premium Account to access bots !
-            <ArrowForwardIcon />
-          </Button>
-        </Link>
+        <GetLicenceButton />
       )}
 
       {!auth?.user?.isEmailVerified ? (
-        <Typography>
+        <Alert severity={"error"} sx={{ width: "100%" }}>
           Remember to check the confirmation email we sent you.
-        </Typography>
+        </Alert>
       ) : (
         <Box />
       )}

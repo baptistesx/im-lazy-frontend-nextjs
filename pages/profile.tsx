@@ -2,18 +2,16 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
 import {
   Box,
-  Button,
   Card,
   CardActions,
   CardContent,
   TextField,
   Typography,
 } from "@mui/material";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import SignedInRoute from "../components/SignedInRoute";
+import GetLicenceButton from "../components/users/GetLicenceButton";
 import { useAuth } from "../providers/AuthProvider";
 import { useSnackbars } from "../providers/SnackbarProvider";
 import editProfileFormSchema from "../schemas/editProfileFormSchema";
@@ -96,15 +94,6 @@ function Profile() {
             helperText={errors.email?.message}
           />
           {/* //TODO: add feature to change password */}
-          {!isPremium(auth?.user) ? (
-            <Link href="/get-licence">
-              <Button variant="contained" sx={{ m: 1 }}>
-                Get Premium Account to access bots !
-              </Button>
-            </Link>
-          ) : (
-            <Box />
-          )}
         </CardContent>
 
         <CardActions>
@@ -119,6 +108,7 @@ function Profile() {
           >
             Save
           </LoadingButton>
+          {!isPremium(auth?.user) ? <GetLicenceButton /> : <Box />}
         </CardActions>
       </Card>
     </SignedInRoute>
