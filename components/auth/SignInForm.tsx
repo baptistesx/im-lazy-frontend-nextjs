@@ -113,6 +113,7 @@ function SignInForm() {
             Sign Up
           </Button>
         </Link>
+
         <GoogleLoginButton setIsLoading={setIsSigningIn} />
       </CardActions>
     </Card>

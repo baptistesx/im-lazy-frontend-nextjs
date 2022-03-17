@@ -52,7 +52,7 @@ const SignedInLayout = ({ children }: { children: React.ReactNode }) => {
 
           <Link href={auth?.status === "connected" ? "/dashboard" : "/"}>
             <Button>
-              <Image src="/logo_light.png" height={50} width={100} />
+              <Image src="/logo-light.png" height={50} width={100} />
             </Button>
           </Link>
 

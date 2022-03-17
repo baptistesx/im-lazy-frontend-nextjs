@@ -98,16 +98,6 @@ export const deleteUserById = async (id: string, cb: Function) => {
   cb();
 };
 
-export const toggleAdminRights = async (id: string, cb: Function) => {
-  await api.axiosApiCall({
-    url: `toggleAdminRights`,
-    method: "put",
-    body: { id },
-  });
-
-  cb();
-};
-
 export const updateUserById = async (data: any, cb: Function) => {
   await api.axiosApiCall({
     url: `user`,
@@ -116,8 +106,7 @@ export const updateUserById = async (data: any, cb: Function) => {
       id: data.id,
       email: data.email,
       name: data.name,
-      isAdmin: data.isAdmin,
-      isPremium: data.isPremium,
+      role: data.role,
     },
   });
 
@@ -130,8 +119,7 @@ export const createUser = async (data: any, cb: Function) => {
     method: "post",
     body: {
       email: data.email,
-      isAdmin: data.isAdmin,
-      isPremium: data.isPremium,
+      role: data.role,
       name: data.name,
     },
   });

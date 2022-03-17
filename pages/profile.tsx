@@ -18,7 +18,7 @@ import { useAuth } from "../providers/AuthProvider";
 import { useSnackbars } from "../providers/SnackbarProvider";
 import editProfileFormSchema from "../schemas/editProfileFormSchema";
 import { updateUserById } from "../services/userApi";
-import { capitalizeFirstLetter } from "../utils/functions";
+import { capitalizeFirstLetter, isPremium } from "../utils/functions";
 
 type ProfileSubmitFormData = {
   email: string;
@@ -48,8 +48,7 @@ function Profile() {
       {
         id: auth?.user?.id,
         email: data.email,
-        isAdmin: auth?.user?.isAdmin, //TODO security issue => pass this param optional
-        isPremium: auth?.user?.isPremium, //TODO security issue => pass this param optional
+        role: auth?.user?.role, //TODO security issue => pass this param optional
         name: data.name,
       },
       () => {
@@ -97,7 +96,7 @@ function Profile() {
             helperText={errors.email?.message}
           />
           {/* //TODO: add feature to change password */}
-          {!auth?.user?.isPremium ? (
+          {!isPremium(auth?.user) ? (
             <Link href="/get-licence">
               <Button variant="contained" sx={{ m: 1 }}>
                 Get Premium Account to access bots !

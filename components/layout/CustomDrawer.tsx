@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useAuth } from "../../providers/AuthProvider";
 import { DRAWER_WIDTH } from "../../utils/constants";
+import { isAdmin } from '../../utils/functions';
 
 const CustomDrawer = ({
   handleDrawerToggle,
@@ -28,7 +29,7 @@ const CustomDrawer = ({
     { route: "/profile", icon: <AccountBoxIcon />, title: "Profile" },
   ];
 
-  if (auth?.user && auth?.user?.isAdmin) {
+  if (auth?.user && isAdmin(auth?.user)) {
     drawerItems.push({
       route: "/users",
       icon: <GroupIcon />,
