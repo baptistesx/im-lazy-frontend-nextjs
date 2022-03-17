@@ -113,6 +113,19 @@ export const updateUserById = async (data: any, cb: Function) => {
   cb();
 };
 
+export const updateUserPasswordById = async (data: any, cb: Function) => {
+  await api.axiosApiCall({
+    url: `user/${data.id}/password`,
+    method: "put",
+    body: {
+      newPassword: data.newPassword,
+      currentPassword: data.currentPassword,
+    },
+  });
+
+  cb();
+};
+
 export const createUser = async (data: any, cb: Function) => {
   await api.axiosApiCall({
     url: `user`,

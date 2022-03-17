@@ -7,18 +7,16 @@ const api = {
     url,
     method,
     body = {},
-    cookies = "",
   }: {
     url: string;
     method: Method;
     body?: any;
-    cookies?: any;
   }) {
     return axios({
       method,
       url: `${ENDPOINT}${url}`,
       data: body,
-      headers: { "Content-Type": "application/json", Cookie: cookies },
+      headers: { "Content-Type": "application/json" },
       withCredentials: true,
     });
   },

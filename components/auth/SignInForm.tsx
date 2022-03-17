@@ -42,6 +42,7 @@ function SignInForm() {
 
   const onSubmit = (data: SignInFormData) => {
     setIsSigningIn(true);
+
     auth?.login(data.email, data.password, () => {
       setIsSigningIn(false);
 
