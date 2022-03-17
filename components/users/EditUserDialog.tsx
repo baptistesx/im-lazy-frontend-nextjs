@@ -130,8 +130,11 @@ function EditUserDialog(props: EditUserDialogProps) {
           reset(data);
         }
       ).catch((err: Error) => {
+        setIsSaving(false);
+
         snackbarsService?.addAlert({
-          message: "An error occured while creating user",
+          message:
+            "An error occured while creating user, email might be already used.",
           severity: "error",
         });
       });
