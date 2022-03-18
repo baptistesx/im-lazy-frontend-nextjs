@@ -1,14 +1,13 @@
 import { Typography } from "@mui/material";
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import SignedInRoute from "../components/SignedInRoute";
 import CustomPaypalButton from "../components/users/CustomPaypalButton";
 import { useAuth } from "../providers/AuthProvider";
-import { PAYPAL_SANDBOX_CLIENT_ID } from "../utils/constants";
+import { PAYPAL_CLIENT_ID } from "../utils/constants";
 import { isPremium } from "../utils/functions";
 
 function GetLicence() {
   const auth = useAuth();
-
+  console.log(PAYPAL_CLIENT_ID);
   return (
     <SignedInRoute>
       <Typography variant="h1">Get the Premium licence</Typography>
@@ -23,16 +22,7 @@ function GetLicence() {
             Turn your account Premium for only 5€/month !
           </Typography>
 
-          {/* //TODO: update client-id for production*/}
-          <PayPalScriptProvider
-            options={{
-              "client-id": PAYPAL_SANDBOX_CLIENT_ID ?? "test",
-              components: "buttons",
-              currency: "EUR",
-            }}
-          >
-            <CustomPaypalButton />
-          </PayPalScriptProvider>
+          <CustomPaypalButton />
         </>
       )}
     </SignedInRoute>

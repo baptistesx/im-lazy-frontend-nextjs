@@ -10,3 +10,5 @@ export const PAYPAL_SANDBOX_CLIENT_ID = process.env.PAYPAL_SANDBOX_CLIENT_ID;
 export const DEV_MODE = process.env.DEV_MODE;
 
 export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+
+export const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;

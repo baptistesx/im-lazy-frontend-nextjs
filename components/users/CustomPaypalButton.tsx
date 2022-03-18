@@ -5,14 +5,32 @@ import {
   PayPalScriptProvider,
   usePayPalScriptReducer,
 } from "@paypal/react-paypal-js";
-import { PAYPAL_SANDBOX_CLIENT_ID } from "../../utils/constants";
+import { useSnackbars } from "../../providers/SnackbarProvider";
+import { savePayment } from "../../services/userApi";
+import {
+  PAYPAL_CLIENT_ID,
+  PAYPAL_SANDBOX_CLIENT_ID,
+} from "../../utils/constants";
 
 const paypalScriptOptions: PayPalScriptOptions = {
-  "client-id": PAYPAL_SANDBOX_CLIENT_ID ?? "test",
-  currency: "USD",
+  // TODO: how to simplify that?
+  "client-id":
+    process.env.NODE_ENV === "production"
+      ? PAYPAL_CLIENT_ID
+        ? PAYPAL_CLIENT_ID
+        : PAYPAL_SANDBOX_CLIENT_ID
+        ? PAYPAL_SANDBOX_CLIENT_ID
+        : ""
+      : PAYPAL_SANDBOX_CLIENT_ID
+      ? PAYPAL_SANDBOX_CLIENT_ID
+      : "",
+  currency: "EUR",
+  components: "buttons",
 };
 
 function CustomButton() {
+  const snackbarsService = useSnackbars();
+
   /**
    * usePayPalScriptReducer use within PayPalScriptProvider
    * isPending: not finished loading(default state)
@@ -27,7 +45,7 @@ function CustomButton() {
         purchase_units: [
           {
             amount: {
-              value: "0.01",
+              value: "5",
             },
           },
         ],
@@ -44,13 +62,30 @@ function CustomButton() {
        * }
        */
       return actions.order.capture({}).then((details: any) => {
-        //TODO: store details & data in db
-        alert(
-          "Transaction completed by" +
-            (details?.payer.name.given_name ?? "No details")
-        );
+        const resume = {
+          ...data,
+          createTime: details.create_time,
+          updateTime: details.update_time,
+          payer: {
+            email: details.payer.email_address,
+            name: details.payer.name.given_name,
+            surname: details.payer.name.surname,
+            id: details.payer.payer_id,
+            address: details.purchase_units[0].shipping.address,
+          },
+          amount: details.purchase_units[0].amount.value,
+          currency: details.purchase_units[0].amount.currency_code,
+          status: details.status,
+          merchandEmail: details.purchase_units[0].payee.email_address,
+          merchandId: details.purchase_units[0].payee.email_id,
+        };
 
-        alert("Data details: " + JSON.stringify(data, null, 2));
+        savePayment(resume, () => {
+          snackbarsService?.addAlert({
+            message: "Payment well saved, you're now premium member!",
+            severity: "success",
+          });
+        });
       });
     },
   };

@@ -52,6 +52,7 @@ function Dashboard() {
           </Typography>
 
           <LoadingButton
+            variant="outlined"
             loading={loading}
             onClick={handleSendVerificationEmailAgain}
           >

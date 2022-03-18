@@ -154,3 +154,15 @@ export const sendVerificationEmail = async (
 
   cb();
 };
+
+export const savePayment = async (paymentResume: any, cb: Function) => {
+  await api.axiosApiCall({
+    url: `user/savePayment`,
+    method: "post",
+    body: {
+      paymentResume,
+    },
+  });
+
+  cb();
+};
