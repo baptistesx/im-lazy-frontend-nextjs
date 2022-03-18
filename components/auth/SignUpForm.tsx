@@ -130,6 +130,7 @@ const SignUpForm = () => {
       >
         <Link href="/auth/sign-in">
           <Button
+            variant="outlined"
             sx={{
               m: 1,
             }}

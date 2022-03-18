@@ -49,6 +49,8 @@ yarn dev
 
 - Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+To stop heroku dyno (app): heroku ps:scale web=0 -a im-lazy-front
+To start it: heroku ps:scale web=1 -a im-lazy-front
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

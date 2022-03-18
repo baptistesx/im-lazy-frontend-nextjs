@@ -13,13 +13,23 @@ function Home() {
         sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       >
         <Link href="/auth/sign-in">
-          <Button sx={{ color: "white" }}>Sign In</Button>
+          <Button
+            variant="outlined"
+            sx={{ color: "white", borderColor: "white", m: 1 }}
+          >
+            Sign In
+          </Button>
         </Link>
 
         <Typography sx={{ color: "white" }}>|</Typography>
 
         <Link href="/auth/sign-up">
-          <Button sx={{ color: "white" }}>Sign Up</Button>
+          <Button
+            variant="outlined"
+            sx={{ color: "white", borderColor: "white", m: 1 }}
+          >
+            Sign Up
+          </Button>
         </Link>
       </Box>
     </NotSignedInRoute>

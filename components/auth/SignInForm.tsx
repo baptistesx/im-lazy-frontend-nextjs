@@ -107,6 +107,7 @@ function SignInForm() {
       >
         <Link href="/auth/sign-up">
           <Button
+            variant="outlined"
             sx={{
               m: 1,
             }}
