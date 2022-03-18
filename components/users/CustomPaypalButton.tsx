@@ -7,6 +7,7 @@ import {
 } from "@paypal/react-paypal-js";
 import { useSnackbars } from "../../providers/SnackbarProvider";
 import { savePayment } from "../../services/userApi";
+import { useRouter } from "next/router";
 import {
   PAYPAL_CLIENT_ID,
   PAYPAL_SANDBOX_CLIENT_ID,
@@ -30,6 +31,8 @@ const paypalScriptOptions: PayPalScriptOptions = {
 
 function CustomButton() {
   const snackbarsService = useSnackbars();
+
+  const router = useRouter();
 
   /**
    * usePayPalScriptReducer use within PayPalScriptProvider
@@ -85,6 +88,8 @@ function CustomButton() {
             message: "Payment well saved, you're now premium member!",
             severity: "success",
           });
+
+          router.push("/dashboard");
         });
       });
     },

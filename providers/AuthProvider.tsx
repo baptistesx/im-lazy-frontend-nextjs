@@ -6,8 +6,10 @@ import {
   useEffect,
   useState,
 } from "react";
+import useSWR from "swr";
 import {
   getUser,
+  getUserSWR,
   signInWithEmailAndPassword,
   signInWithGoogle,
   signOut,
@@ -28,7 +30,7 @@ export type User = {
 type AuthStatus = "loading" | "connected" | "not-connected" | "error";
 
 type AuthValue = {
-  user: User | null;
+  user: User | null | undefined;
   status: AuthStatus;
   logout: () => void;
   login: (email: string, password: string, cb: Function) => void;
@@ -45,7 +47,10 @@ type AuthValue = {
 const AuthContext = createContext<AuthValue | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const fetcher = (url: RequestInfo) => getUserSWR();
+
+  const { data: userSWR, mutate, error } = useSWR("user", fetcher);
+  const [user, setUser] = useState<User | null | undefined>(null);
   const [status, setStatus] = useState<AuthStatus>("loading");
 
   const snackbarsService = useSnackbars();
@@ -55,7 +60,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     setStatus("loading");
     fetchCurrentUser();
-  }, []);
+    setUser(userSWR);
+  }, [userSWR]);
 
   const fetchCurrentUser = () => {
     getUser((user: User) => {
