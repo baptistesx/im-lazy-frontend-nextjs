@@ -8,11 +8,11 @@ import {
 	Divider,
 	TextField,
 } from "@mui/material";
+import { useAuth } from "@providers/AuthProvider";
+import signInFormSchema from "@schemas/signInFormSchema";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth } from "../../providers/AuthProvider";
-import signInFormSchema from "../../schemas/signInFormSchema";
 import GoogleLoginButton from "./GoogleLoginButton";
 
 type SignInFormData = {

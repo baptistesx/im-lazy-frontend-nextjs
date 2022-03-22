@@ -1,14 +1,14 @@
+import SignedInRoute from "@components/SignedInRoute";
+import GetLicenceButton from "@components/users/GetLicenceButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { LoadingButton } from "@mui/lab";
 import { Alert, Box, Button, Typography } from "@mui/material";
+import { useAuth } from "@providers/AuthProvider";
+import { useSnackbars } from "@providers/SnackbarProvider";
+import { sendVerificationEmail } from "@services/userApi";
+import { isPremium } from "@utils/functions";
 import Link from "next/link";
 import { useState } from "react";
-import SignedInRoute from "../components/SignedInRoute";
-import GetLicenceButton from "../components/users/GetLicenceButton";
-import { useAuth } from "../providers/AuthProvider";
-import { useSnackbars } from "../providers/SnackbarProvider";
-import { sendVerificationEmail } from "../services/userApi";
-import { isPremium } from "../utils/functions";
 
 function Dashboard() {
 	const auth = useAuth();

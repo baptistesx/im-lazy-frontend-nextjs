@@ -1,3 +1,5 @@
+import AdminRoute from "@components/AdminRoute";
+import EditUserDialog from "@components/users/EditUserDialog";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -20,14 +22,12 @@ import {
 	Tooltip,
 	Typography,
 } from "@mui/material";
+import { useAuth, User } from "@providers/AuthProvider";
+import { useSnackbars } from "@providers/SnackbarProvider";
+import { deleteUserById, getUsers } from "@services/userApi";
+import { isAdmin, isPremium } from "@utils/functions";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
-import AdminRoute from "../components/AdminRoute";
-import EditUserDialog from "../components/users/EditUserDialog";
-import { useAuth, User } from "../providers/AuthProvider";
-import { useSnackbars } from "../providers/SnackbarProvider";
-import { deleteUserById, getUsers } from "../services/userApi";
-import { isAdmin, isPremium } from "../utils/functions";
 
 function Users() {
 	const snackbarsService = useSnackbars();

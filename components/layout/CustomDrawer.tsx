@@ -7,11 +7,11 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import { useAuth } from "@providers/AuthProvider";
+import { DRAWER_WIDTH } from "@utils/constants";
+import { isAdmin } from "@utils/functions";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useAuth } from "../../providers/AuthProvider";
-import { DRAWER_WIDTH } from "../../utils/constants";
-import { isAdmin } from "../../utils/functions";
 
 const CustomDrawer = ({
 	handleDrawerToggle,

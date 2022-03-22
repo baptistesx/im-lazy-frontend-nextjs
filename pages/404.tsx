@@ -1,6 +1,6 @@
+import SignedInLayout from "@components/layout/SignedInLayout";
 import { Button, Typography } from "@mui/material";
 import Link from "next/link";
-import SignedInLayout from "../components/layout/SignedInLayout";
 
 function ResetPassword() {
 	return (
