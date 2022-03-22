@@ -14,7 +14,7 @@ const api = {
 	}) {
 		return axios({
 			method,
-			url: `${ENDPOINT}${url}`,
+			url: `${ENDPOINT}/${url}`,
 			data: body,
 			headers: { "Content-Type": "application/json" },
 			withCredentials: true,
