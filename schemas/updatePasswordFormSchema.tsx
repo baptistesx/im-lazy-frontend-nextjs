@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-const updatePsswordFormSchema = yup
+const updatePasswordFormSchema = yup
   .object({
     currentPassword: yup
       .string()
@@ -15,4 +15,4 @@ const updatePsswordFormSchema = yup
   })
   .required();
 
-export default updatePsswordFormSchema;
+export default updatePasswordFormSchema;
