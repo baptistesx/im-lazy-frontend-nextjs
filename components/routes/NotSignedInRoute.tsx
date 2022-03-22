@@ -1,14 +1,14 @@
 import { CircularProgress } from "@mui/material";
 import { useAuth } from "@providers/AuthProvider";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
-import NotSignedInLayout from "./layout/NotSignInedLayout";
+import { ReactNode, useEffect } from "react";
+import NotSignedInLayout from "../layout/NotSignInedLayout";
 
 const NotSignedInRoute = ({
 	children,
 	title,
 }: {
-	children: React.ReactNode;
+	children: ReactNode;
 	title: string;
 }) => {
 	const auth = useAuth();

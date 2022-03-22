@@ -1,10 +1,10 @@
 import { CircularProgress } from "@mui/material";
 import { useAuth } from "@providers/AuthProvider";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
-import SignedInLayout from "./layout/SignedInLayout";
+import { ReactNode, useEffect } from "react";
+import SignedInLayout from "../layout/SignedInLayout";
 
-const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+const NotPremiumRoute = ({ children }: { children: ReactNode }) => {
 	const auth = useAuth();
 
 	const router = useRouter();
@@ -15,7 +15,7 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
 		} else if (
 			router.isReady &&
 			auth?.status === "connected" &&
-			!auth.isAdmin(auth?.user)
+			auth?.isPremium(auth?.user)
 		) {
 			router.push("/dashboard");
 		}
@@ -25,7 +25,7 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
 		(router.isReady && auth?.status !== "connected") ||
 		(router.isReady &&
 			auth?.status === "connected" &&
-			!auth.isAdmin(auth?.user)) ? (
+			auth?.isPremium(auth?.user)) ? (
 		<SignedInLayout>
 			<CircularProgress />
 		</SignedInLayout>
@@ -34,4 +34,4 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
 	);
 };
 
-export default AdminRoute;
+export default NotPremiumRoute;
