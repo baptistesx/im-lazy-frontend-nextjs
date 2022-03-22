@@ -10,7 +10,7 @@ export const signUpWithEmailAndPassword = async (
 ) => {
 	const user = await api
 		.axiosApiCall({
-			url: "signUp",
+			url: "sign-up",
 			method: "post",
 			body: {
 				name,
@@ -30,7 +30,7 @@ export const signInWithEmailAndPassword = async (
 ) => {
 	const user = await api
 		.axiosApiCall({
-			url: "signInWithEmailAndPassword",
+			url: "sign-in-with-email-and-password",
 			method: "post",
 			body: {
 				email,
@@ -45,7 +45,7 @@ export const signInWithEmailAndPassword = async (
 export const signInWithGoogle = async (access_token: string, cb: Function) => {
 	const user = await api
 		.axiosApiCall({
-			url: "signInWithGoogle",
+			url: "sign-in-with-google",
 			method: "post",
 			body: {
 				access_token,
@@ -74,14 +74,14 @@ export const getUserSWR: Fetcher<User> = async () => {
 };
 
 export const signOut = async (cb: Function) => {
-	await api.axiosApiCall({ url: "signOut", method: "post" });
+	await api.axiosApiCall({ url: "sign-out", method: "post" });
 	console.log("well logged out");
 	cb();
 };
 
 export const resetPassword = async (email: string, cb: Function) => {
 	await api.axiosApiCall({
-		url: "resetPassword",
+		url: "reset-password",
 		method: "post",
 		body: {
 			email,
@@ -153,7 +153,7 @@ export const sendVerificationEmail = async (
 	cb: Function
 ) => {
 	await api.axiosApiCall({
-		url: `user/verificationEmail`,
+		url: `user/send-verification-email`,
 		method: "post",
 		body: {
 			email,
@@ -165,7 +165,7 @@ export const sendVerificationEmail = async (
 
 export const savePayment = async (paymentResume: any, cb: Function) => {
 	await api.axiosApiCall({
-		url: `user/savePayment`,
+		url: `user/save-payment`,
 		method: "post",
 		body: {
 			paymentResume,
