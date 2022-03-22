@@ -1,4 +1,4 @@
-import AdminRoute from "@components/AdminRoute";
+import AdminRoute from "@components/routes/AdminRoute";
 import EditUserDialog from "@components/users/EditUserDialog";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";

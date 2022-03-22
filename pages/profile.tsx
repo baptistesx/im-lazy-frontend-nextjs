@@ -1,4 +1,4 @@
-import SignedInRoute from "@components/SignedInRoute";
+import SignedInRoute from "@components/routes/SignedInRoute";
 import ChangePasswordForm from "@components/users/ChangePasswordForm";
 import ProfileForm from "@components/users/ProfileForm";
 import { Typography } from "@mui/material";

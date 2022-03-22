@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const fetcher = (url: RequestInfo) => getUserSWR();
 
 	const { data: userSWR, mutate, error } = useSWR("user", fetcher);
-	const [user, setUser] = useState<User | null | undefined>(null);
+	const [user, setUser] = useState<User | null | undefined>(undefined);
 	const [status, setStatus] = useState<AuthStatus>("loading");
 
 	const snackbarsService = useSnackbars();
@@ -110,7 +110,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 			setUser(user);
 			setStatus("connected");
 			snackbarsService?.addAlert({
-				message: !user.lastLogin ? "Welcome to ImLazy app !" : "Welcome back !",
+				message:
+					user.lastLogin === undefined
+						? "Welcome to ImLazy app !"
+						: "Welcome back !",
 				severity: "success",
 			});
 
@@ -137,7 +140,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 			setStatus("connected");
 
 			snackbarsService?.addAlert({
-				message: !user.lastLogin ? "Welcome to ImLazy app !" : "Welcome back !",
+				message:
+					user.lastLogin === undefined
+						? "Welcome to ImLazy app !"
+						: "Welcome back !",
 				severity: "success",
 			});
 

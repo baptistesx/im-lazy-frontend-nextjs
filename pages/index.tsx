@@ -1,4 +1,4 @@
-import NotSignedInRoute from "@components/NotSignedInRoute";
+import NotSignedInRoute from "@components/routes/NotSignedInRoute";
 import { Box, Button, Link, Typography } from "@mui/material";
 
 function Home() {

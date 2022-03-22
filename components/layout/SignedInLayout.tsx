@@ -8,11 +8,11 @@ import { useAuth } from "@providers/AuthProvider";
 import { DRAWER_WIDTH } from "@utils/constants";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { ReactNode } from "react";
 import CustomDrawer from "./CustomDrawer";
 import ToolBarUserInfo from "./ToolBarUserInfo";
 
-const SignedInLayout = ({ children }: { children: React.ReactNode }) => {
+const SignedInLayout = ({ children }: { children: ReactNode }) => {
 	const theme: Theme = useTheme();
 
 	const auth = useAuth();

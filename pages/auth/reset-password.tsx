@@ -1,5 +1,5 @@
 import ResetPasswordForm from "@components/auth/ResetPasswordForm";
-import NotSignedInRoute from "@components/NotSignedInRoute";
+import NotSignedInRoute from "@components/routes/NotSignedInRoute";
 
 function ResetPassword() {
 	return (

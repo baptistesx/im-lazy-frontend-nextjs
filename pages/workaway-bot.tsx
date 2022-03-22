@@ -1,4 +1,4 @@
-import PremiumRoute from "@components/PremiumRoute";
+import PremiumRoute from "@components/routes/PremiumRoute";
 import BotLogs from "@components/workawayBot/BotLogs";
 import FilesSection from "@components/workawayBot/FilesSection";
 import InfoForm from "@components/workawayBot/InfoForm";

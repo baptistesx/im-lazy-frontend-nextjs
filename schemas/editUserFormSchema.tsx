@@ -13,9 +13,7 @@ const editUserFormSchema = yup
 			.email("Must be a valid email")
 			.max(255)
 			.required("Email is required"),
-		role: yup
-			.mixed<Role>()
-			.oneOf(Object.values(["admin", "premium", "classic"])),
+		role: yup.mixed<Role>().oneOf(["admin", "premium", "classic"]),
 	})
 	.required();
 

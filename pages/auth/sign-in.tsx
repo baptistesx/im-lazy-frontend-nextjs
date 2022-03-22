@@ -1,5 +1,5 @@
 import SignInForm from "@components/auth/SignInForm";
-import NotSignedInRoute from "@components/NotSignedInRoute";
+import NotSignedInRoute from "@components/routes/NotSignedInRoute";
 
 function SignIn() {
 	return (

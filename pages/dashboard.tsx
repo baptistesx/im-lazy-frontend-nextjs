@@ -1,8 +1,9 @@
-import SignedInRoute from "@components/SignedInRoute";
+import { CustomAlert } from "@components/layout/CustomAlert";
+import SignedInRoute from "@components/routes/SignedInRoute";
 import GetLicenceButton from "@components/users/GetLicenceButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { LoadingButton } from "@mui/lab";
-import { Alert, Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { sendVerificationEmail } from "@services/userApi";
@@ -32,7 +33,7 @@ function Dashboard() {
 					message: "Confirmation email has been well sent",
 					severity: "success",
 				});
-			}).catch((err: Error) => {});
+			}).catch((err: Error) => {}); //TODO: handle error
 		}
 	};
 
@@ -52,11 +53,12 @@ function Dashboard() {
 			)}
 
 			{!auth?.user?.isEmailVerified ? (
-				<Alert severity={"error"} sx={{ width: "100%" }}>
-					<Typography>
-						Remember to check the confirmation email we sent you.
-					</Typography>
-
+				<CustomAlert
+					alert={{
+						message: "Remember to check the confirmation email we sent you.",
+						severity: "error",
+					}}
+				>
 					<LoadingButton
 						variant="outlined"
 						loading={loading}
@@ -64,7 +66,7 @@ function Dashboard() {
 					>
 						Send again
 					</LoadingButton>
-				</Alert>
+				</CustomAlert>
 			) : (
 				<Box />
 			)}
