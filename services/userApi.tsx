@@ -8,19 +8,17 @@ export const signUpWithEmailAndPassword = async (
 	password: string,
 	cb: Function
 ) => {
-	const user = await api
-		.axiosApiCall({
-			url: "sign-up",
-			method: "post",
-			body: {
-				name,
-				email,
-				password,
-			},
-		})
-		.then((res) => res.data.user);
+	const res = await api.axiosApiCall({
+		url: "sign-up",
+		method: "post",
+		body: {
+			name,
+			email,
+			password,
+		},
+	});
 
-	cb(user);
+	cb(res.data.user);
 };
 
 export const signInWithEmailAndPassword = async (
@@ -28,54 +26,48 @@ export const signInWithEmailAndPassword = async (
 	password: string,
 	cb: Function
 ) => {
-	const user = await api
-		.axiosApiCall({
-			url: "sign-in-with-email-and-password",
-			method: "post",
-			body: {
-				email,
-				password,
-			},
-		})
-		.then((res) => res.data.user);
+	const res = await api.axiosApiCall({
+		url: "sign-in-with-email-and-password",
+		method: "post",
+		body: {
+			email,
+			password,
+		},
+	});
 
-	cb(user);
+	cb(res.data.user);
 };
 
 export const signInWithGoogle = async (access_token: string, cb: Function) => {
-	const user = await api
-		.axiosApiCall({
-			url: "sign-in-with-google",
-			method: "post",
-			body: {
-				access_token,
-			},
-		})
-		.then((res) => res.data.user);
+	const res = await api.axiosApiCall({
+		url: "sign-in-with-google",
+		method: "post",
+		body: {
+			access_token,
+		},
+	});
 
-	cb(user);
+	cb(res.data.user);
 };
 
 export const getUser = async (cb: Function) => {
-	await api
-		.axiosApiCall({
-			url: "user",
-			method: "get",
-		})
-		.then((res) => {
-			cb(res.data);
-		});
+	const res = await api.axiosApiCall({
+		url: "user",
+		method: "get",
+	});
+
+	cb(res.data);
 };
 
 export const getUserSWR: Fetcher<User> = async () => {
-	return await api
-		.axiosApiCall({ url: "user", method: "get" })
-		.then((res) => res.data);
+	const res = await api.axiosApiCall({ url: "user", method: "get" });
+
+	return res.data;
 };
 
 export const signOut = async (cb: Function) => {
 	await api.axiosApiCall({ url: "sign-out", method: "post" });
-	console.log("well logged out");
+
 	cb();
 };
 
@@ -92,12 +84,9 @@ export const resetPassword = async (email: string, cb: Function) => {
 };
 
 export const getUsers = async (cb: Function) => {
-	const users = await api
-		.axiosApiCall({ url: "users", method: "get" })
-		.then((res) => res.data.users)
-		.catch((err) => {});
+	const res = await api.axiosApiCall({ url: "users", method: "get" });
 
-	cb(users);
+	cb(res.data.users);
 };
 
 export const deleteUserById = async (id: string, cb: Function) => {
