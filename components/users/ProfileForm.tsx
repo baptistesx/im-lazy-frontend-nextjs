@@ -50,7 +50,7 @@ const ProfileForm = () => {
 
 				auth?.fetchCurrentUser();
 
-				reset();
+				reset(data);
 			}
 		).catch((err: Error) => {
 			snackbarsService?.addAlert({
