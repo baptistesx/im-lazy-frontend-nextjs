@@ -1,3 +1,5 @@
+import { Fetcher } from "swr";
+import { User } from "../providers/AuthProvider";
 import api from "./api";
 
 export const signUpWithEmailAndPassword = async (
@@ -63,6 +65,12 @@ export const getUser = async (cb: Function) => {
     .then((res) => {
       cb(res.data);
     });
+};
+
+export const getUserSWR: Fetcher<User> = async () => {
+  return await api
+    .axiosApiCall({ url: "user", method: "get" })
+    .then((res) => res.data);
 };
 
 export const signOut = async (cb: Function) => {
