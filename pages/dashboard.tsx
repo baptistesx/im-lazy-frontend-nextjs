@@ -6,7 +6,6 @@ import { Alert, Box, Button, Typography } from "@mui/material";
 import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { sendVerificationEmail } from "@services/userApi";
-import { isPremium } from "@utils/functions";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -18,16 +17,23 @@ function Dashboard() {
 	const [loading, setLoading] = useState<boolean>(false);
 
 	const handleSendVerificationEmailAgain = async () => {
-		setLoading(true);
-
-		sendVerificationEmail(auth?.user?.email, () => {
-			setLoading(false);
-
+		if (auth?.user?.email === undefined) {
 			snackbarsService?.addAlert({
-				message: "Confirmation email has been well sent",
-				severity: "success",
+				message: "Email not valid.",
+				severity: "error",
 			});
-		}).catch((err: Error) => {});
+		} else {
+			setLoading(true);
+
+			sendVerificationEmail(auth.user.email, () => {
+				setLoading(false);
+
+				snackbarsService?.addAlert({
+					message: "Confirmation email has been well sent",
+					severity: "success",
+				});
+			}).catch((err: Error) => {});
+		}
 	};
 
 	return (

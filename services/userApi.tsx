@@ -137,10 +137,7 @@ export const createUser = async (data: any, cb: Function) => {
 	cb();
 };
 
-export const sendVerificationEmail = async (
-	email: string | undefined,
-	cb: Function
-) => {
+export const sendVerificationEmail = async (email: string, cb: Function) => {
 	await api.axiosApiCall({
 		url: `user/send-verification-email`,
 		method: "post",
