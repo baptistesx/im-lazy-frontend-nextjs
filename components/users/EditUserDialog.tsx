@@ -13,7 +13,6 @@ import { Role, useAuth, User } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import editUserFormSchema from "@schemas/editUserFormSchema";
 import { createUser, updateUserById } from "@services/userApi";
-import { capitalizeFirstLetter } from "@utils/functions";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -158,8 +157,8 @@ function EditUserDialog(props: EditUserDialogProps) {
 						fullWidth
 						placeholder="Name"
 						{...register("name")}
-						sx={{ mb: 1 }}
-						defaultValue={capitalizeFirstLetter(currentUser?.name)}
+						sx={{ mb: 1, textTransform: "capitalize" }}
+						defaultValue={currentUser?.name}
 						error={errors.name != null}
 						helperText={errors.name?.message}
 					/>
@@ -190,8 +189,12 @@ function EditUserDialog(props: EditUserDialogProps) {
 								disabled={currentUser?.id === auth?.user?.id}
 							>
 								{["admin", "premium", "classic"].map((role) => (
-									<MenuItem key={role} value={role}>
-										{capitalizeFirstLetter(role)}
+									<MenuItem
+										key={role}
+										value={role}
+										sx={{ textTransform: "capitalize" }}
+									>
+										{role}
 									</MenuItem>
 								))}
 							</TextField>

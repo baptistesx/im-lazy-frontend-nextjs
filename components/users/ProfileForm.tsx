@@ -5,7 +5,7 @@ import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import editProfileFormSchema from "@schemas/editProfileFormSchema";
 import { updateUserById } from "@services/userApi";
-import { capitalizeFirstLetter, isPremium } from "@utils/functions";
+import { isPremium } from "@utils/functions";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import GetLicenceButton from "./GetLicenceButton";
@@ -73,8 +73,8 @@ const ProfileForm = () => {
 					fullWidth
 					placeholder="Name"
 					{...register("name")}
-					sx={{ mb: 1 }}
-					defaultValue={capitalizeFirstLetter(auth?.user?.name)}
+					sx={{ mb: 1, textTransform: "capitalize" }}
+					defaultValue={auth?.user?.name}
 					error={errors.name != null}
 					helperText={errors.name?.message}
 				/>

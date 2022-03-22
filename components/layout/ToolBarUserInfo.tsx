@@ -2,7 +2,7 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material/";
 import { useAuth } from "@providers/AuthProvider";
-import { capitalizeFirstLetter, isAdmin, isPremium } from "@utils/functions";
+import { isAdmin, isPremium } from "@utils/functions";
 
 function ToolBarUserInfo() {
 	const auth = useAuth();
@@ -27,7 +27,9 @@ function ToolBarUserInfo() {
 			) : (
 				<Box />
 			)}
-			<Typography>{`${capitalizeFirstLetter(auth?.user?.name)} |`}</Typography>
+			<Typography
+				sx={{ textTransform: "capitalize" }}
+			>{`${auth?.user?.name} |`}</Typography>
 		</Box>
 	);
 }
