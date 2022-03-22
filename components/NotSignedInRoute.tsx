@@ -19,7 +19,7 @@ const NotSignedInRoute = ({
     if (router.isReady && auth?.status === "connected") {
       router.push("/dashboard");
     }
-  }, [auth]);
+  }, [auth, router]);
 
   return auth?.status === "loading" ||
     (router.isReady && auth?.status === "connected") ? (

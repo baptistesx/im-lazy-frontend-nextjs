@@ -87,7 +87,7 @@ const BotLogs = () => {
         handleOpenCitiesDialog(cities)
       );
     }
-  }, [socket, botLogsMessageSentIsFirst, isSocketInitialized]);
+  }, [socket, isSocketInitialized]);
 
   const handleClickClearConsole = async () => {
     setIsClearingLogs(true);

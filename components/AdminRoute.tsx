@@ -20,7 +20,7 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
     ) {
       router.push("/dashboard");
     }
-  }, [auth]);
+  }, [auth, router]);
 
   return auth?.status === "loading" ||
     (router.isReady && auth?.status !== "connected") ||

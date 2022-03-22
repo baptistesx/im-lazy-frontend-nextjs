@@ -1,12 +1,12 @@
-import { Typography, Box, Link, Button } from "@mui/material";
+import { Box, Button, Link, Typography } from "@mui/material";
 import NotSignedInRoute from "../components/NotSignedInRoute";
 
 function Home() {
   return (
     <NotSignedInRoute title="Home">
       <Typography variant="body1" sx={{ color: "white", textAlign: "center" }}>
-        Welcome on ImLazy.dev! You'll find here different ressources to save
-        time in your life...
+        Welcome on ImLazy.dev! You'll find here different resources to save time
+        in your life...
       </Typography>
 
       <Box

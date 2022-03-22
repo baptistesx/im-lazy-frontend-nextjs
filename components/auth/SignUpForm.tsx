@@ -112,7 +112,7 @@ const SignUpForm = () => {
           Sign up
         </LoadingButton>
 
-        <Link href="/auth/sign-in">
+        <Link href="/auth/sign-in" passHref>
           <Button
             sx={{
               m: 1,
@@ -128,7 +128,7 @@ const SignUpForm = () => {
       <CardActions
         sx={{ display: "flex", justifyContent: "center", mt: 1, mb: 1 }}
       >
-        <Link href="/auth/sign-in">
+        <Link href="/auth/sign-in" passHref>
           <Button
             variant="outlined"
             sx={{

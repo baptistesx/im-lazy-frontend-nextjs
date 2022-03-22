@@ -13,7 +13,7 @@ const SignedInRoute = ({ children }: { children: React.ReactNode }) => {
     if (router.isReady && auth?.status !== "connected") {
       router.push("/");
     }
-  }, [auth]);
+  }, [auth, router]);
 
   return auth?.status === "loading" ||
     (router.isReady && auth?.status !== "connected") ? (

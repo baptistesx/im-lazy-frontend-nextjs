@@ -4,24 +4,24 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { LoadingButton } from "@mui/lab";
 import {
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Tooltip,
-  Typography,
+	Box,
+	Button,
+	Card,
+	CardActions,
+	CardContent,
+	IconButton,
+	Paper,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	Tooltip,
+	Typography,
 } from "@mui/material";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import AdminRoute from "../components/AdminRoute";
 import EditUserDialog from "../components/users/EditUserDialog";
 import { useAuth, User } from "../providers/AuthProvider";
@@ -30,197 +30,197 @@ import { deleteUserById, getUsers } from "../services/userApi";
 import { isAdmin, isPremium } from "../utils/functions";
 
 function Users() {
-  const snackbarsService = useSnackbars();
+	const snackbarsService = useSnackbars();
 
-  const router = useRouter();
+	const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const [users, setUsers] = useState<User[]>([]);
+	const [users, setUsers] = useState<User[]>([]);
 
-  const [isEditUserDialogOpen, setIsEditUserDialogOpen] =
-    useState<boolean>(false);
+	const [isEditUserDialogOpen, setIsEditUserDialogOpen] =
+		useState<boolean>(false);
 
-  const [userSelected, setUserSelected] = useState<User | null>();
-  const auth = useAuth();
+	const [userSelected, setUserSelected] = useState<User | null>();
+	const auth = useAuth();
 
-  const currentUser = auth?.user;
+	const currentUser = auth?.user;
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+	const fetchData = useCallback(() => {
+		setIsLoading(true);
 
-  const onRefreshClick = () => {
-    fetchData();
-  };
+		getUsers((users: User[]) => {
+			setUsers([...users]);
 
-  const fetchData = () => {
-    setIsLoading(true);
+			// Sort users on name property
+			users.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
 
-    getUsers((users: User[]) => {
-      setUsers([...users]);
+			setIsLoading(false);
+		}).catch(() => {
+			snackbarsService?.addAlert({
+				message: "An error occured while getting users",
+				severity: "error",
+			});
+		});
+	}, [snackbarsService]);
 
-      // Sort users on name property
-      users.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
+	useEffect(() => {
+		fetchData();
+	}, [fetchData]);
 
-      setIsLoading(false);
-    }).catch((err: Error) => {
-      snackbarsService?.addAlert({
-        message: "An error occured while getting users",
-        severity: "error",
-      });
-    });
-  };
+	const onRefreshClick = () => {
+		fetchData();
+	};
 
-  const handleDelete = async (userId: string) => {
-    setIsLoading(true);
+	const handleDelete = async (userId: string) => {
+		setIsLoading(true);
 
-    deleteUserById(userId, () => {
-      fetchData();
+		deleteUserById(userId, () => {
+			fetchData();
 
-      setIsLoading(false);
+			setIsLoading(false);
 
-      snackbarsService?.addAlert({
-        message: "User well deleted",
-        severity: "success",
-      });
-    }).catch((err: Error) => {
-      snackbarsService?.addAlert({
-        message: "An error occured while deleting user",
-        severity: "error",
-      });
-    });
-  };
+			snackbarsService?.addAlert({
+				message: "User well deleted",
+				severity: "success",
+			});
+		}).catch((err: Error) => {
+			snackbarsService?.addAlert({
+				message: "An error occured while deleting user",
+				severity: "error",
+			});
+		});
+	};
 
-  const handleOpenUserDialog = (userToEdit?: User) => {
-    setUserSelected(userToEdit ?? null);
+	const handleOpenUserDialog = (userToEdit?: User) => {
+		setUserSelected(userToEdit ?? null);
 
-    setIsEditUserDialogOpen(true);
-  };
+		setIsEditUserDialogOpen(true);
+	};
 
-  const handleCloseUserDialog = async (res: { modified: boolean }) => {
-    setIsEditUserDialogOpen(false);
-    setUserSelected(null);
+	const handleCloseUserDialog = async (res: { modified: boolean }) => {
+		setIsEditUserDialogOpen(false);
+		setUserSelected(null);
 
-    if (res?.modified) {
-      fetchData();
-    }
-  };
+		if (res?.modified) {
+			fetchData();
+		}
+	};
 
-  return (
-    <AdminRoute>
-      <Typography variant="h1">Users</Typography>
+	return (
+		<AdminRoute>
+			<Typography variant="h1">Users</Typography>
 
-      <Card>
-        <CardContent>
-          {users.length === 0 && isLoading ? (
-            <Box />
-          ) : (
-            <Box>
-              <Typography variant="body1">
-                {`${users.length} Available users`}
-              </Typography>
+			<Card>
+				<CardContent>
+					{users.length === 0 && isLoading ? (
+						<Box />
+					) : (
+						<Box>
+							<Typography variant="body1">
+								{`${users.length} Available users`}
+							</Typography>
 
-              {users.length === 0 ? (
-                <Typography>No users</Typography>
-              ) : (
-                //TODO: refacto (extract component)
-                <TableContainer component={Paper}>
-                  <Table aria-label="users table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell align="left">Name</TableCell>
-                        <TableCell align="left">Email</TableCell>
-                        <TableCell align="left">Admin</TableCell>
-                        <TableCell align="left">Premium</TableCell>
-                        <TableCell align="left">Email verified</TableCell>
-                        <TableCell align="left">Actions</TableCell>
-                      </TableRow>
-                    </TableHead>
+							{users.length === 0 ? (
+								<Typography>No users</Typography>
+							) : (
+								//TODO: refacto (extract component)
+								<TableContainer component={Paper}>
+									<Table aria-label="users table">
+										<TableHead>
+											<TableRow>
+												<TableCell align="left">Name</TableCell>
+												<TableCell align="left">Email</TableCell>
+												<TableCell align="left">Admin</TableCell>
+												<TableCell align="left">Premium</TableCell>
+												<TableCell align="left">Email verified</TableCell>
+												<TableCell align="left">Actions</TableCell>
+											</TableRow>
+										</TableHead>
 
-                    <TableBody>
-                      {users.map((user) => (
-                        <TableRow key={user?.id}>
-                          <TableCell component="th" scope="row">
-                            {user?.name}
-                          </TableCell>
-                          <TableCell component="th" scope="row">
-                            {user?.email}
-                          </TableCell>
-                          <TableCell align="center" component="th" scope="row">
-                            {isAdmin(user) ? <CheckIcon /> : <ClearIcon />}
-                          </TableCell>
-                          <TableCell align="center" component="th" scope="row">
-                            {isPremium(user) ? <CheckIcon /> : <ClearIcon />}
-                          </TableCell>
-                          <TableCell align="center" component="th" scope="row">
-                            {user?.isEmailVerified ? (
-                              <CheckIcon />
-                            ) : (
-                              <ClearIcon />
-                            )}
-                          </TableCell>
-                          <TableCell align="left">
-                            <Tooltip title="Edit user">
-                              <IconButton
-                                onClick={() => handleOpenUserDialog(user)}
-                                disabled={isLoading}
-                              >
-                                <EditIcon />
-                              </IconButton>
-                            </Tooltip>
+										<TableBody>
+											{users.map((user) => (
+												<TableRow key={user?.id}>
+													<TableCell component="th" scope="row">
+														{user?.name}
+													</TableCell>
+													<TableCell component="th" scope="row">
+														{user?.email}
+													</TableCell>
+													<TableCell align="center" component="th" scope="row">
+														{isAdmin(user) ? <CheckIcon /> : <ClearIcon />}
+													</TableCell>
+													<TableCell align="center" component="th" scope="row">
+														{isPremium(user) ? <CheckIcon /> : <ClearIcon />}
+													</TableCell>
+													<TableCell align="center" component="th" scope="row">
+														{user?.isEmailVerified ? (
+															<CheckIcon />
+														) : (
+															<ClearIcon />
+														)}
+													</TableCell>
+													<TableCell align="left">
+														<Tooltip title="Edit user">
+															<IconButton
+																onClick={() => handleOpenUserDialog(user)}
+																disabled={isLoading}
+															>
+																<EditIcon />
+															</IconButton>
+														</Tooltip>
 
-                            <Tooltip title="Delete user">
-                              <IconButton
-                                aria-label="delete"
-                                onClick={() => handleDelete(user.id)}
-                                disabled={
-                                  user.email === currentUser?.email || isLoading
-                                }
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              )}
-            </Box>
-          )}
-        </CardContent>
+														<Tooltip title="Delete user">
+															<IconButton
+																aria-label="delete"
+																onClick={() => handleDelete(user.id)}
+																disabled={
+																	user.email === currentUser?.email || isLoading
+																}
+															>
+																<DeleteIcon />
+															</IconButton>
+														</Tooltip>
+													</TableCell>
+												</TableRow>
+											))}
+										</TableBody>
+									</Table>
+								</TableContainer>
+							)}
+						</Box>
+					)}
+				</CardContent>
 
-        <CardActions>
-          <Button variant="contained" onClick={() => handleOpenUserDialog()}>
-            Create a user
-          </Button>
+				<CardActions>
+					<Button variant="contained" onClick={() => handleOpenUserDialog()}>
+						Create a user
+					</Button>
 
-          <LoadingButton
-            loading={isLoading}
-            onClick={onRefreshClick}
-            sx={{
-              m: 1,
-            }}
-          >
-            Refresh
-          </LoadingButton>
-        </CardActions>
-      </Card>
+					<LoadingButton
+						loading={isLoading}
+						onClick={onRefreshClick}
+						sx={{
+							m: 1,
+						}}
+					>
+						Refresh
+					</LoadingButton>
+				</CardActions>
+			</Card>
 
-      {userSelected || isEditUserDialogOpen ? (
-        <EditUserDialog
-          keepMounted
-          open={isEditUserDialogOpen}
-          onClose={handleCloseUserDialog}
-          user={userSelected}
-        />
-      ) : (
-        <Box></Box>
-      )}
-    </AdminRoute>
-  );
+			{userSelected || isEditUserDialogOpen ? (
+				<EditUserDialog
+					keepMounted
+					open={isEditUserDialogOpen}
+					onClose={handleCloseUserDialog}
+					user={userSelected}
+				/>
+			) : (
+				<Box></Box>
+			)}
+		</AdminRoute>
+	);
 }
 
 export default Users;
