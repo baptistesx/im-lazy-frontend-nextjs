@@ -34,7 +34,7 @@ function Dashboard() {
 		<SignedInRoute>
 			<Typography variant="h1">Dashboard</Typography>
 
-			{isPremium(auth?.user) ? (
+			{auth?.isPremium(auth?.user) ? (
 				<Link href="/workaway-bot" passHref>
 					<Button variant="contained" sx={{ m: 1 }}>
 						Workaway messaging

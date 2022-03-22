@@ -5,7 +5,6 @@ import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import editProfileFormSchema from "@schemas/editProfileFormSchema";
 import { updateUserById } from "@services/userApi";
-import { isPremium } from "@utils/functions";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import GetLicenceButton from "./GetLicenceButton";
@@ -103,7 +102,7 @@ const ProfileForm = () => {
 					Save
 				</LoadingButton>
 
-				{!isPremium(auth?.user) ? <GetLicenceButton /> : <Box />}
+				{!auth?.isPremium(auth?.user) ? <GetLicenceButton /> : <Box />}
 			</CardActions>
 		</Card>
 	);

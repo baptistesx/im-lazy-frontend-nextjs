@@ -104,7 +104,7 @@ function EditUserDialog(props: EditUserDialogProps) {
 				setIsSaving(false);
 
 				snackbarsService?.addAlert({
-					message: "An error occured while updating user",
+					message: "An error occurred while updating user",
 					severity: "error",
 				});
 			});
@@ -133,7 +133,7 @@ function EditUserDialog(props: EditUserDialogProps) {
 
 				snackbarsService?.addAlert({
 					message:
-						"An error occured while creating user, email might be already used.",
+						"An error occurred while creating user, email might be already used.",
 					severity: "error",
 				});
 			});

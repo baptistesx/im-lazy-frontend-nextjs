@@ -25,7 +25,6 @@ import {
 import { useAuth, User } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { deleteUserById, getUsers } from "@services/userApi";
-import { isAdmin, isPremium } from "@utils/functions";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
@@ -58,7 +57,7 @@ function Users() {
 			setIsLoading(false);
 		}).catch(() => {
 			snackbarsService?.addAlert({
-				message: "An error occured while getting users",
+				message: "An error occurred while getting users",
 				severity: "error",
 			});
 		});
@@ -86,7 +85,7 @@ function Users() {
 			});
 		}).catch((err: Error) => {
 			snackbarsService?.addAlert({
-				message: "An error occured while deleting user",
+				message: "An error occurred while deleting user",
 				severity: "error",
 			});
 		});
@@ -124,7 +123,7 @@ function Users() {
 							{users.length === 0 ? (
 								<Typography>No users</Typography>
 							) : (
-								//TODO: refacto (extract component)
+								//TODO: refactor (extract component)
 								<TableContainer component={Paper}>
 									<Table aria-label="users table">
 										<TableHead>
@@ -148,10 +147,18 @@ function Users() {
 														{user?.email}
 													</TableCell>
 													<TableCell align="center" component="th" scope="row">
-														{isAdmin(user) ? <CheckIcon /> : <ClearIcon />}
+														{auth?.isAdmin(user) ? (
+															<CheckIcon />
+														) : (
+															<ClearIcon />
+														)}
 													</TableCell>
 													<TableCell align="center" component="th" scope="row">
-														{isPremium(user) ? <CheckIcon /> : <ClearIcon />}
+														{auth?.isPremium(user) ? (
+															<CheckIcon />
+														) : (
+															<ClearIcon />
+														)}
 													</TableCell>
 													<TableCell align="center" component="th" scope="row">
 														{user?.isEmailVerified ? (

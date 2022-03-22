@@ -54,7 +54,7 @@ const ResetPasswordForm = () => {
 			setIsLoading(false);
 
 			snackbarsService?.addAlert({
-				message: "An error occured while sending a reset password email",
+				message: "An error occurred while sending a reset password email",
 				severity: "error",
 			});
 		});

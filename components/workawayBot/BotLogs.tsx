@@ -41,7 +41,7 @@ const BotLogs = () => {
 			await setCity(city).catch((err: Error) => {
 				snackbarsService?.addAlert({
 					message:
-						"An error occured while setting the city/country name, are you a premium member?",
+						"An error occurred while setting the city/country name, are you a premium member?",
 					severity: "error",
 				});
 			});
@@ -103,7 +103,7 @@ const BotLogs = () => {
 
 			snackbarsService?.addAlert({
 				message:
-					"An error occured while clearing logs, are you a premium member?",
+					"An error occurred while clearing logs, are you a premium member?",
 				severity: "error",
 			});
 		});

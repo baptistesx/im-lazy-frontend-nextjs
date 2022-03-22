@@ -9,7 +9,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useAuth } from "@providers/AuthProvider";
 import { DRAWER_WIDTH } from "@utils/constants";
-import { isAdmin } from "@utils/functions";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -29,7 +28,7 @@ const CustomDrawer = ({
 		{ route: "/profile", icon: <AccountBoxIcon />, title: "Profile" },
 	];
 
-	if (auth?.user && isAdmin(auth?.user)) {
+	if (auth?.user && auth.isAdmin(auth?.user)) {
 		drawerItems.push({
 			route: "/users",
 			icon: <GroupIcon />,

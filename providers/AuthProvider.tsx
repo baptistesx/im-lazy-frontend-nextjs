@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import {
 	createContext,
 	ReactNode,
+	useCallback,
 	useContext,
 	useEffect,
 	useState,
@@ -42,6 +43,8 @@ type AuthValue = {
 	) => void;
 	loginWithGoogle: (token: string, cb: Function) => void;
 	fetchCurrentUser: () => void;
+	isAdmin: (user: User | undefined | null) => boolean;
+	isPremium: (user: User | undefined | null) => boolean;
 };
 
 const AuthContext = createContext<AuthValue | undefined>(undefined);
@@ -57,17 +60,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 	const router = useRouter();
 
-	useEffect(() => {
-		setStatus("loading");
-		fetchCurrentUser();
-		setUser(userSWR);
-	}, [userSWR]);
-
-	const fetchCurrentUser = () => {
+	const fetchCurrentUser = useCallback(() => {
 		getUser((user: User) => {
 			setUser(user);
 			setStatus("connected");
-		}).catch((err: Error) => {
+		}).catch(() => {
 			setStatus("not-connected");
 
 			// TODO: there is probably a better way to get NotSignedInRoutes
@@ -78,12 +75,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 				router.route !== "/auth/reset-password"
 			) {
 				snackbarsService?.addAlert({
-					message: "An error occured while fetching user.",
+					message: "An error occurred while fetching user.",
 					severity: "error",
 				});
 			}
 		});
-	};
+	}, [router.route, snackbarsService]);
+
+	useEffect(() => {
+		setStatus("loading");
+		fetchCurrentUser();
+		setUser(userSWR);
+	}, [userSWR]);
 
 	const logout = async () => {
 		await signOut(() => {
@@ -93,7 +96,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		}).catch((err: Error) => {
 			setStatus("not-connected");
 			snackbarsService?.addAlert({
-				message: "An error occured while signing out",
+				message: "An error occurred while signing out",
 				severity: "error",
 			});
 		});
@@ -144,7 +147,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 			setUser(null);
 			setStatus("not-connected");
 			snackbarsService?.addAlert({
-				message: "An error occured while signing in with Google",
+				message: "An error occurred while signing in with Google",
 				severity: "error",
 			});
 		});
@@ -176,11 +179,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 			snackbarsService?.addAlert({
 				message:
-					"An error occured while signing up. This email might be used already",
+					"An error occurred while signing up. This email might be used already",
 				severity: "error",
 			});
 		});
 	};
+
+	const isAdmin = (user: User | null | undefined): boolean =>
+		user?.role === "admin";
+
+	const isPremium = (user: User | null | undefined): boolean =>
+		user?.role === "admin" || user?.role === "premium";
 
 	return (
 		<AuthContext.Provider
@@ -192,6 +201,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 				loginWithGoogle,
 				register,
 				fetchCurrentUser,
+				isAdmin,
+				isPremium,
 			}}
 		>
 			{children}

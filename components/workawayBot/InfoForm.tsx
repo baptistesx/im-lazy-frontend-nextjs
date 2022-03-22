@@ -77,7 +77,7 @@ const InfoForm = () => {
 		).catch((err: Error) => {
 			snackbarsService?.addAlert({
 				message:
-					"An error occured while starting bot, are you a premium member?",
+					"An error occurred while starting bot, are you a premium member?",
 				severity: "error",
 			});
 		});
@@ -95,7 +95,7 @@ const InfoForm = () => {
 		}).catch((err: Error) => {
 			snackbarsService?.addAlert({
 				message:
-					"An error occured while stopping bot, are you a premium member?",
+					"An error occurred while stopping bot, are you a premium member?",
 				severity: "error",
 			});
 		});
