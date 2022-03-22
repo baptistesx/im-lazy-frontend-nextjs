@@ -51,6 +51,11 @@ yarn dev
 
 To stop heroku dyno (app): heroku ps:scale web=0 -a im-lazy-front
 To start it: heroku ps:scale web=1 -a im-lazy-front
+
+## With Husky
+
+https://www.codeheroes.fr/2021/10/11/git-lutilisation-des-hooks-avec-husky/
+https://www.codeheroes.fr/2020/06/29/git-comment-nommer-ses-branches-et-ses-commits/
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
