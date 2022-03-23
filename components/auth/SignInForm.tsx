@@ -11,7 +11,7 @@ import {
 import { useAuth } from "@providers/AuthProvider";
 import signInFormSchema from "@schemas/signInFormSchema";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import GoogleLoginButton from "./GoogleLoginButton";
 
@@ -20,7 +20,7 @@ type SignInFormData = {
 	password: string;
 };
 
-function SignInForm() {
+function SignInForm(): ReactElement {
 	const auth = useAuth();
 
 	const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
@@ -36,11 +36,11 @@ function SignInForm() {
 	});
 
 	useEffect(() => {
-		const subscription = watch((value, { name, type }) => {});
+		const subscription = watch(() => {});
 		return () => subscription.unsubscribe();
 	}, [watch]);
 
-	const onSubmit = (data: SignInFormData) => {
+	const onSubmit = (data: SignInFormData): void => {
 		setIsSigningIn(true);
 
 		auth?.login(data.email, data.password, () => {

@@ -7,7 +7,7 @@ export const signUpWithEmailAndPassword = async (
 	email: string,
 	password: string,
 	cb: Function
-) => {
+): Promise<void> => {
 	const res = await api.axiosApiCall({
 		url: "sign-up",
 		method: "post",
@@ -25,7 +25,7 @@ export const signInWithEmailAndPassword = async (
 	email: string,
 	password: string,
 	cb: Function
-) => {
+): Promise<void> => {
 	const res = await api.axiosApiCall({
 		url: "sign-in-with-email-and-password",
 		method: "post",
@@ -38,7 +38,10 @@ export const signInWithEmailAndPassword = async (
 	cb(res.data.user);
 };
 
-export const signInWithGoogle = async (access_token: string, cb: Function) => {
+export const signInWithGoogle = async (
+	access_token: string,
+	cb: Function
+): Promise<void> => {
 	const res = await api.axiosApiCall({
 		url: "sign-in-with-google",
 		method: "post",
@@ -50,7 +53,7 @@ export const signInWithGoogle = async (access_token: string, cb: Function) => {
 	cb(res.data.user);
 };
 
-export const getUser = async (cb: Function) => {
+export const getUser = async (cb: Function): Promise<void> => {
 	const res = await api.axiosApiCall({
 		url: "user",
 		method: "get",
@@ -65,13 +68,16 @@ export const getUserSWR: Fetcher<User> = async () => {
 	return res.data;
 };
 
-export const signOut = async (cb: Function) => {
+export const signOut = async (cb: Function): Promise<void> => {
 	await api.axiosApiCall({ url: "sign-out", method: "post" });
 
 	cb();
 };
 
-export const resetPassword = async (email: string, cb: Function) => {
+export const resetPassword = async (
+	email: string,
+	cb: Function
+): Promise<void> => {
 	await api.axiosApiCall({
 		url: "reset-password",
 		method: "post",
@@ -83,19 +89,25 @@ export const resetPassword = async (email: string, cb: Function) => {
 	cb();
 };
 
-export const getUsers = async (cb: Function) => {
+export const getUsers = async (cb: Function): Promise<void> => {
 	const res = await api.axiosApiCall({ url: "users", method: "get" });
 
 	cb(res.data.users);
 };
 
-export const deleteUserById = async (id: string, cb: Function) => {
+export const deleteUserById = async (
+	id: string,
+	cb: Function
+): Promise<void> => {
 	await api.axiosApiCall({ url: `user/${id}`, method: "delete" });
 
 	cb();
 };
 
-export const updateUserById = async (data: any, cb: Function) => {
+export const updateUserById = async (
+	data: any,
+	cb: Function
+): Promise<void> => {
 	await api.axiosApiCall({
 		url: `user`,
 		method: "put",
@@ -110,7 +122,10 @@ export const updateUserById = async (data: any, cb: Function) => {
 	cb();
 };
 
-export const updateUserPasswordById = async (data: any, cb: Function) => {
+export const updateUserPasswordById = async (
+	data: any,
+	cb: Function
+): Promise<void> => {
 	await api.axiosApiCall({
 		url: `user/${data.id}/password`,
 		method: "put",
@@ -123,7 +138,7 @@ export const updateUserPasswordById = async (data: any, cb: Function) => {
 	cb();
 };
 
-export const createUser = async (data: any, cb: Function) => {
+export const createUser = async (data: any, cb: Function): Promise<void> => {
 	await api.axiosApiCall({
 		url: `user`,
 		method: "post",
@@ -137,7 +152,10 @@ export const createUser = async (data: any, cb: Function) => {
 	cb();
 };
 
-export const sendVerificationEmail = async (email: string, cb: Function) => {
+export const sendVerificationEmail = async (
+	email: string,
+	cb: Function
+): Promise<void> => {
 	await api.axiosApiCall({
 		url: `user/send-verification-email`,
 		method: "post",
@@ -149,7 +167,10 @@ export const sendVerificationEmail = async (email: string, cb: Function) => {
 	cb();
 };
 
-export const savePayment = async (paymentResume: any, cb: Function) => {
+export const savePayment = async (
+	paymentResume: any,
+	cb: Function
+): Promise<void> => {
 	await api.axiosApiCall({
 		url: `user/save-payment`,
 		method: "post",

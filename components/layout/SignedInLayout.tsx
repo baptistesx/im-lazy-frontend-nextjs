@@ -1,3 +1,4 @@
+import { DRAWER_WIDTH } from "@components/layout/utils/constants";
 import { useTheme } from "@emotion/react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton } from "@mui/material";
@@ -5,23 +6,26 @@ import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material/";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Theme } from "@mui/material/styles";
 import { useAuth } from "@providers/AuthProvider";
-import { DRAWER_WIDTH } from "@utils/constants";
 import Image from "next/image";
 import Link from "next/link";
-import React, { ReactNode } from "react";
+import React, { ReactElement, ReactNode } from "react";
 import CustomDrawer from "./CustomDrawer";
 import ToolBarUserInfo from "./ToolBarUserInfo";
 
-const SignedInLayout = ({ children }: { children: ReactNode }) => {
+const SignedInLayout = ({
+	children,
+}: {
+	children: ReactNode;
+}): ReactElement => {
 	const theme: Theme = useTheme();
 
 	const auth = useAuth();
 
-	const onLogoutClick = async () => auth?.logout();
+	const onLogoutClick = async (): Promise<void | undefined> => auth?.logout();
 
 	const [mobileOpen, setMobileOpen] = React.useState(false);
 
-	const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+	const handleDrawerToggle = (): void => setMobileOpen(!mobileOpen);
 
 	return (
 		<Box sx={{ display: "flex" }}>
@@ -90,7 +94,7 @@ const SignedInLayout = ({ children }: { children: ReactNode }) => {
 
 			{auth?.status === "connected" ? (
 				<CustomDrawer
-					handleDrawerToggle={() => handleDrawerToggle()}
+					handleDrawerToggle={(): void => handleDrawerToggle()}
 					mobileOpen={mobileOpen}
 				/>
 			) : (

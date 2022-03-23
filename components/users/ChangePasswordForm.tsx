@@ -5,7 +5,7 @@ import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import updatePasswordFormSchema from "@schemas/updatePasswordFormSchema";
 import { updateUserPasswordById } from "@services/userApi";
-import { useState } from "react";
+import { useState, ReactElement } from "react";
 import { useForm } from "react-hook-form";
 import GetLicenceButton from "./GetLicenceButton";
 
@@ -14,7 +14,7 @@ type ChangePasswordFormData = {
 	newPassword: string;
 };
 
-const ChangePasswordForm = () => {
+const ChangePasswordForm = (): ReactElement => {
 	const auth = useAuth();
 
 	const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +30,9 @@ const ChangePasswordForm = () => {
 		resolver: yupResolver(updatePasswordFormSchema),
 	});
 
-	const handleSavePassword = async (data: ChangePasswordFormData) => {
+	const handleSavePassword = async (
+		data: ChangePasswordFormData
+	): Promise<void> => {
 		setIsLoading(true);
 
 		updateUserPasswordById(
@@ -49,7 +51,7 @@ const ChangePasswordForm = () => {
 
 				reset();
 			}
-		).catch((err: Error) => {
+		).catch(() => {
 			setIsLoading(false);
 
 			snackbarsService?.addAlert({

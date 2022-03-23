@@ -1,11 +1,16 @@
 import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
+import { ReactElement } from "react";
 import GoogleLogin, {
 	GoogleLoginResponse,
 	GoogleLoginResponseOffline,
 } from "react-google-login";
 
-function GoogleLoginButton({ setIsLoading }: { setIsLoading: Function }) {
+function GoogleLoginButton({
+	setIsLoading,
+}: {
+	setIsLoading: Function;
+}): ReactElement {
 	const snackbarsService = useSnackbars();
 
 	const auth = useAuth();
@@ -18,7 +23,7 @@ function GoogleLoginButton({ setIsLoading }: { setIsLoading: Function }) {
 
 	const onGetOauthGoogleTokenSuccess = async (
 		response: GoogleLoginResponse | GoogleLoginResponseOffline
-	) => {
+	): Promise<void> => {
 		setIsLoading(true);
 
 		if (isResponseAGoogleLoginResponse(response)) {
@@ -28,7 +33,7 @@ function GoogleLoginButton({ setIsLoading }: { setIsLoading: Function }) {
 		}
 	};
 
-	const onGetOauthGoogleTokenFail = async (error: any) => {
+	const onGetOauthGoogleTokenFail = async (error: any): Promise<void> => {
 		snackbarsService?.addAlert({
 			message: error?.details,
 			severity: "error",

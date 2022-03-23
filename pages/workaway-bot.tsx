@@ -3,8 +3,9 @@ import BotLogs from "@components/workawayBot/BotLogs";
 import FilesSection from "@components/workawayBot/FilesSection";
 import InfoForm from "@components/workawayBot/InfoForm";
 import { Box, Typography } from "@mui/material";
+import { ReactElement } from "react";
 
-function WorkawayBot() {
+function WorkawayBot(): ReactElement {
 	return (
 		<PremiumRoute>
 			<Typography variant="h1">Workaway Bot</Typography>

@@ -8,14 +8,16 @@ import {
 } from "@services/userApi";
 import { useRouter } from "next/router";
 import {
+	Context,
 	createContext,
-	ReactNode,
+	ReactElement,
 	useCallback,
 	useContext,
 	useEffect,
 	useState,
 } from "react";
 import useSWR from "swr";
+import { FetcherResponse } from "swr/dist/types";
 import { useSnackbars } from "./SnackbarProvider";
 
 export type Role = "admin" | "premium" | "classic";
@@ -47,12 +49,18 @@ type AuthValue = {
 	isPremium: (user: User | undefined | null) => boolean;
 };
 
-const AuthContext = createContext<AuthValue | undefined>(undefined);
+const AuthContext: Context<AuthValue | undefined> = createContext<
+	AuthValue | undefined
+>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-	const fetcher = (url: RequestInfo) => getUserSWR();
+export const AuthProvider = ({
+	children,
+}: {
+	children: ReactElement;
+}): ReactElement => {
+	const fetcher = (): FetcherResponse<User> => getUserSWR();
 
-	const { data: userSWR, mutate, error } = useSWR("user", fetcher);
+	const { data: userSWR } = useSWR("user", fetcher);
 	const [user, setUser] = useState<User | null | undefined>(undefined);
 	const [status, setStatus] = useState<AuthStatus>("loading");
 
@@ -88,12 +96,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		setUser(userSWR);
 	}, [userSWR]);
 
-	const logout = async () => {
+	const logout = async (): Promise<void> => {
 		await signOut(() => {
 			setUser(null);
 			setStatus("not-connected");
 			router.push("/");
-		}).catch((err: Error) => {
+		}).catch(() => {
 			setStatus("not-connected");
 			snackbarsService?.addAlert({
 				message: "An error occurred while signing out",
@@ -102,7 +110,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		});
 	};
 
-	const login = async (email: string, password: string, cb: Function) => {
+	const login = async (
+		email: string,
+		password: string,
+		cb: Function
+	): Promise<void> => {
 		setStatus("loading");
 
 		await signInWithEmailAndPassword(email, password, (user: User) => {
@@ -118,7 +130,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 			});
 
 			router.push("/dashboard");
-		}).catch((err: Error) => {
+		}).catch(() => {
 			cb();
 
 			setUser(null);
@@ -132,7 +144,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		});
 	};
 
-	const loginWithGoogle = async (token: string, cb: Function) => {
+	const loginWithGoogle = async (
+		token: string,
+		cb: Function
+	): Promise<void> => {
 		setStatus("loading");
 		await signInWithGoogle(token, (user: User) => {
 			cb();
@@ -148,7 +163,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 			});
 
 			router.replace("/dashboard");
-		}).catch((err: Error) => {
+		}).catch(() => {
 			cb();
 			setUser(null);
 			setStatus("not-connected");
@@ -164,7 +179,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		email: string,
 		password: string,
 		cb: Function
-	) => {
+	): Promise<void> => {
 		setStatus("loading");
 
 		await signUpWithEmailAndPassword(name, email, password, (user: User) => {
@@ -177,7 +192,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 			});
 
 			router.replace("/dashboard");
-		}).catch((err: Error) => {
+		}).catch(() => {
 			cb();
 
 			setUser(null);
@@ -216,4 +231,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	);
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = (): AuthValue | undefined => useContext(AuthContext);

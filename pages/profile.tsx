@@ -2,8 +2,9 @@ import SignedInRoute from "@components/routes/SignedInRoute";
 import ChangePasswordForm from "@components/users/ChangePasswordForm";
 import ProfileForm from "@components/users/ProfileForm";
 import { Typography } from "@mui/material";
+import { ReactElement } from "react";
 
-function Profile() {
+function Profile(): ReactElement {
 	return (
 		<SignedInRoute>
 			<Typography variant="h1">Profile</Typography>

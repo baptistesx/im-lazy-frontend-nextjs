@@ -1,3 +1,4 @@
+import { DRAWER_WIDTH } from "@components/layout/utils/constants";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import GroupIcon from "@mui/icons-material/Group";
 import HomeIcon from "@mui/icons-material/Home";
@@ -8,9 +9,9 @@ import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useAuth } from "@providers/AuthProvider";
-import { DRAWER_WIDTH } from "@utils/constants";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { ReactElement } from "react";
 
 const CustomDrawer = ({
 	handleDrawerToggle,
@@ -18,7 +19,7 @@ const CustomDrawer = ({
 }: {
 	handleDrawerToggle: any;
 	mobileOpen: boolean;
-}) => {
+}): ReactElement => {
 	const auth = useAuth();
 
 	const router = useRouter();

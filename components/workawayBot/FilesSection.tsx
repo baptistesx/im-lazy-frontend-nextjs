@@ -21,9 +21,9 @@ import {
 	downloadFileByName,
 	getFilesName,
 } from "@services/workawayBotApi";
-import { useCallback, useEffect, useState } from "react";
+import { ReactElement, useCallback, useEffect, useState } from "react";
 
-const FilesSection = () => {
+const FilesSection = (): ReactElement => {
 	const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
 	const [filesName, setFilesName] = useState<string[]>([]);
@@ -37,7 +37,7 @@ const FilesSection = () => {
 			setFilesName([...data]);
 
 			setIsRefreshing(false);
-		}).catch((err: Error) => {
+		}).catch(() => {
 			setIsRefreshing(false);
 
 			snackbarsService?.addAlert({
@@ -52,7 +52,7 @@ const FilesSection = () => {
 		handleRefresh();
 	}, [handleRefresh]);
 
-	const handleDownloadFile = async (name: string) => {
+	const handleDownloadFile = async (name: string): Promise<void> => {
 		await downloadFileByName(name, (data: any) => {
 			// Create a blob with the data we want to download as a file
 			const blob = new Blob([data], { type: "text/json" });
@@ -71,7 +71,7 @@ const FilesSection = () => {
 			a.dispatchEvent(clickEvt);
 
 			a.remove();
-		}).catch((err: Error) => {
+		}).catch(() => {
 			snackbarsService?.addAlert({
 				message:
 					"An error occurred while downloading file, are you a premium member?",
@@ -80,10 +80,10 @@ const FilesSection = () => {
 		});
 	};
 
-	const handleDeleteFile = async (name: string) => {
+	const handleDeleteFile = async (name: string): Promise<void> => {
 		await deleteFileByName(name, () => {
 			handleRefresh();
-		}).catch((err: Error) => {
+		}).catch(() => {
 			snackbarsService?.addAlert({
 				message:
 					"An error occurred while deleting file, are you a premium member?",
@@ -129,14 +129,14 @@ const FilesSection = () => {
 										<TableCell align="left">
 											<IconButton
 												aria-label="download"
-												onClick={() => handleDownloadFile(name)}
+												onClick={(): Promise<void> => handleDownloadFile(name)}
 											>
 												<DownloadIcon />
 											</IconButton>
 
 											<IconButton
 												aria-label="delete"
-												onClick={() => handleDeleteFile(name)}
+												onClick={(): Promise<void> => handleDeleteFile(name)}
 											>
 												<DeleteIcon />
 											</IconButton>

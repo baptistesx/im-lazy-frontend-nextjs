@@ -14,8 +14,7 @@ import { Box } from "@mui/system";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import infoFormSchema from "@schemas/infoFormSchema";
 import { startBot, stopBot } from "@services/workawayBotApi";
-import { NODE_ENV } from "@utils/constants";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 interface InfoSubmitFormData {
@@ -32,7 +31,7 @@ interface InfoSubmitFormData {
 	englishMessage: number;
 }
 
-const InfoForm = () => {
+const InfoForm = (): ReactElement => {
 	const [isStarting, setIsStarting] = useState(false);
 	const [isStopping, setIsStopping] = useState(false);
 	const [isRunning, setIsRunning] = useState(false);
@@ -50,12 +49,12 @@ const InfoForm = () => {
 	});
 
 	useEffect(() => {
-		const subscription = watch((value, { name, type }) => {});
+		const subscription = watch(() => {});
 		return () => subscription.unsubscribe();
 	}, [watch]);
 
-	const handleStartBot = async (data: InfoSubmitFormData) => {
-		if (NODE_ENV === "production") {
+	const handleStartBot = async (data: InfoSubmitFormData): Promise<void> => {
+		if (process.env.NODE_ENV === "production") {
 			data = { ...data, headless: true, developmentMode: false };
 		} else {
 			data = { ...data, developmentMode: data.developmentMode === true };
@@ -74,7 +73,7 @@ const InfoForm = () => {
 
 				setIsStarting(false);
 			}
-		).catch((err: Error) => {
+		).catch(() => {
 			snackbarsService?.addAlert({
 				message:
 					"An error occurred while starting bot, are you a premium member?",
@@ -83,7 +82,7 @@ const InfoForm = () => {
 		});
 	};
 
-	const handleStopBot = async () => {
+	const handleStopBot = async (): Promise<void> => {
 		setIsStopping(true);
 
 		await stopBot((res: any) => {
@@ -92,7 +91,7 @@ const InfoForm = () => {
 			}
 
 			setIsStopping(false);
-		}).catch((err: Error) => {
+		}).catch(() => {
 			snackbarsService?.addAlert({
 				message:
 					"An error occurred while stopping bot, are you a premium member?",
@@ -109,7 +108,7 @@ const InfoForm = () => {
 		>
 			<CardContent>
 				<Typography variant="h2">Info</Typography>
-				{NODE_ENV === "development" ? (
+				{process.env.NODE_ENV === "development" ? (
 					<>
 						<FormControlLabel
 							control={<Checkbox defaultChecked />}
@@ -158,7 +157,7 @@ const InfoForm = () => {
 					name="detectionRadius"
 					control={control}
 					rules={{ required: "Detection radius needed" }}
-					render={({ field: { onChange, value } }) => (
+					render={({ field: { onChange, value } }): ReactElement => (
 						<TextField
 							fullWidth
 							select

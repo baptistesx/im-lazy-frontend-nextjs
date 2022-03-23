@@ -8,6 +8,7 @@ import {
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { savePayment } from "@services/userApi";
 import { useRouter } from "next/router";
+import { ReactElement } from "react";
 
 const paypalScriptOptions: PayPalScriptOptions = {
 	"client-id":
@@ -18,7 +19,7 @@ const paypalScriptOptions: PayPalScriptOptions = {
 	components: "buttons",
 };
 
-function CustomButton() {
+function CustomButton(): ReactElement {
 	const snackbarsService = useSnackbars();
 
 	const router = useRouter();
@@ -91,7 +92,7 @@ function CustomButton() {
 	);
 }
 
-export default function CustomPaypalButton() {
+export default function CustomPaypalButton(): ReactElement {
 	return (
 		<PayPalScriptProvider options={paypalScriptOptions}>
 			<CustomButton />

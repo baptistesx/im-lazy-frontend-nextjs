@@ -14,7 +14,7 @@ import { useSnackbars } from "@providers/SnackbarProvider";
 import editUserFormSchema from "@schemas/editUserFormSchema";
 import { createUser, updateUserById } from "@services/userApi";
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 interface EditUserDialogFormData {
@@ -27,11 +27,11 @@ interface EditUserDialogFormData {
 interface EditUserDialogProps {
 	keepMounted: boolean;
 	open: boolean;
-	onClose: Function;
+	onClose: ({ modified }: { modified: boolean }) => Promise<void>;
 	user?: User | null;
 }
 
-function EditUserDialog(props: EditUserDialogProps) {
+const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 	const { onClose, open, user, ...other } = props;
 
 	const auth = useAuth();
@@ -56,7 +56,7 @@ function EditUserDialog(props: EditUserDialogProps) {
 	});
 
 	useEffect(() => {
-		const subscription = watch((value, { name, type }) => {});
+		const subscription = watch(() => {});
 		return () => subscription.unsubscribe();
 	}, [watch]);
 
@@ -66,13 +66,13 @@ function EditUserDialog(props: EditUserDialogProps) {
 		}
 	}, [user, open]);
 
-	const handleEntering = () => {
+	const handleEntering = (): void => {
 		// if (radioGroupRef.current != null) {
 		//   radioGroupRef.current.focus();
 		// }
 	};
 
-	const onSubmit = async (data: EditUserDialogFormData) => {
+	const onSubmit = async (data: EditUserDialogFormData): Promise<void> => {
 		setIsSaving(true);
 
 		// If updating user
@@ -100,7 +100,7 @@ function EditUserDialog(props: EditUserDialogProps) {
 
 					reset(data);
 				}
-			).catch((err: Error) => {
+			).catch(() => {
 				setIsSaving(false);
 
 				snackbarsService?.addAlert({
@@ -128,7 +128,7 @@ function EditUserDialog(props: EditUserDialogProps) {
 
 					reset(data);
 				}
-			).catch((err: Error) => {
+			).catch(() => {
 				setIsSaving(false);
 
 				snackbarsService?.addAlert({
@@ -145,9 +145,7 @@ function EditUserDialog(props: EditUserDialogProps) {
 			TransitionProps={{ onEntering: handleEntering }}
 			open={open}
 			{...other}
-			onClose={() => {
-				onClose({ modified: false });
-			}}
+			onClose={(): Promise<void> => onClose({ modified: false })}
 		>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<DialogTitle>{currentUser?.id ? "Edit" : "Create"} user</DialogTitle>
@@ -178,7 +176,7 @@ function EditUserDialog(props: EditUserDialogProps) {
 						name="role"
 						control={control}
 						rules={{ required: "Role needed" }}
-						render={({ field: { onChange, value } }) => (
+						render={({ field: { onChange, value } }): ReactElement => (
 							<TextField
 								fullWidth
 								select
@@ -203,7 +201,9 @@ function EditUserDialog(props: EditUserDialogProps) {
 				</DialogContent>
 
 				<DialogActions>
-					<Button onClick={() => onClose({ modified: false })}>Cancel</Button>
+					<Button onClick={(): Promise<void> => onClose({ modified: false })}>
+						Cancel
+					</Button>
 
 					<LoadingButton
 						type="submit"
@@ -220,7 +220,7 @@ function EditUserDialog(props: EditUserDialogProps) {
 			</form>
 		</Dialog>
 	);
-}
+};
 
 export default EditUserDialog;
 

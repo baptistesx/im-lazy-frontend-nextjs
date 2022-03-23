@@ -1,5 +1,5 @@
 import { Alert, AlertColor } from "@mui/material";
-import { ReactNode } from "react";
+import { ReactElement, ReactNode } from "react";
 
 export type AlertMessage = {
 	message: string;
@@ -12,7 +12,7 @@ export const CustomAlert = ({
 }: {
 	alert: AlertMessage;
 	children: ReactNode;
-}) => {
+}): ReactElement => {
 	return (
 		<Alert severity={alert.severity} sx={{ width: "100%" }}>
 			{alert.message}

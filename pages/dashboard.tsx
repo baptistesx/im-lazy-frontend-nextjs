@@ -8,16 +8,16 @@ import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { sendVerificationEmail } from "@services/userApi";
 import Link from "next/link";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 
-function Dashboard() {
+function Dashboard(): ReactElement {
 	const auth = useAuth();
 
 	const snackbarsService = useSnackbars();
 
 	const [loading, setLoading] = useState<boolean>(false);
 
-	const handleSendVerificationEmailAgain = async () => {
+	const handleSendVerificationEmailAgain = async (): Promise<void> => {
 		if (auth?.user?.email === undefined) {
 			snackbarsService?.addAlert({
 				message: "Email not valid.",
@@ -33,7 +33,7 @@ function Dashboard() {
 					message: "Confirmation email has been well sent",
 					severity: "success",
 				});
-			}).catch((err: Error) => {}); //TODO: handle error
+			});
 		}
 	};
 

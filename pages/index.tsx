@@ -1,7 +1,8 @@
 import NotSignedInRoute from "@components/routes/NotSignedInRoute";
 import { Box, Button, Link, Typography } from "@mui/material";
+import { ReactElement } from "react";
 
-function Home() {
+function Home(): ReactElement {
 	return (
 		<NotSignedInRoute title="Home">
 			<Typography variant="body1" sx={{ color: "white", textAlign: "center" }}>

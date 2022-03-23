@@ -15,10 +15,9 @@ module.exports = {
 	plugins: ["react", "@typescript-eslint", "unused-imports"],
 	rules: {
 		"react/no-unescaped-entities": 0,
-		"no-unused-vars": "off",
 		"unused-imports/no-unused-imports": "error",
 		"unused-imports/no-unused-vars": [
-			"warn",
+			"error",
 			{
 				vars: "all",
 				varsIgnorePattern: "^_",
@@ -26,5 +25,7 @@ module.exports = {
 				argsIgnorePattern: "^_",
 			},
 		],
+		"@typescript-eslint/explicit-function-return-type": "error",
+		// "max-len": ["warn", { code: 80 }],
 	},
 };

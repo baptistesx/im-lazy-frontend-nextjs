@@ -25,13 +25,10 @@ import {
 import { useAuth, User } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { deleteUserById, getUsers } from "@services/userApi";
-import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { ReactElement, useCallback, useEffect, useState } from "react";
 
-function Users() {
+function Users(): ReactElement {
 	const snackbarsService = useSnackbars();
-
-	const router = useRouter();
 
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -67,11 +64,11 @@ function Users() {
 		fetchData();
 	}, [fetchData]);
 
-	const onRefreshClick = () => {
+	const onRefreshClick = (): void => {
 		fetchData();
 	};
 
-	const handleDelete = async (userId: string) => {
+	const handleDelete = async (userId: string): Promise<void> => {
 		setIsLoading(true);
 
 		deleteUserById(userId, () => {
@@ -83,7 +80,7 @@ function Users() {
 				message: "User well deleted",
 				severity: "success",
 			});
-		}).catch((err: Error) => {
+		}).catch(() => {
 			snackbarsService?.addAlert({
 				message: "An error occurred while deleting user",
 				severity: "error",
@@ -91,13 +88,15 @@ function Users() {
 		});
 	};
 
-	const handleOpenUserDialog = (userToEdit?: User) => {
+	const handleOpenUserDialog = (userToEdit?: User): void => {
 		setUserSelected(userToEdit ?? null);
 
 		setIsEditUserDialogOpen(true);
 	};
 
-	const handleCloseUserDialog = async (res: { modified: boolean }) => {
+	const handleCloseUserDialog = async (res: {
+		modified: boolean;
+	}): Promise<void> => {
 		setIsEditUserDialogOpen(false);
 		setUserSelected(null);
 
@@ -170,7 +169,7 @@ function Users() {
 													<TableCell align="left">
 														<Tooltip title="Edit user">
 															<IconButton
-																onClick={() => handleOpenUserDialog(user)}
+																onClick={(): void => handleOpenUserDialog(user)}
 																disabled={isLoading}
 															>
 																<EditIcon />
@@ -180,7 +179,9 @@ function Users() {
 														<Tooltip title="Delete user">
 															<IconButton
 																aria-label="delete"
-																onClick={() => handleDelete(user.id)}
+																onClick={(): Promise<void> =>
+																	handleDelete(user.id)
+																}
 																disabled={
 																	user.email === currentUser?.email || isLoading
 																}
@@ -200,7 +201,10 @@ function Users() {
 				</CardContent>
 
 				<CardActions>
-					<Button variant="contained" onClick={() => handleOpenUserDialog()}>
+					<Button
+						variant="contained"
+						onClick={(): void => handleOpenUserDialog()}
+					>
 						Create a user
 					</Button>
 

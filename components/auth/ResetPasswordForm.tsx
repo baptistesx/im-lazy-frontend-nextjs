@@ -11,14 +11,14 @@ import {
 import { useSnackbars } from "@providers/SnackbarProvider";
 import resetPasswordFormSchema from "@schemas/resetPasswordFormSchema";
 import { resetPassword } from "@services/userApi";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 type ResetPasswordFormData = {
 	email: string;
 };
 
-const ResetPasswordForm = () => {
+const ResetPasswordForm = (): ReactElement => {
 	const snackbarsService = useSnackbars();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -34,11 +34,11 @@ const ResetPasswordForm = () => {
 	});
 
 	useEffect(() => {
-		const subscription = watch((value, { name, type }) => {});
+		const subscription = watch(() => {});
 		return () => subscription.unsubscribe();
 	}, [watch]);
 
-	const onSubmit = async (data: ResetPasswordFormData) => {
+	const onSubmit = async (data: ResetPasswordFormData): Promise<void> => {
 		setIsLoading(true);
 
 		resetPassword(data.email, () => {
@@ -50,7 +50,7 @@ const ResetPasswordForm = () => {
 			});
 
 			reset(data);
-		}).catch((err: Error) => {
+		}).catch(() => {
 			setIsLoading(false);
 
 			snackbarsService?.addAlert({

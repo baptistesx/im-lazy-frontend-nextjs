@@ -3,7 +3,7 @@ import { Box, Button, Link, Typography } from "@mui/material/";
 import { Theme } from "@mui/material/styles";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { ReactNode } from "react";
+import { ReactElement, ReactNode } from "react";
 
 const NotSignedInLayout = ({
 	children,
@@ -11,7 +11,7 @@ const NotSignedInLayout = ({
 }: {
 	children: ReactNode;
 	title?: string;
-}) => {
+}): ReactElement => {
 	const theme: Theme = useTheme();
 	const router = useRouter();
 

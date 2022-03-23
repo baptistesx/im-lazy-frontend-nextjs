@@ -2,8 +2,9 @@ import SignedInRoute from "@components/routes/SignedInRoute";
 import CustomPaypalButton from "@components/users/CustomPaypalButton";
 import { Typography } from "@mui/material";
 import { useAuth } from "@providers/AuthProvider";
+import { ReactElement } from "react";
 
-function GetLicence() {
+function GetLicence(): ReactElement {
 	const auth = useAuth();
 
 	return (

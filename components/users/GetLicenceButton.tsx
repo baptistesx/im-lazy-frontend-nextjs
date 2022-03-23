@@ -1,8 +1,9 @@
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import { ReactElement } from "react";
 
-const GetLicenceButton = () => (
+const GetLicenceButton = (): ReactElement => (
 	<Link href="/get-licence" passHref>
 		<Button variant="contained" sx={{ m: 1 }}>
 			Get Premium Account to access bots !

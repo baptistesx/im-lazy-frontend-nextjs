@@ -5,7 +5,7 @@ import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import editProfileFormSchema from "@schemas/editProfileFormSchema";
 import { updateUserById } from "@services/userApi";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { useForm } from "react-hook-form";
 import GetLicenceButton from "./GetLicenceButton";
 
@@ -14,7 +14,7 @@ type ProfileFormData = {
 	name: string;
 };
 
-const ProfileForm = () => {
+const ProfileForm = (): ReactElement => {
 	const auth = useAuth();
 
 	const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +30,7 @@ const ProfileForm = () => {
 		resolver: yupResolver(editProfileFormSchema),
 	});
 
-	const handleSaveProfile = async (data: ProfileFormData) => {
+	const handleSaveProfile = async (data: ProfileFormData): Promise<void> => {
 		setIsLoading(true);
 
 		updateUserById(
@@ -52,7 +52,7 @@ const ProfileForm = () => {
 
 				reset(data);
 			}
-		).catch((err: Error) => {
+		).catch(() => {
 			snackbarsService?.addAlert({
 				message: "Error while updating profile.",
 				severity: "error",

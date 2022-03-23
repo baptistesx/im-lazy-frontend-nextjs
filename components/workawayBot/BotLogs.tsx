@@ -2,13 +2,13 @@ import { LoadingButton } from "@mui/lab";
 import { Box, Card, Typography } from "@mui/material";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { clearLogs, setCity } from "@services/workawayBotApi";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import socketIOClient, { Socket } from "socket.io-client";
 import CitiesFormDialog from "./CitiesFormDialog";
 
 let botLogsMessageSentIsFirst = true;
 
-const BotLogs = () => {
+const BotLogs = (): ReactElement => {
 	const [socket, setSocket] = useState<Socket | null>(null);
 	const [isSocketInitialized, setIsSocketInitialized] =
 		useState<boolean>(false);
@@ -25,19 +25,19 @@ const BotLogs = () => {
 
 	const [cities, setCities] = useState<string[]>([]);
 
-	const handleOpenCitiesDialog = (citiesArray: string[]) => {
+	const handleOpenCitiesDialog = (citiesArray: string[]): void => {
 		setCities(citiesArray);
 
 		setIsCitiesDialogOpen(true);
 	};
 
-	const handleCloseCitiesDialog = async (city: string) => {
+	const handleCloseCitiesDialog = async (city: string): Promise<void> => {
 		setIsCitiesDialogOpen(false);
 
 		if (city) {
 			setFullCitySelected(city);
 
-			await setCity(city).catch((err: Error) => {
+			await setCity(city).catch(() => {
 				snackbarsService?.addAlert({
 					message:
 						"An error occurred while setting the city/country name, are you a premium member?",
@@ -88,16 +88,16 @@ const BotLogs = () => {
 		}
 	}, [socket, isSocketInitialized]);
 
-	const handleClickClearConsole = async () => {
+	const handleClickClearConsole = async (): Promise<void> => {
 		setIsClearingLogs(true);
 
 		clearLogs((res: { status: number }) => {
 			if (res.status === 200) {
-				setBotLogs((logs) => []);
+				setBotLogs(() => []);
 			}
 
 			setIsClearingLogs(false);
-		}).catch((err: Error) => {
+		}).catch(() => {
 			setIsClearingLogs(false);
 
 			snackbarsService?.addAlert({
@@ -108,7 +108,7 @@ const BotLogs = () => {
 		});
 	};
 
-	const scrollLogsDown = () => {
+	const scrollLogsDown = (): void => {
 		var elem: any = document.querySelector("#logs");
 
 		if (elem) {

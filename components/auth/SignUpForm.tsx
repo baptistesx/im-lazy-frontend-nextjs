@@ -11,7 +11,7 @@ import {
 import { useAuth } from "@providers/AuthProvider";
 import signUpFormSchema from "@schemas/signUpFormSchema";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import GoogleLoginButton from "./GoogleLoginButton";
 
@@ -24,7 +24,7 @@ type SignUpSubmitFormData = {
 	passwordConfirmation: string;
 };
 
-const SignUpForm = () => {
+const SignUpForm = (): ReactElement => {
 	const auth = useAuth();
 
 	const [isSigningUp, setIsSigningUp] = useState(false);
@@ -40,11 +40,11 @@ const SignUpForm = () => {
 	});
 
 	useEffect(() => {
-		const subscription = watch((value, { name, type }) => {});
+		const subscription = watch(() => {});
 		return () => subscription.unsubscribe();
 	}, [watch]);
 
-	const onSubmit = (data: SignUpSubmitFormData) => {
+	const onSubmit = (data: SignUpSubmitFormData): void => {
 		setIsSigningUp(true);
 
 		auth?.register(data.name, data.email, data.password, () => {

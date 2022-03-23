@@ -2,8 +2,9 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material/";
 import { useAuth } from "@providers/AuthProvider";
+import { ReactElement } from "react";
 
-function ToolBarUserInfo() {
+const ToolBarUserInfo = (): ReactElement => {
 	const auth = useAuth();
 
 	return (
@@ -31,6 +32,6 @@ function ToolBarUserInfo() {
 			>{`${auth?.user?.name} |`}</Typography>
 		</Box>
 	);
-}
+};
 
 export default ToolBarUserInfo;
