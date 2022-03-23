@@ -2,7 +2,6 @@ import { LoadingButton } from "@mui/lab";
 import { Box, Card, Typography } from "@mui/material";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { clearLogs, setCity } from "@services/workawayBotApi";
-import { ENDPOINT } from "@utils/constants";
 import { useEffect, useState } from "react";
 import socketIOClient, { Socket } from "socket.io-client";
 import CitiesFormDialog from "./CitiesFormDialog";
@@ -50,7 +49,7 @@ const BotLogs = () => {
 
 	useEffect(() => {
 		if (socket === null) {
-			setSocket(socketIOClient(ENDPOINT as any));
+			setSocket(socketIOClient(process.env.NEXT_PUBLIC_ENDPOINT as any));
 		}
 
 		if (socket !== null && !isSocketInitialized) {

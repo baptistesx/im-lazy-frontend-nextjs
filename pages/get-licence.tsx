@@ -2,7 +2,6 @@ import SignedInRoute from "@components/routes/SignedInRoute";
 import CustomPaypalButton from "@components/users/CustomPaypalButton";
 import { Typography } from "@mui/material";
 import { useAuth } from "@providers/AuthProvider";
-import { PAYPAL_CLIENT_ID } from "@utils/constants";
 
 function GetLicence() {
 	const auth = useAuth();

@@ -14,7 +14,7 @@ import { Box } from "@mui/system";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import infoFormSchema from "@schemas/infoFormSchema";
 import { startBot, stopBot } from "@services/workawayBotApi";
-import { DEV_MODE } from "@utils/constants";
+import { NODE_ENV } from "@utils/constants";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
@@ -55,7 +55,7 @@ const InfoForm = () => {
 	}, [watch]);
 
 	const handleStartBot = async (data: InfoSubmitFormData) => {
-		if (DEV_MODE !== "TRUE") {
+		if (NODE_ENV === "production") {
 			data = { ...data, headless: true, developmentMode: false };
 		} else {
 			data = { ...data, developmentMode: data.developmentMode === true };
@@ -109,7 +109,7 @@ const InfoForm = () => {
 		>
 			<CardContent>
 				<Typography variant="h2">Info</Typography>
-				{DEV_MODE === "TRUE" ? (
+				{NODE_ENV === "development" ? (
 					<>
 						<FormControlLabel
 							control={<Checkbox defaultChecked />}

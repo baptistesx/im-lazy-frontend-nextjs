@@ -1,6 +1,5 @@
 import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
-import { GOOGLE_CLIENT_ID } from "@utils/constants";
 import GoogleLogin, {
 	GoogleLoginResponse,
 	GoogleLoginResponseOffline,
@@ -38,7 +37,7 @@ function GoogleLoginButton({ setIsLoading }: { setIsLoading: Function }) {
 
 	return (
 		<GoogleLogin
-			clientId={`${GOOGLE_CLIENT_ID}`}
+			clientId={`${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}`}
 			buttonText="Sign in with Google"
 			onSuccess={onGetOauthGoogleTokenSuccess}
 			onFailure={onGetOauthGoogleTokenFail}

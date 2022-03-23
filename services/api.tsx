@@ -1,5 +1,4 @@
-import { ENDPOINT } from "@utils/constants";
-import axios, { Method } from "axios";
+import axios from "axios";
 
 const api = {
 	// All api requests are made thanks to this function
@@ -14,7 +13,7 @@ const api = {
 	}) {
 		return axios({
 			method,
-			url: `${ENDPOINT}/${url}`,
+			url: `${process.env.NEXT_PUBLIC_ENDPOINT}/${url}`,
 			data: body,
 			headers: { "Content-Type": "application/json" },
 			withCredentials: true,

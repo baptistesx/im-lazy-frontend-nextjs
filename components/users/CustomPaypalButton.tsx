@@ -7,20 +7,12 @@ import {
 } from "@paypal/react-paypal-js";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { savePayment } from "@services/userApi";
-import { PAYPAL_CLIENT_ID, PAYPAL_SANDBOX_CLIENT_ID } from "@utils/constants";
 import { useRouter } from "next/router";
 
 const paypalScriptOptions: PayPalScriptOptions = {
-	// TODO: how to simplify that?
 	"client-id":
-		process.env.NODE_ENV === "production"
-			? PAYPAL_CLIENT_ID
-				? PAYPAL_CLIENT_ID
-				: PAYPAL_SANDBOX_CLIENT_ID
-				? PAYPAL_SANDBOX_CLIENT_ID
-				: ""
-			: PAYPAL_SANDBOX_CLIENT_ID
-			? PAYPAL_SANDBOX_CLIENT_ID
+		process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID !== undefined
+			? process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
 			: "",
 	currency: "EUR",
 	components: "buttons",
