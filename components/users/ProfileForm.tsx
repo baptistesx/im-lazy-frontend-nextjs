@@ -17,7 +17,7 @@ type ProfileFormData = {
 const ProfileForm = (): ReactElement => {
 	const auth = useAuth();
 
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const snackbarsService = useSnackbars();
 

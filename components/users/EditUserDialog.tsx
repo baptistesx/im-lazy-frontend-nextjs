@@ -9,8 +9,9 @@ import {
 } from "@mui/material";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Role, useAuth, User } from "@providers/AuthProvider";
+import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
+import { Role, User } from "@providers/user";
 import editUserFormSchema from "@schemas/editUserFormSchema";
 import { createUser, updateUserById } from "@services/userApi";
 import PropTypes from "prop-types";
@@ -28,7 +29,7 @@ interface EditUserDialogProps {
 	keepMounted: boolean;
 	open: boolean;
 	onClose: ({ modified }: { modified: boolean }) => Promise<void>;
-	user?: User | null;
+	user?: User | undefined;
 }
 
 const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
@@ -38,11 +39,11 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 
 	const snackbarsService = useSnackbars();
 
-	const [currentUser, setUser] = useState(user);
+	const [currentUser, setUser] = useState<User | undefined>(user);
 
 	// const radioGroupRef = useRef(null);
 
-	const [isSaving, setIsSaving] = useState(false);
+	const [isSaving, setIsSaving] = useState<boolean>(false);
 
 	const {
 		register,
@@ -148,7 +149,9 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 			onClose={(): Promise<void> => onClose({ modified: false })}
 		>
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<DialogTitle>{currentUser?.id ? "Edit" : "Create"} user</DialogTitle>
+				<DialogTitle>
+					{currentUser?.id !== undefined ? "Edit" : "Create"} user
+				</DialogTitle>
 
 				<DialogContent>
 					<TextField

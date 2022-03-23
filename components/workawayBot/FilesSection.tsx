@@ -26,14 +26,14 @@ import { ReactElement, useCallback, useEffect, useState } from "react";
 const FilesSection = (): ReactElement => {
 	const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
-	const [filesName, setFilesName] = useState<string[]>([]);
+	const [filesName, setFilesName] = useState<string[] | undefined>(undefined);
 
 	const snackbarsService = useSnackbars();
 
 	const handleRefresh = useCallback(async () => {
 		setIsRefreshing(true);
 
-		getFilesName((data: any) => {
+		getFilesName((data) => {
 			setFilesName([...data]);
 
 			setIsRefreshing(false);
@@ -53,7 +53,7 @@ const FilesSection = (): ReactElement => {
 	}, [handleRefresh]);
 
 	const handleDownloadFile = async (name: string): Promise<void> => {
-		await downloadFileByName(name, (data: any) => {
+		await downloadFileByName(name, (data) => {
 			// Create a blob with the data we want to download as a file
 			const blob = new Blob([data], { type: "text/json" });
 			// Create an anchor element and dispatch a click event on it
@@ -102,7 +102,7 @@ const FilesSection = (): ReactElement => {
 			<CardContent>
 				<Typography variant="h2">Available files</Typography>
 
-				{filesName.length === 0 ? (
+				{filesName?.length === 0 ? (
 					<Typography>No file available</Typography>
 				) : (
 					<TableContainer component={Paper}>
@@ -115,7 +115,7 @@ const FilesSection = (): ReactElement => {
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{filesName.map((name) => (
+								{filesName?.map((name) => (
 									<TableRow
 										key={name}
 										sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

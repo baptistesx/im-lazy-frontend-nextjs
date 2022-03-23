@@ -27,7 +27,7 @@ type SignUpSubmitFormData = {
 const SignUpForm = (): ReactElement => {
 	const auth = useAuth();
 
-	const [isSigningUp, setIsSigningUp] = useState(false);
+	const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
 
 	const {
 		register,

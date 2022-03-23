@@ -1,6 +1,5 @@
 import {
 	getUser,
-	getUserSWR,
 	signInWithEmailAndPassword,
 	signInWithGoogle,
 	signOut,
@@ -16,38 +15,8 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import useSWR from "swr";
-import { FetcherResponse } from "swr/dist/types";
 import { useSnackbars } from "./SnackbarProvider";
-
-export type Role = "admin" | "premium" | "classic";
-export type User = {
-	id: string;
-	name: string;
-	email: string;
-	role: Role;
-	isEmailVerified: boolean;
-	lastLogin: Date;
-};
-
-type AuthStatus = "loading" | "connected" | "not-connected" | "error";
-
-type AuthValue = {
-	user: User | null | undefined;
-	status: AuthStatus;
-	logout: () => void;
-	login: (email: string, password: string, cb: () => void) => void;
-	register: (
-		name: string,
-		email: string,
-		password: string,
-		cb: () => void
-	) => void;
-	loginWithGoogle: (token: string, cb: () => void) => void;
-	fetchCurrentUser: () => void;
-	isAdmin: (user: User | undefined | null) => boolean;
-	isPremium: (user: User | undefined | null) => boolean;
-};
+import { AuthValue, User, AuthStatus } from "./user";
 
 const AuthContext: Context<AuthValue | undefined> = createContext<
 	AuthValue | undefined
@@ -58,10 +27,7 @@ export const AuthProvider = ({
 }: {
 	children: ReactElement;
 }): ReactElement => {
-	const fetcher = (): FetcherResponse<User> => getUserSWR();
-
-	const { data: userSWR } = useSWR("user", fetcher);
-	const [user, setUser] = useState<User | null | undefined>(undefined);
+	const [user, setUser] = useState<User | undefined>(undefined);
 	const [status, setStatus] = useState<AuthStatus>("loading");
 
 	const snackbarsService = useSnackbars();
@@ -69,6 +35,8 @@ export const AuthProvider = ({
 	const router = useRouter();
 
 	const fetchCurrentUser = useCallback(() => {
+		setStatus("loading");
+
 		getUser((user: User) => {
 			setUser(user);
 			setStatus("connected");
@@ -91,14 +59,12 @@ export const AuthProvider = ({
 	}, [router.route, snackbarsService]);
 
 	useEffect(() => {
-		setStatus("loading");
 		fetchCurrentUser();
-		setUser(userSWR);
-	}, [userSWR]);
+	}, [fetchCurrentUser]);
 
 	const logout = async (): Promise<void> => {
 		await signOut(() => {
-			setUser(null);
+			setUser(undefined);
 			setStatus("not-connected");
 			router.push("/");
 		}).catch(() => {
@@ -133,7 +99,7 @@ export const AuthProvider = ({
 		}).catch(() => {
 			cb();
 
-			setUser(null);
+			setUser(undefined);
 			setStatus("not-connected");
 			//TODO: add internet connection checker and customize message error
 			snackbarsService?.addAlert({
@@ -165,7 +131,7 @@ export const AuthProvider = ({
 			router.replace("/dashboard");
 		}).catch(() => {
 			cb();
-			setUser(null);
+			setUser(undefined);
 			setStatus("not-connected");
 			snackbarsService?.addAlert({
 				message: "An error occurred while signing in with Google",
@@ -195,7 +161,7 @@ export const AuthProvider = ({
 		}).catch(() => {
 			cb();
 
-			setUser(null);
+			setUser(undefined);
 			setStatus("not-connected");
 
 			snackbarsService?.addAlert({

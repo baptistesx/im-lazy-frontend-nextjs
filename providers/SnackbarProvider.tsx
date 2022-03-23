@@ -24,16 +24,16 @@ export const SnackBarProvider = ({
 }: {
 	children: ReactNode;
 }): ReactElement => {
-	const [alerts, setAlerts] = useState<AlertMessage[]>([]);
+	const [alerts, setAlerts] = useState<AlertMessage[] | undefined>(undefined);
 
 	const setAlertTimeout = (): NodeJS.Timeout =>
 		setTimeout(
-			() => setAlerts((alerts) => alerts.slice(0, alerts.length - 1)),
+			() => setAlerts((alerts) => alerts?.slice(0, alerts.length - 1)),
 			AUTO_DISMISS_MS
 		);
 
 	useEffect(() => {
-		if (alerts.length > 0) {
+		if (alerts !== undefined && alerts?.length > 0) {
 			const timer = setAlertTimeout();
 
 			return () => clearTimeout(timer);
@@ -41,8 +41,11 @@ export const SnackBarProvider = ({
 		return;
 	}, [alerts]);
 
-	const addAlert = (alert: AlertMessage): void =>
-		setAlerts((alerts: AlertMessage[]) => [alert, ...alerts]);
+	const addAlert = (alert: AlertMessage): void => {
+		setAlerts((alerts: AlertMessage[] | undefined) =>
+			alerts === undefined ? [alert] : [alert, ...alerts]
+		);
+	};
 
 	const snackbarContext: SnackbarContextInterface = {
 		addAlert: addAlert,
@@ -51,7 +54,7 @@ export const SnackBarProvider = ({
 	return (
 		<SnackbarContext.Provider value={snackbarContext}>
 			{children}
-			{alerts.map((alert, index) => (
+			{alerts?.map((alert, index) => (
 				<Snackbar open={true} key={alert.message + index}>
 					{/* //TODO: replace with CustomAlert */}
 					<Alert severity={alert.severity} sx={{ width: "100%" }}>

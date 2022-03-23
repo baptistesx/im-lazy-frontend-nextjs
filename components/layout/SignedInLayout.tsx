@@ -8,7 +8,7 @@ import { Theme } from "@mui/material/styles";
 import { useAuth } from "@providers/AuthProvider";
 import Image from "next/image";
 import Link from "next/link";
-import React, { ReactElement, ReactNode } from "react";
+import React, { ReactElement, ReactNode, useState } from "react";
 import CustomDrawer from "./CustomDrawer";
 import ToolBarUserInfo from "./ToolBarUserInfo";
 
@@ -23,7 +23,7 @@ const SignedInLayout = ({
 
 	const onLogoutClick = async (): Promise<void | undefined> => auth?.logout();
 
-	const [mobileOpen, setMobileOpen] = React.useState(false);
+	const [mobileOpen, setMobileOpen] = useState(false);
 
 	const handleDrawerToggle = (): void => setMobileOpen(!mobileOpen);
 
@@ -48,7 +48,10 @@ const SignedInLayout = ({
 						onClick={handleDrawerToggle}
 						sx={{
 							mr: 2,
-							display: auth?.user ? { sm: "none" } : { xs: "none" },
+							display:
+								auth?.user !== null && auth?.user !== undefined
+									? { sm: "none" }
+									: { xs: "none" },
 						}}
 					>
 						<MenuIcon />

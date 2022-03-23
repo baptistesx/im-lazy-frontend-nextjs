@@ -15,17 +15,17 @@ import { ReactElement, useEffect, useRef, useState } from "react";
 interface CitiesFormDialogProps {
 	keepMounted: boolean;
 	open: boolean;
-	onClose: (city: string) => Promise<void>;
-	value: string;
-	cities: string[];
+	onClose: (city: string | undefined) => Promise<void>;
+	value: string | undefined;
+	cities: string[] | undefined;
 }
 
 const CitiesFormDialog = (props: CitiesFormDialogProps): ReactElement => {
 	const { onClose, value: valueProp, open, cities, ...other } = props;
 
-	const [value, setValue] = useState(valueProp);
+	const [value, setValue] = useState<string | undefined>(valueProp);
 
-	const radioGroupRef = useRef<any>(null);
+	const radioGroupRef = useRef<unknown>(null);
 
 	useEffect(() => {
 		if (!open) {
@@ -35,7 +35,7 @@ const CitiesFormDialog = (props: CitiesFormDialogProps): ReactElement => {
 
 	const handleEntering = (): void => {
 		if (radioGroupRef.current != null) {
-			radioGroupRef.current.focus();
+			// radioGroupRef.current.focus();
 		}
 	};
 
@@ -65,7 +65,7 @@ const CitiesFormDialog = (props: CitiesFormDialogProps): ReactElement => {
 					value={value}
 					onChange={handleChange}
 				>
-					{cities.map((option) => (
+					{cities?.map((option) => (
 						<FormControlLabel
 							value={option}
 							key={option}

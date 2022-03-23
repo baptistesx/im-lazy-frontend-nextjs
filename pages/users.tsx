@@ -32,12 +32,12 @@ const Users = (): ReactElement => {
 
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 
-	const [users, setUsers] = useState<User[]>([]);
+	const [users, setUsers] = useState<User[] | undefined>(undefined);
 
 	const [isEditUserDialogOpen, setIsEditUserDialogOpen] =
 		useState<boolean>(false);
 
-	const [userSelected, setUserSelected] = useState<User | null>();
+	const [userSelected, setUserSelected] = useState<User | undefined>(undefined);
 	const auth = useAuth();
 
 	const currentUser = auth?.user;
@@ -89,7 +89,7 @@ const Users = (): ReactElement => {
 	};
 
 	const handleOpenUserDialog = (userToEdit?: User): void => {
-		setUserSelected(userToEdit ?? null);
+		setUserSelected(userToEdit ?? undefined);
 
 		setIsEditUserDialogOpen(true);
 	};
@@ -98,7 +98,7 @@ const Users = (): ReactElement => {
 		modified: boolean;
 	}): Promise<void> => {
 		setIsEditUserDialogOpen(false);
-		setUserSelected(null);
+		setUserSelected(undefined);
 
 		if (res?.modified) {
 			fetchData();
@@ -111,15 +111,15 @@ const Users = (): ReactElement => {
 
 			<Card>
 				<CardContent>
-					{users.length === 0 && isLoading ? (
+					{users?.length === 0 && isLoading ? (
 						<Box />
 					) : (
 						<Box>
 							<Typography variant="body1">
-								{`${users.length} Available users`}
+								{`${users?.length} Available users`}
 							</Typography>
 
-							{users.length === 0 ? (
+							{users?.length === 0 ? (
 								<Typography>No users</Typography>
 							) : (
 								//TODO: refactor (extract component)
@@ -137,7 +137,7 @@ const Users = (): ReactElement => {
 										</TableHead>
 
 										<TableBody>
-											{users.map((user) => (
+											{users?.map((user) => (
 												<TableRow key={user?.id}>
 													<TableCell component="th" scope="row">
 														{user?.name}
@@ -220,7 +220,8 @@ const Users = (): ReactElement => {
 				</CardActions>
 			</Card>
 
-			{userSelected || isEditUserDialogOpen ? (
+			{(userSelected !== null && userSelected !== undefined) ||
+			isEditUserDialogOpen ? (
 				<EditUserDialog
 					keepMounted
 					open={isEditUserDialogOpen}

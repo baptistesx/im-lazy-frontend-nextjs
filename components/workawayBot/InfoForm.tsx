@@ -32,9 +32,9 @@ interface InfoSubmitFormData {
 }
 
 const InfoForm = (): ReactElement => {
-	const [isStarting, setIsStarting] = useState(false);
-	const [isStopping, setIsStopping] = useState(false);
-	const [isRunning, setIsRunning] = useState(false);
+	const [isStarting, setIsStarting] = useState<boolean>(false);
+	const [isStopping, setIsStopping] = useState<boolean>(false);
+	const [isRunning, setIsRunning] = useState<boolean>(false);
 
 	const snackbarsService = useSnackbars();
 
@@ -66,7 +66,7 @@ const InfoForm = (): ReactElement => {
 			{
 				...data,
 			},
-			(res: any) => {
+			(res) => {
 				if (res.status === 200) {
 					setIsRunning(true);
 				}
@@ -85,7 +85,7 @@ const InfoForm = (): ReactElement => {
 	const handleStopBot = async (): Promise<void> => {
 		setIsStopping(true);
 
-		await stopBot((res: any) => {
+		await stopBot((res) => {
 			if (res.status === 200) {
 				setIsRunning(false);
 			}

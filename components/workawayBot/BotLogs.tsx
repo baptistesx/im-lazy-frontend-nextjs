@@ -9,21 +9,23 @@ import CitiesFormDialog from "./CitiesFormDialog";
 let botLogsMessageSentIsFirst = true;
 
 const BotLogs = (): ReactElement => {
-	const [socket, setSocket] = useState<Socket | null>(null);
+	const [socket, setSocket] = useState<Socket | undefined>(undefined);
 	const [isSocketInitialized, setIsSocketInitialized] =
 		useState<boolean>(false);
 
 	const snackbarsService = useSnackbars();
 
-	const [botLogs, setBotLogs] = useState<string[]>([]);
+	const [botLogs, setBotLogs] = useState<string[] | undefined>(undefined);
 
 	const [isClearingLogs, setIsClearingLogs] = useState<boolean>(false);
 
 	const [isCitiesDialogOpen, setIsCitiesDialogOpen] = useState<boolean>(false);
 
-	const [fullCitySelected, setFullCitySelected] = useState<string>("");
+	const [fullCitySelected, setFullCitySelected] = useState<string | undefined>(
+		undefined
+	);
 
-	const [cities, setCities] = useState<string[]>([]);
+	const [cities, setCities] = useState<string[] | undefined>(undefined);
 
 	const handleOpenCitiesDialog = (citiesArray: string[]): void => {
 		setCities(citiesArray);
@@ -31,9 +33,9 @@ const BotLogs = (): ReactElement => {
 		setIsCitiesDialogOpen(true);
 	};
 
-	const handleCloseCitiesDialog = async (city: string): Promise<void> => {
-		setIsCitiesDialogOpen(false);
-
+	const handleCloseCitiesDialog = async (
+		city: string | undefined
+	): Promise<void> => {
 		if (city) {
 			setFullCitySelected(city);
 
@@ -44,45 +46,60 @@ const BotLogs = (): ReactElement => {
 					severity: "error",
 				});
 			});
+
+			setIsCitiesDialogOpen(false);
+		} else {
+			snackbarsService?.addAlert({
+				message: "No city selected",
+				severity: "error",
+			});
 		}
 	};
 
 	useEffect(() => {
 		if (socket === null) {
-			setSocket(socketIOClient(process.env.NEXT_PUBLIC_ENDPOINT as any));
+			setSocket(socketIOClient(process.env.NEXT_PUBLIC_ENDPOINT));
 		}
 
 		if (socket !== null && !isSocketInitialized) {
 			setIsSocketInitialized(true);
 
-			socket.on("connection", (log: string) => {
-				setBotLogs((logs: string[]) => [...logs, log]);
+			socket?.on("connection", (log: string) => {
+				setBotLogs((logs: string[] | undefined) =>
+					logs === undefined ? [log] : [...logs, log]
+				);
 
 				scrollLogsDown();
 			});
 
-			socket.on("botLogs", (log: string) => {
+			socket?.on("botLogs", (log: string) => {
 				if (log.constructor === Array) {
-					setBotLogs((logs) => [logs[0], ...log]);
+					setBotLogs((logs) =>
+						logs === undefined ? [...log] : [logs[0], ...log]
+					);
 				} else {
-					setBotLogs((logs) => [...logs, log]);
+					setBotLogs((logs) =>
+						logs === undefined ? [...log] : [...logs, log]
+					);
 				}
 
 				scrollLogsDown();
 			});
 
-			socket.on("botLogsMessageSent", (log: string) => {
+			socket?.on("botLogsMessageSent", (log: string) => {
 				if (botLogsMessageSentIsFirst) {
-					setBotLogs((logs) => [...logs, log]);
+					setBotLogs((logs) => (logs === undefined ? [log] : [...logs, log]));
 					botLogsMessageSentIsFirst = false;
 				} else {
-					setBotLogs((logs) => [...logs.slice(0, -1), log]);
+					setBotLogs((logs) =>
+						logs === undefined ? [log] : [...logs.slice(0, -1), log]
+					);
 				}
 
 				scrollLogsDown();
 			});
 
-			socket.on("citiesList", async (cities: string[]) =>
+			socket?.on("citiesList", async (cities: string[]) =>
 				handleOpenCitiesDialog(cities)
 			);
 		}
@@ -109,7 +126,7 @@ const BotLogs = (): ReactElement => {
 	};
 
 	const scrollLogsDown = (): void => {
-		var elem: any = document.querySelector("#logs");
+		var elem = document.querySelector("#logs");
 
 		if (elem) {
 			elem.scrollTop = elem?.scrollHeight;
@@ -136,7 +153,7 @@ const BotLogs = (): ReactElement => {
 			}}
 		>
 			<Box>
-				{botLogs.map((log, index) => (
+				{botLogs?.map((log, index) => (
 					<Typography key={log + index}>{log}</Typography>
 				))}
 			</Box>

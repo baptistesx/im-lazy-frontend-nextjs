@@ -17,7 +17,7 @@ const CustomDrawer = ({
 	handleDrawerToggle,
 	mobileOpen,
 }: {
-	handleDrawerToggle: any;
+	handleDrawerToggle: () => void;
 	mobileOpen: boolean;
 }): ReactElement => {
 	const auth = useAuth();
@@ -56,7 +56,7 @@ const CustomDrawer = ({
 		</div>
 	);
 
-	return auth?.user ? (
+	return auth?.user !== null && auth?.user !== undefined ? (
 		<Box
 			component="nav"
 			sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
