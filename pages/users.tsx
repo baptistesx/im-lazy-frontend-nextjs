@@ -27,7 +27,7 @@ import { useSnackbars } from "@providers/SnackbarProvider";
 import { deleteUserById, getUsers } from "@services/userApi";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 
-function Users(): ReactElement {
+const Users = (): ReactElement => {
 	const snackbarsService = useSnackbars();
 
 	const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -232,6 +232,6 @@ function Users(): ReactElement {
 			)}
 		</AdminRoute>
 	);
-}
+};
 
 export default Users;

@@ -4,7 +4,7 @@ import ProfileForm from "@components/users/ProfileForm";
 import { Typography } from "@mui/material";
 import { ReactElement } from "react";
 
-function Profile(): ReactElement {
+const Profile = (): ReactElement => {
 	return (
 		<SignedInRoute>
 			<Typography variant="h1">Profile</Typography>
@@ -18,6 +18,6 @@ function Profile(): ReactElement {
 			<ChangePasswordForm />
 		</SignedInRoute>
 	);
-}
+};
 
 export default Profile;

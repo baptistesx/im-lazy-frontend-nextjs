@@ -6,11 +6,11 @@ import GoogleLogin, {
 	GoogleLoginResponseOffline,
 } from "react-google-login";
 
-function GoogleLoginButton({
+const GoogleLoginButton = ({
 	setIsLoading,
 }: {
 	setIsLoading: Function;
-}): ReactElement {
+}): ReactElement => {
 	const snackbarsService = useSnackbars();
 
 	const auth = useAuth();
@@ -48,6 +48,6 @@ function GoogleLoginButton({
 			onFailure={onGetOauthGoogleTokenFail}
 		/>
 	);
-}
+};
 
 export default GoogleLoginButton;

@@ -19,7 +19,7 @@ const paypalScriptOptions: PayPalScriptOptions = {
 	components: "buttons",
 };
 
-function CustomButton(): ReactElement {
+const CustomButton = (): ReactElement => {
 	const snackbarsService = useSnackbars();
 
 	const router = useRouter();
@@ -90,12 +90,14 @@ function CustomButton(): ReactElement {
 			<PayPalButtons {...paypalbuttonTransactionProps} />
 		</>
 	);
-}
+};
 
-export default function CustomPaypalButton(): ReactElement {
+const CustomPaypalButton = (): ReactElement => {
 	return (
 		<PayPalScriptProvider options={paypalScriptOptions}>
 			<CustomButton />
 		</PayPalScriptProvider>
 	);
-}
+};
+
+export default CustomPaypalButton;

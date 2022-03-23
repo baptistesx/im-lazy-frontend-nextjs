@@ -5,7 +5,7 @@ import InfoForm from "@components/workawayBot/InfoForm";
 import { Box, Typography } from "@mui/material";
 import { ReactElement } from "react";
 
-function WorkawayBot(): ReactElement {
+const WorkawayBot = (): ReactElement => {
 	return (
 		<PremiumRoute>
 			<Typography variant="h1">Workaway Bot</Typography>
@@ -24,6 +24,6 @@ function WorkawayBot(): ReactElement {
 			<FilesSection />
 		</PremiumRoute>
 	);
-}
+};
 
 export default WorkawayBot;

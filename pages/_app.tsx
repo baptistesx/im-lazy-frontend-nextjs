@@ -5,7 +5,7 @@ import type { AppProps } from "next/app";
 import { ReactNode } from "react";
 import "../styles/globals.css";
 
-function MyApp({ Component, pageProps }: AppProps): ReactNode {
+const MyApp = ({ Component, pageProps }: AppProps): ReactNode => {
 	return (
 		<CustomThemeProvider>
 			<SnackBarProvider>
@@ -15,6 +15,6 @@ function MyApp({ Component, pageProps }: AppProps): ReactNode {
 			</SnackBarProvider>
 		</CustomThemeProvider>
 	);
-}
+};
 
 export default MyApp;

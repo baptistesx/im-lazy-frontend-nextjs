@@ -2,6 +2,7 @@ import { AlertMessage } from "@components/layout/CustomAlert";
 import { Alert, Snackbar } from "@mui/material";
 import {
 	createContext,
+	ReactElement,
 	ReactNode,
 	useContext,
 	useEffect,
@@ -18,10 +19,14 @@ export const SnackbarContext = createContext<
 
 const AUTO_DISMISS_MS = 5000;
 
-export function SnackBarProvider({ children }: { children: ReactNode }) {
+export const SnackBarProvider = ({
+	children,
+}: {
+	children: ReactNode;
+}): ReactElement => {
 	const [alerts, setAlerts] = useState<AlertMessage[]>([]);
 
-	const setAlertTimeout = () =>
+	const setAlertTimeout = (): NodeJS.Timeout =>
 		setTimeout(
 			() => setAlerts((alerts) => alerts.slice(0, alerts.length - 1)),
 			AUTO_DISMISS_MS
@@ -36,10 +41,8 @@ export function SnackBarProvider({ children }: { children: ReactNode }) {
 		return;
 	}, [alerts]);
 
-	const addAlert = (alert: AlertMessage) => {
-		console.log(alert);
+	const addAlert = (alert: AlertMessage): void =>
 		setAlerts((alerts: AlertMessage[]) => [alert, ...alerts]);
-	};
 
 	const snackbarContext: SnackbarContextInterface = {
 		addAlert: addAlert,
@@ -58,5 +61,6 @@ export function SnackBarProvider({ children }: { children: ReactNode }) {
 			))}
 		</SnackbarContext.Provider>
 	);
-}
-export const useSnackbars = () => useContext(SnackbarContext);
+};
+export const useSnackbars = (): SnackbarContextInterface | undefined =>
+	useContext(SnackbarContext);

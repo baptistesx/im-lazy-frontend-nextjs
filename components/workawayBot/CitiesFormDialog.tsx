@@ -20,7 +20,7 @@ interface CitiesFormDialogProps {
 	cities: string[];
 }
 
-function CitiesFormDialog(props: CitiesFormDialogProps): ReactElement {
+const CitiesFormDialog = (props: CitiesFormDialogProps): ReactElement => {
 	const { onClose, value: valueProp, open, cities, ...other } = props;
 
 	const [value, setValue] = useState(valueProp);
@@ -81,7 +81,7 @@ function CitiesFormDialog(props: CitiesFormDialogProps): ReactElement {
 			</DialogActions>
 		</Dialog>
 	);
-}
+};
 
 CitiesFormDialog.propTypes = {
 	onClose: PropTypes.func.isRequired,

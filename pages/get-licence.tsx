@@ -4,7 +4,7 @@ import { Typography } from "@mui/material";
 import { useAuth } from "@providers/AuthProvider";
 import { ReactElement } from "react";
 
-function GetLicence(): ReactElement {
+const GetLicence = (): ReactElement => {
 	const auth = useAuth();
 
 	return (
@@ -26,6 +26,6 @@ function GetLicence(): ReactElement {
 			)}
 		</SignedInRoute>
 	);
-}
+};
 
 export default GetLicence;

@@ -20,7 +20,7 @@ type SignInFormData = {
 	password: string;
 };
 
-function SignInForm(): ReactElement {
+const SignInForm = (): ReactElement => {
 	const auth = useAuth();
 
 	const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
@@ -120,6 +120,6 @@ function SignInForm(): ReactElement {
 			</CardActions>
 		</Card>
 	);
-}
+};
 
 export default SignInForm;

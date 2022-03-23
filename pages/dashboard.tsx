@@ -10,7 +10,7 @@ import { sendVerificationEmail } from "@services/userApi";
 import Link from "next/link";
 import { ReactElement, useState } from "react";
 
-function Dashboard(): ReactElement {
+const Dashboard = (): ReactElement => {
 	const auth = useAuth();
 
 	const snackbarsService = useSnackbars();
@@ -72,6 +72,6 @@ function Dashboard(): ReactElement {
 			)}
 		</SignedInRoute>
 	);
-}
+};
 
 export default Dashboard;
