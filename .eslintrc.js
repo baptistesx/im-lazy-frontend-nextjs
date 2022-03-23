@@ -3,7 +3,7 @@ module.exports = {
 		browser: true,
 		es2021: true,
 	},
-	extends: ["plugin:react/recommended", "next/core-web-vitals", "prettier"],
+	extends: ["next", "prettier", "eslint:recommended", "react-app"],
 	parser: "@typescript-eslint/parser",
 	parserOptions: {
 		ecmaFeatures: {
@@ -12,7 +12,7 @@ module.exports = {
 		ecmaVersion: "latest",
 		sourceType: "module",
 	},
-	plugins: ["react", "@typescript-eslint", "unused-imports"],
+	plugins: ["react", "@typescript-eslint", "unused-imports", "prettier"],
 	rules: {
 		"react/no-unescaped-entities": 0,
 		"unused-imports/no-unused-imports": "error",
@@ -26,6 +26,7 @@ module.exports = {
 			},
 		],
 		"@typescript-eslint/explicit-function-return-type": "error",
+		"@typescript-eslint/no-explicit-any": "error",
 		// "max-len": ["warn", { code: 80 }],
 	},
 };
