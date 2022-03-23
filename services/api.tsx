@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse, Method } from "axios";
 
 const api = {
 	// All api requests are made thanks to this function
@@ -10,7 +10,7 @@ const api = {
 		url: string;
 		method: Method;
 		body?: any;
-	}) {
+	}): Promise<AxiosResponse<any, any>> {
 		return axios({
 			method,
 			url: `${process.env.NEXT_PUBLIC_ENDPOINT}/${url}`,

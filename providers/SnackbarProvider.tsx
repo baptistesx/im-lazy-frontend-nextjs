@@ -10,7 +10,7 @@ import {
 } from "react";
 
 export interface SnackbarContextInterface {
-	addAlert: Function;
+	addAlert: (alert: AlertMessage) => void;
 }
 
 export const SnackbarContext = createContext<

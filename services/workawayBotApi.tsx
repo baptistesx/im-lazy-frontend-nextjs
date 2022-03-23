@@ -10,13 +10,15 @@ export const setCity = async (city: string): Promise<void> => {
 	});
 };
 
-export const clearLogs = async (cb: Function): Promise<void> => {
+export const clearLogs = async (
+	cb: (res: { status: number }) => void
+): Promise<void> => {
 	const res = await api.axiosApiCall({ url: "clear-logs", method: "get" });
 
 	cb(res);
 };
 
-export const getFilesName = async (cb: Function): Promise<void> => {
+export const getFilesName = async (cb: (data: any) => void): Promise<void> => {
 	const res = await api.axiosApiCall({ url: "files-name", method: "get" });
 
 	cb(res.data);
@@ -24,7 +26,7 @@ export const getFilesName = async (cb: Function): Promise<void> => {
 
 export const downloadFileByName = async (
 	name: string,
-	cb: Function
+	cb: (data: any) => void
 ): Promise<void> => {
 	const res = await api.axiosApiCall({ url: `file/${name}`, method: "get" });
 
@@ -33,14 +35,17 @@ export const downloadFileByName = async (
 
 export const deleteFileByName = async (
 	name: string,
-	cb: Function
+	cb: () => Promise<void>
 ): Promise<void> => {
-	const res = await api.axiosApiCall({ url: `file/${name}`, method: "delete" });
+	await api.axiosApiCall({ url: `file/${name}`, method: "delete" });
 
-	cb(res.data);
+	cb();
 };
 
-export const startBot = async (data: any, cb: Function): Promise<void> => {
+export const startBot = async (
+	data: any,
+	cb: (res: any) => void
+): Promise<void> => {
 	const res = await api.axiosApiCall({
 		url: "start-bot",
 		method: "post",
@@ -50,7 +55,7 @@ export const startBot = async (data: any, cb: Function): Promise<void> => {
 	cb(res);
 };
 
-export const stopBot = async (cb: Function): Promise<void> => {
+export const stopBot = async (cb: (res: any) => void): Promise<void> => {
 	const res = await api.axiosApiCall({ url: "stop-bot", method: "get" });
 
 	cb(res);

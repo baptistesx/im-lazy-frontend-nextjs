@@ -1,6 +1,6 @@
 import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
-import { ReactElement } from "react";
+import { Dispatch, ReactElement, SetStateAction } from "react";
 import GoogleLogin, {
 	GoogleLoginResponse,
 	GoogleLoginResponseOffline,
@@ -9,7 +9,7 @@ import GoogleLogin, {
 const GoogleLoginButton = ({
 	setIsLoading,
 }: {
-	setIsLoading: Function;
+	setIsLoading: Dispatch<SetStateAction<boolean>>;
 }): ReactElement => {
 	const snackbarsService = useSnackbars();
 

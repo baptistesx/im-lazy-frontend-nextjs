@@ -41,6 +41,7 @@ const SignUpForm = (): ReactElement => {
 
 	useEffect(() => {
 		const subscription = watch(() => {});
+
 		return () => subscription.unsubscribe();
 	}, [watch]);
 

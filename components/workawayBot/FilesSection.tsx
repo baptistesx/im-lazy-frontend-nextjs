@@ -81,9 +81,7 @@ const FilesSection = (): ReactElement => {
 	};
 
 	const handleDeleteFile = async (name: string): Promise<void> => {
-		await deleteFileByName(name, () => {
-			handleRefresh();
-		}).catch(() => {
+		await deleteFileByName(name, () => handleRefresh()).catch(() => {
 			snackbarsService?.addAlert({
 				message:
 					"An error occurred while deleting file, are you a premium member?",

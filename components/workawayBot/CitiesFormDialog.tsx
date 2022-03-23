@@ -15,7 +15,7 @@ import { ReactElement, useEffect, useRef, useState } from "react";
 interface CitiesFormDialogProps {
 	keepMounted: boolean;
 	open: boolean;
-	onClose: Function;
+	onClose: (city: string) => Promise<void>;
 	value: string;
 	cities: string[];
 }

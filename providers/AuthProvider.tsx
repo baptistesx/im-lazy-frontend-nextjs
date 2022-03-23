@@ -36,14 +36,14 @@ type AuthValue = {
 	user: User | null | undefined;
 	status: AuthStatus;
 	logout: () => void;
-	login: (email: string, password: string, cb: Function) => void;
+	login: (email: string, password: string, cb: () => void) => void;
 	register: (
 		name: string,
 		email: string,
 		password: string,
-		cb: Function
+		cb: () => void
 	) => void;
-	loginWithGoogle: (token: string, cb: Function) => void;
+	loginWithGoogle: (token: string, cb: () => void) => void;
 	fetchCurrentUser: () => void;
 	isAdmin: (user: User | undefined | null) => boolean;
 	isPremium: (user: User | undefined | null) => boolean;
@@ -113,7 +113,7 @@ export const AuthProvider = ({
 	const login = async (
 		email: string,
 		password: string,
-		cb: Function
+		cb: () => void
 	): Promise<void> => {
 		setStatus("loading");
 
@@ -146,7 +146,7 @@ export const AuthProvider = ({
 
 	const loginWithGoogle = async (
 		token: string,
-		cb: Function
+		cb: () => void
 	): Promise<void> => {
 		setStatus("loading");
 		await signInWithGoogle(token, (user: User) => {
@@ -178,7 +178,7 @@ export const AuthProvider = ({
 		name: string,
 		email: string,
 		password: string,
-		cb: Function
+		cb: () => void
 	): Promise<void> => {
 		setStatus("loading");
 
