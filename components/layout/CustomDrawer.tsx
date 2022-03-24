@@ -29,7 +29,7 @@ const CustomDrawer = ({
 		{ route: "/profile", icon: <AccountBoxIcon />, title: "Profile" },
 	];
 
-	if (auth?.user && auth.isAdmin(auth?.user)) {
+	if (auth?.value.user && auth.isAdmin(auth?.value.user)) {
 		drawerItems.push({
 			route: "/users",
 			icon: <GroupIcon />,
@@ -56,7 +56,7 @@ const CustomDrawer = ({
 		</div>
 	);
 
-	return auth?.user !== null && auth?.user !== undefined ? (
+	return auth?.value.user !== null && auth?.value.user !== undefined ? (
 		<Box
 			component="nav"
 			sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
@@ -91,7 +91,7 @@ const CustomDrawer = ({
 				}}
 				open
 			>
-				{auth?.status === "loading" ? <CircularProgress /> : drawer}
+				{auth?.value.status === "loading" ? <CircularProgress /> : drawer}
 			</Drawer>
 		</Box>
 	) : (

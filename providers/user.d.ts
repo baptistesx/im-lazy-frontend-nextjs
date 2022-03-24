@@ -9,11 +9,27 @@ export type User = {
 	lastLogin: Date;
 };
 
-export type AuthStatus = "loading" | "connected" | "not-connected" | "error";
+type Connected = {
+	user: User;
+	status: "connected";
+};
+
+type Loading = {
+	user: User | undefined;
+	status: "loading";
+};
+
+type NotConnected = {
+	user: undefined;
+	status: "not-connected";
+};
 
 export type AuthValue = {
-	user: User | null | undefined;
-	status: AuthStatus;
+	value: Connected | NotConnected | Loading;
+	setValue: (value: Connected | NotConnected | Loading) => void;
+};
+
+export type AuthActionsValue = {
 	logout: () => void;
 	login: (email: string, password: string, cb: () => void) => void;
 	register: (
@@ -24,8 +40,8 @@ export type AuthValue = {
 	) => void;
 	loginWithGoogle: (token: string, cb: () => void) => void;
 	fetchCurrentUser: () => void;
-	isAdmin: (user: User | undefined | null) => boolean;
-	isPremium: (user: User | undefined | null) => boolean;
+	isAdmin: (user: User | undefined) => boolean;
+	isPremium: (user: User | undefined) => boolean;
 };
 
 export type PaymentResume = {

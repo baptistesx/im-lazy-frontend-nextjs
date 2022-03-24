@@ -1,21 +1,21 @@
 import { Alert, AlertColor } from "@mui/material";
 import { ReactElement, ReactNode } from "react";
 
-export type AlertMessage = {
+export type SnackbarMessage = {
 	message: string;
 	severity: AlertColor;
 };
 
-export const CustomAlert = ({
-	alert,
+export const CustomSnackbar = ({
+	snackbarMessage,
 	children,
 }: {
-	alert: AlertMessage;
+	snackbarMessage: SnackbarMessage;
 	children: ReactNode;
 }): ReactElement => {
 	return (
-		<Alert severity={alert.severity} sx={{ width: "100%" }}>
-			{alert.message}
+		<Alert severity={snackbarMessage.severity} sx={{ width: "100%" }}>
+			{snackbarMessage.message}
 			{children}
 		</Alert>
 	);

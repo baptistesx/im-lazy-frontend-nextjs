@@ -36,7 +36,7 @@ const GoogleLoginButton = ({
 	const onGetOauthGoogleTokenFail = async (error: {
 		details: string;
 	}): Promise<void> => {
-		snackbarsService?.addAlert({
+		snackbarsService?.addSnackbar({
 			message: error?.details,
 			severity: "error",
 		});

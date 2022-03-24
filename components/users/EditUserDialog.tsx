@@ -90,12 +90,12 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 
 					onClose({ modified: true });
 
-					snackbarsService?.addAlert({
+					snackbarsService?.addSnackbar({
 						message: "User well updated",
 						severity: "success",
 					});
 
-					if (currentUser?.id === auth?.user?.id) {
+					if (currentUser?.id === auth?.value.user?.id) {
 						auth.fetchCurrentUser();
 					}
 
@@ -104,7 +104,7 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 			).catch(() => {
 				setIsSaving(false);
 
-				snackbarsService?.addAlert({
+				snackbarsService?.addSnackbar({
 					message: "An error occurred while updating user",
 					severity: "error",
 				});
@@ -122,7 +122,7 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 
 					onClose({ modified: true });
 
-					snackbarsService?.addAlert({
+					snackbarsService?.addSnackbar({
 						message: "User well created",
 						severity: "success",
 					});
@@ -132,7 +132,7 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 			).catch(() => {
 				setIsSaving(false);
 
-				snackbarsService?.addAlert({
+				snackbarsService?.addSnackbar({
 					message:
 						"An error occurred while creating user, email might be already used.",
 					severity: "error",
@@ -187,7 +187,7 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 								value={value}
 								onChange={onChange}
 								defaultValue={currentUser?.role}
-								disabled={currentUser?.id === auth?.user?.id}
+								disabled={currentUser?.id === auth?.value.user?.id}
 							>
 								{["admin", "premium", "classic"].map((role) => (
 									<MenuItem

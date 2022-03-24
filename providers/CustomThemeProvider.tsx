@@ -2,16 +2,15 @@ import { blue, green } from "@mui/material/colors";
 import {
 	createTheme,
 	responsiveFontSizes,
-	Theme as MuiTheme,
 	ThemeProvider,
 } from "@mui/material/styles";
-import { ReactNode } from "react";
+import { ReactElement, ReactNode } from "react";
 
-declare module "@emotion/react" {
-	export interface Theme extends MuiTheme {}
-}
-
-export const CustomThemeProvider = ({ children }: { children: ReactNode }) => {
+export const CustomThemeProvider = ({
+	children,
+}: {
+	children: ReactNode;
+}): ReactElement => {
 	const theme = responsiveFontSizes(
 		createTheme({
 			palette: {

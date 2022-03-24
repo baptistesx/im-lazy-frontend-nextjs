@@ -16,13 +16,13 @@ const NotSignedInRoute = ({
 	const router = useRouter();
 
 	useEffect(() => {
-		if (router.isReady && auth?.status === "connected") {
+		if (router.isReady && auth?.value.status === "connected") {
 			router.push("/dashboard");
 		}
 	}, [auth, router]);
 
-	return auth?.status === "loading" ||
-		(router.isReady && auth?.status === "connected") ? (
+	return auth?.value.status === "loading" ||
+		(router.isReady && auth?.value.status === "connected") ? (
 		<NotSignedInLayout>
 			<CircularProgress sx={{ color: "white" }} />
 		</NotSignedInLayout>

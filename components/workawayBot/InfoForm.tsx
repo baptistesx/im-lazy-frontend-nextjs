@@ -16,20 +16,7 @@ import infoFormSchema from "@schemas/infoFormSchema";
 import { startBot, stopBot } from "@services/workawayBotApi";
 import { ReactElement, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-
-interface InfoSubmitFormData {
-	developmentMode: boolean;
-	headless: boolean;
-	email: string;
-	password: string;
-	city: string;
-	detectionRadius: number;
-	minimumAge: number;
-	maximumAge: number;
-	messageSubject: number;
-	frenchMessage: number;
-	englishMessage: number;
-}
+import { FormBotParams } from "./workaway";
 
 const InfoForm = (): ReactElement => {
 	const [isStarting, setIsStarting] = useState<boolean>(false);
@@ -44,7 +31,7 @@ const InfoForm = (): ReactElement => {
 		watch,
 		control,
 		formState: { errors },
-	} = useForm<InfoSubmitFormData>({
+	} = useForm<FormBotParams>({
 		resolver: yupResolver(infoFormSchema),
 	});
 
@@ -53,7 +40,7 @@ const InfoForm = (): ReactElement => {
 		return () => subscription.unsubscribe();
 	}, [watch]);
 
-	const handleStartBot = async (data: InfoSubmitFormData): Promise<void> => {
+	const handleStartBot = async (data: FormBotParams): Promise<void> => {
 		if (process.env.NODE_ENV === "production") {
 			data = { ...data, headless: true, developmentMode: false };
 		} else {
@@ -66,15 +53,15 @@ const InfoForm = (): ReactElement => {
 			{
 				...data,
 			},
-			(res) => {
-				if (res.status === 200) {
+			(status) => {
+				if (status === 200) {
 					setIsRunning(true);
 				}
 
 				setIsStarting(false);
 			}
 		).catch(() => {
-			snackbarsService?.addAlert({
+			snackbarsService?.addSnackbar({
 				message:
 					"An error occurred while starting bot, are you a premium member?",
 				severity: "error",
@@ -85,14 +72,14 @@ const InfoForm = (): ReactElement => {
 	const handleStopBot = async (): Promise<void> => {
 		setIsStopping(true);
 
-		await stopBot((res) => {
-			if (res.status === 200) {
+		await stopBot((status) => {
+			if (status === 200) {
 				setIsRunning(false);
 			}
 
 			setIsStopping(false);
 		}).catch(() => {
-			snackbarsService?.addAlert({
+			snackbarsService?.addSnackbar({
 				message:
 					"An error occurred while stopping bot, are you a premium member?",
 				severity: "error",

@@ -10,13 +10,13 @@ const SignedInRoute = ({ children }: { children: ReactNode }): ReactElement => {
 	const router = useRouter();
 
 	useEffect(() => {
-		if (router.isReady && auth?.status !== "connected") {
+		if (router.isReady && auth?.value.status !== "connected") {
 			router.push("/");
 		}
 	}, [auth, router]);
 
-	return auth?.status === "loading" ||
-		(router.isReady && auth?.status !== "connected") ? (
+	return auth?.value.status === "loading" ||
+		(router.isReady && auth?.value.status !== "connected") ? (
 		<SignedInLayout>
 			<CircularProgress />
 		</SignedInLayout>

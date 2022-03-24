@@ -5,7 +5,7 @@ import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import updatePasswordFormSchema from "@schemas/updatePasswordFormSchema";
 import { updateUserPasswordById } from "@services/userApi";
-import { useState, ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import { useForm } from "react-hook-form";
 import GetLicenceButton from "./GetLicenceButton";
 
@@ -37,14 +37,14 @@ const ChangePasswordForm = (): ReactElement => {
 
 		updateUserPasswordById(
 			{
-				id: auth?.user?.id,
+				id: auth?.value.user?.id,
 				currentPassword: data.currentPassword,
 				newPassword: data.newPassword,
 			},
 			() => {
 				setIsLoading(false);
 
-				snackbarsService?.addAlert({
+				snackbarsService?.addSnackbar({
 					message: "Password well updated",
 					severity: "success",
 				});
@@ -54,7 +54,7 @@ const ChangePasswordForm = (): ReactElement => {
 		).catch(() => {
 			setIsLoading(false);
 
-			snackbarsService?.addAlert({
+			snackbarsService?.addSnackbar({
 				message: "Error while updating password, check your current password.",
 				severity: "error",
 			});
@@ -101,7 +101,7 @@ const ChangePasswordForm = (): ReactElement => {
 					Save
 				</LoadingButton>
 
-				{!auth?.isPremium(auth?.user) ? <GetLicenceButton /> : <Box />}
+				{!auth?.isPremium(auth?.value.user) ? <GetLicenceButton /> : <Box />}
 			</CardActions>
 		</Card>
 	);

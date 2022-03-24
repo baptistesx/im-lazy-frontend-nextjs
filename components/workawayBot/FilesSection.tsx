@@ -33,14 +33,14 @@ const FilesSection = (): ReactElement => {
 	const handleRefresh = useCallback(async () => {
 		setIsRefreshing(true);
 
-		getFilesName((data) => {
+		await getFilesName((data) => {
 			setFilesName([...data]);
 
 			setIsRefreshing(false);
 		}).catch(() => {
 			setIsRefreshing(false);
 
-			snackbarsService?.addAlert({
+			snackbarsService?.addSnackbar({
 				message:
 					"An error occurred while getting files name, are you a premium member?",
 				severity: "error",
@@ -72,7 +72,7 @@ const FilesSection = (): ReactElement => {
 
 			a.remove();
 		}).catch(() => {
-			snackbarsService?.addAlert({
+			snackbarsService?.addSnackbar({
 				message:
 					"An error occurred while downloading file, are you a premium member?",
 				severity: "error",
@@ -82,7 +82,7 @@ const FilesSection = (): ReactElement => {
 
 	const handleDeleteFile = async (name: string): Promise<void> => {
 		await deleteFileByName(name, () => handleRefresh()).catch(() => {
-			snackbarsService?.addAlert({
+			snackbarsService?.addSnackbar({
 				message:
 					"An error occurred while deleting file, are you a premium member?",
 				severity: "error",

@@ -8,7 +8,7 @@ import { Theme } from "@mui/material/styles";
 import { useAuth } from "@providers/AuthProvider";
 import Image from "next/image";
 import Link from "next/link";
-import React, { ReactElement, ReactNode, useState } from "react";
+import { ReactElement, ReactNode, useState } from "react";
 import CustomDrawer from "./CustomDrawer";
 import ToolBarUserInfo from "./ToolBarUserInfo";
 
@@ -49,7 +49,7 @@ const SignedInLayout = ({
 						sx={{
 							mr: 2,
 							display:
-								auth?.user !== null && auth?.user !== undefined
+								auth?.value.user !== null && auth?.value.user !== undefined
 									? { sm: "none" }
 									: { xs: "none" },
 						}}
@@ -58,7 +58,7 @@ const SignedInLayout = ({
 					</IconButton>
 
 					<Link
-						href={auth?.status === "connected" ? "/dashboard" : "/"}
+						href={auth?.value.status === "connected" ? "/dashboard" : "/"}
 						passHref
 					>
 						<Button>
@@ -71,7 +71,7 @@ const SignedInLayout = ({
 						</Button>
 					</Link>
 
-					{auth?.status === "connected" ? (
+					{auth?.value.status === "connected" ? (
 						<Box sx={{ display: "flex", alignItems: "center" }}>
 							<ToolBarUserInfo />
 
@@ -95,7 +95,7 @@ const SignedInLayout = ({
 				</Toolbar>
 			</AppBar>
 
-			{auth?.status === "connected" ? (
+			{auth?.value.status === "connected" ? (
 				<CustomDrawer
 					handleDrawerToggle={(): void => handleDrawerToggle()}
 					mobileOpen={mobileOpen}

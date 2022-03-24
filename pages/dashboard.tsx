@@ -1,4 +1,4 @@
-import { CustomAlert } from "@components/layout/CustomAlert";
+import { CustomSnackbar } from "@components/layout/CustomSnackbar";
 import SignedInRoute from "@components/routes/SignedInRoute";
 import GetLicenceButton from "@components/users/GetLicenceButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -18,18 +18,18 @@ const Dashboard = (): ReactElement => {
 	const [loading, setLoading] = useState<boolean>(false);
 
 	const handleSendVerificationEmailAgain = async (): Promise<void> => {
-		if (auth?.user?.email === undefined) {
-			snackbarsService?.addAlert({
+		if (auth?.value.user?.email === undefined) {
+			snackbarsService?.addSnackbar({
 				message: "Email not valid.",
 				severity: "error",
 			});
 		} else {
 			setLoading(true);
 
-			sendVerificationEmail(auth.user.email, () => {
+			sendVerificationEmail(auth.value.user.email, () => {
 				setLoading(false);
 
-				snackbarsService?.addAlert({
+				snackbarsService?.addSnackbar({
 					message: "Confirmation email has been well sent",
 					severity: "success",
 				});
@@ -41,7 +41,7 @@ const Dashboard = (): ReactElement => {
 		<SignedInRoute>
 			<Typography variant="h1">Dashboard</Typography>
 
-			{auth?.isPremium(auth?.user) ? (
+			{auth?.isPremium(auth?.value.user) ? (
 				<Link href="/workaway-bot" passHref>
 					<Button variant="contained" sx={{ m: 1 }}>
 						Workaway messaging
@@ -52,9 +52,9 @@ const Dashboard = (): ReactElement => {
 				<GetLicenceButton />
 			)}
 
-			{!auth?.user?.isEmailVerified ? (
-				<CustomAlert
-					alert={{
+			{!auth?.value.user?.isEmailVerified ? (
+				<CustomSnackbar
+					snackbarMessage={{
 						message: "Remember to check the confirmation email we sent you.",
 						severity: "error",
 					}}
@@ -66,7 +66,7 @@ const Dashboard = (): ReactElement => {
 					>
 						Send again
 					</LoadingButton>
-				</CustomAlert>
+				</CustomSnackbar>
 			) : (
 				<Box />
 			)}

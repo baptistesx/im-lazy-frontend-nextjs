@@ -44,7 +44,7 @@ const ResetPasswordForm = (): ReactElement => {
 		resetPassword(data.email, () => {
 			setIsLoading(false);
 
-			snackbarsService?.addAlert({
+			snackbarsService?.addSnackbar({
 				message: "If email is valid, a reset password email has been sent",
 				severity: "success",
 			});
@@ -53,7 +53,7 @@ const ResetPasswordForm = (): ReactElement => {
 		}).catch(() => {
 			setIsLoading(false);
 
-			snackbarsService?.addAlert({
+			snackbarsService?.addSnackbar({
 				message: "An error occurred while sending a reset password email",
 				severity: "error",
 			});

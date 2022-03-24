@@ -40,7 +40,7 @@ const BotLogs = (): ReactElement => {
 			setFullCitySelected(city);
 
 			await setCity(city).catch(() => {
-				snackbarsService?.addAlert({
+				snackbarsService?.addSnackbar({
 					message:
 						"An error occurred while setting the city/country name, are you a premium member?",
 					severity: "error",
@@ -49,7 +49,7 @@ const BotLogs = (): ReactElement => {
 
 			setIsCitiesDialogOpen(false);
 		} else {
-			snackbarsService?.addAlert({
+			snackbarsService?.addSnackbar({
 				message: "No city selected",
 				severity: "error",
 			});
@@ -108,7 +108,7 @@ const BotLogs = (): ReactElement => {
 	const handleClickClearConsole = async (): Promise<void> => {
 		setIsClearingLogs(true);
 
-		clearLogs((res: { status: number }) => {
+		await clearLogs((res: { status: number }) => {
 			if (res.status === 200) {
 				setBotLogs(() => []);
 			}
@@ -117,7 +117,7 @@ const BotLogs = (): ReactElement => {
 		}).catch(() => {
 			setIsClearingLogs(false);
 
-			snackbarsService?.addAlert({
+			snackbarsService?.addSnackbar({
 				message:
 					"An error occurred while clearing logs, are you a premium member?",
 				severity: "error",

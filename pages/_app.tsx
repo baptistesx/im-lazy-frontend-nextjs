@@ -1,3 +1,4 @@
+import { AuthActionsProvider } from "@providers/AuthActionsProvider";
 import { AuthProvider } from "@providers/AuthProvider";
 import { CustomThemeProvider } from "@providers/CustomThemeProvider";
 import { SnackBarProvider } from "@providers/SnackbarProvider";
@@ -10,7 +11,9 @@ const MyApp = ({ Component, pageProps }: AppProps): ReactNode => {
 		<CustomThemeProvider>
 			<SnackBarProvider>
 				<AuthProvider>
-					<Component {...pageProps} />
+					<AuthActionsProvider>
+						<Component {...pageProps} />
+					</AuthActionsProvider>
 				</AuthProvider>
 			</SnackBarProvider>
 		</CustomThemeProvider>

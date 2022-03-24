@@ -10,22 +10,22 @@ const AdminRoute = ({ children }: { children: ReactNode }): ReactElement => {
 	const router = useRouter();
 
 	useEffect(() => {
-		if (router.isReady && auth?.status !== "connected") {
+		if (router.isReady && auth?.value.status !== "connected") {
 			router.push("/");
 		} else if (
 			router.isReady &&
-			auth?.status === "connected" &&
-			!auth.isAdmin(auth?.user)
+			auth?.value.status === "connected" &&
+			!auth.isAdmin(auth?.value.user)
 		) {
 			router.push("/dashboard");
 		}
 	}, [auth, router]);
 
-	return auth?.status === "loading" ||
-		(router.isReady && auth?.status !== "connected") ||
+	return auth?.value.status === "loading" ||
+		(router.isReady && auth?.value.status !== "connected") ||
 		(router.isReady &&
-			auth?.status === "connected" &&
-			!auth.isAdmin(auth?.user)) ? (
+			auth?.value.status === "connected" &&
+			!auth.isAdmin(auth?.value.user)) ? (
 		<SignedInLayout>
 			<CircularProgress />
 		</SignedInLayout>

@@ -40,7 +40,7 @@ const Users = (): ReactElement => {
 	const [userSelected, setUserSelected] = useState<User | undefined>(undefined);
 	const auth = useAuth();
 
-	const currentUser = auth?.user;
+	const currentUser = auth?.value.user;
 
 	const fetchData = useCallback(() => {
 		setIsLoading(true);
@@ -53,7 +53,7 @@ const Users = (): ReactElement => {
 
 			setIsLoading(false);
 		}).catch(() => {
-			snackbarsService?.addAlert({
+			snackbarsService?.addSnackbar({
 				message: "An error occurred while getting users",
 				severity: "error",
 			});
@@ -76,12 +76,12 @@ const Users = (): ReactElement => {
 
 			setIsLoading(false);
 
-			snackbarsService?.addAlert({
+			snackbarsService?.addSnackbar({
 				message: "User well deleted",
 				severity: "success",
 			});
 		}).catch(() => {
-			snackbarsService?.addAlert({
+			snackbarsService?.addSnackbar({
 				message: "An error occurred while deleting user",
 				severity: "error",
 			});

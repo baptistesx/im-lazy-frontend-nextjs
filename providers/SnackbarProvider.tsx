@@ -1,16 +1,16 @@
-import { AlertMessage } from "@components/layout/CustomAlert";
+import { SnackbarMessage } from "@components/layout/CustomSnackbar";
 import { Alert, Snackbar } from "@mui/material";
+import useTimeout from "hooks/useTimeout";
 import {
 	createContext,
 	ReactElement,
 	ReactNode,
 	useContext,
-	useEffect,
 	useState,
 } from "react";
 
 export interface SnackbarContextInterface {
-	addAlert: (alert: AlertMessage) => void;
+	addSnackbar: (snackbar: SnackbarMessage) => void;
 }
 
 export const SnackbarContext = createContext<
@@ -24,46 +24,46 @@ export const SnackBarProvider = ({
 }: {
 	children: ReactNode;
 }): ReactElement => {
-	const [alerts, setAlerts] = useState<AlertMessage[] | undefined>(undefined);
+	const [snackbars, setAlerts] = useState<SnackbarMessage[] | undefined>(
+		undefined
+	);
 
-	const setAlertTimeout = (): NodeJS.Timeout =>
-		setTimeout(
-			() => setAlerts((alerts) => alerts?.slice(0, alerts.length - 1)),
-			AUTO_DISMISS_MS
-		);
+	useTimeout(
+		() => setAlerts((snackbars) => snackbars?.slice(0, snackbars.length - 1)),
+		AUTO_DISMISS_MS
+	);
 
-	useEffect(() => {
-		if (alerts !== undefined && alerts?.length > 0) {
-			const timer = setAlertTimeout();
-
-			return () => clearTimeout(timer);
-		}
-		return;
-	}, [alerts]);
-
-	const addAlert = (alert: AlertMessage): void => {
-		setAlerts((alerts: AlertMessage[] | undefined) =>
-			alerts === undefined ? [alert] : [alert, ...alerts]
+	const addSnackbar = (snackbar: SnackbarMessage): void => {
+		setAlerts((snackbars: SnackbarMessage[] | undefined) =>
+			snackbars === undefined ? [snackbar] : [snackbar, ...snackbars]
 		);
 	};
 
 	const snackbarContext: SnackbarContextInterface = {
-		addAlert: addAlert,
+		addSnackbar: addSnackbar,
 	};
 
 	return (
 		<SnackbarContext.Provider value={snackbarContext}>
 			{children}
-			{alerts?.map((alert, index) => (
-				<Snackbar open={true} key={alert.message + index}>
-					{/* //TODO: replace with CustomAlert */}
-					<Alert severity={alert.severity} sx={{ width: "100%" }}>
-						{alert.message}
+			{snackbars?.map((snackbar, index) => (
+				<Snackbar open={true} key={snackbar.message + index}>
+					{/* //TODO: replace with CustomSnackbar */}
+					<Alert severity={snackbar.severity} sx={{ width: "100%" }}>
+						{snackbar.message}
 					</Alert>
 				</Snackbar>
 			))}
 		</SnackbarContext.Provider>
 	);
 };
-export const useSnackbars = (): SnackbarContextInterface | undefined =>
-	useContext(SnackbarContext);
+
+export const useSnackbars = (): SnackbarContextInterface => {
+	const context = useContext(SnackbarContext);
+
+	if (context === undefined) {
+		throw new Error("useSnackbars must be used withing a SnackbarProvider");
+	}
+
+	return context;
+};

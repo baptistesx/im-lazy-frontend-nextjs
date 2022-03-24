@@ -70,7 +70,7 @@ const CustomButton = (): ReactElement => {
 			};
 
 			savePayment(resume, () => {
-				snackbarsService?.addAlert({
+				snackbarsService?.addSnackbar({
 					message: "Payment well saved, you're now premium member!",
 					severity: "success",
 				});

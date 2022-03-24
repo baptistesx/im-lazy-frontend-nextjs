@@ -11,7 +11,7 @@ const GetLicence = (): ReactElement => {
 		<SignedInRoute>
 			<Typography variant="h1">Get the Premium licence</Typography>
 
-			{auth?.isPremium(auth?.user) ? (
+			{auth?.isPremium(auth?.value.user) ? (
 				<Typography variant="body1">
 					You are already a premium member
 				</Typography>

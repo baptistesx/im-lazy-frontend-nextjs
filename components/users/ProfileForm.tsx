@@ -35,15 +35,15 @@ const ProfileForm = (): ReactElement => {
 
 		updateUserById(
 			{
-				id: auth?.user?.id,
+				id: auth?.value.user?.id,
 				email: data.email,
-				role: auth?.user?.role, //TODO security issue => pass this param optional
+				role: auth?.value.user?.role, //TODO security issue => pass this param optional
 				name: data.name,
 			},
 			() => {
 				setIsLoading(false);
 
-				snackbarsService?.addAlert({
+				snackbarsService?.addSnackbar({
 					message: "User well updated",
 					severity: "success",
 				});
@@ -53,7 +53,7 @@ const ProfileForm = (): ReactElement => {
 				reset(data);
 			}
 		).catch(() => {
-			snackbarsService?.addAlert({
+			snackbarsService?.addSnackbar({
 				message: "Error while updating profile.",
 				severity: "error",
 			});
@@ -73,7 +73,7 @@ const ProfileForm = (): ReactElement => {
 					placeholder="Name"
 					{...register("name")}
 					sx={{ mb: 1, textTransform: "capitalize" }}
-					defaultValue={auth?.user?.name}
+					defaultValue={auth?.value.user?.name}
 					error={errors.name != null}
 					helperText={errors.name?.message}
 				/>
@@ -83,7 +83,7 @@ const ProfileForm = (): ReactElement => {
 					placeholder="Email"
 					{...register("email")}
 					sx={{ mb: 1 }}
-					defaultValue={auth?.user?.email}
+					defaultValue={auth?.value.user?.email}
 					error={errors.email != null}
 					helperText={errors.email?.message}
 				/>
@@ -102,7 +102,7 @@ const ProfileForm = (): ReactElement => {
 					Save
 				</LoadingButton>
 
-				{!auth?.isPremium(auth?.user) ? <GetLicenceButton /> : <Box />}
+				{!auth?.isPremium(auth?.value.user) ? <GetLicenceButton /> : <Box />}
 			</CardActions>
 		</Card>
 	);
