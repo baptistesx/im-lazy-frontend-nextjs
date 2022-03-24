@@ -1,4 +1,5 @@
 import { CircularProgress } from "@mui/material";
+import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useAuth } from "@providers/AuthProvider";
 import { useRouter } from "next/router";
 import { ReactElement, ReactNode, useEffect } from "react";
@@ -6,6 +7,7 @@ import SignedInLayout from "../layout/SignedInLayout";
 
 const PremiumRoute = ({ children }: { children: ReactNode }): ReactElement => {
 	const auth = useAuth();
+	const authActions = useAuthActions();
 
 	const router = useRouter();
 
@@ -19,7 +21,7 @@ const PremiumRoute = ({ children }: { children: ReactNode }): ReactElement => {
 		) {
 			router.push("/dashboard");
 		}
-	}, [auth, router]);
+	}, [auth, authActions, router]);
 
 	return auth?.value.status === "loading" ||
 		(router.isReady && auth?.value.status !== "connected") ||

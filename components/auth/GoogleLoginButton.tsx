@@ -1,10 +1,10 @@
-import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { Dispatch, ReactElement, SetStateAction } from "react";
 import GoogleLogin, {
 	GoogleLoginResponse,
 	GoogleLoginResponseOffline,
 } from "react-google-login";
+import { useAuthActions } from "../../providers/AuthActionsProvider";
 
 const GoogleLoginButton = ({
 	setIsLoading,
@@ -13,7 +13,7 @@ const GoogleLoginButton = ({
 }): ReactElement => {
 	const snackbarsService = useSnackbars();
 
-	const auth = useAuth();
+	const authActions = useAuthActions();
 
 	const isResponseAGoogleLoginResponse = (
 		response: GoogleLoginResponse | GoogleLoginResponseOffline
@@ -27,7 +27,7 @@ const GoogleLoginButton = ({
 		setIsLoading(true);
 
 		if (isResponseAGoogleLoginResponse(response)) {
-			auth?.loginWithGoogle(response.accessToken, () => {
+			authActions?.loginWithGoogle(response.accessToken, () => {
 				setIsLoading(false);
 			});
 		}

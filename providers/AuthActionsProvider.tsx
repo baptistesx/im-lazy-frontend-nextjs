@@ -171,11 +171,6 @@ export const AuthActionsProvider = ({
 		});
 	};
 
-	const isAdmin = (user: User | undefined): boolean => user?.role === "admin";
-
-	const isPremium = (user: User | undefined): boolean =>
-		user?.role === "admin" || user?.role === "premium";
-
 	return (
 		<AuthActionsContext.Provider
 			value={{
@@ -184,8 +179,6 @@ export const AuthActionsProvider = ({
 				loginWithGoogle,
 				register,
 				fetchCurrentUser,
-				isAdmin,
-				isPremium,
 			}}
 		>
 			{children}

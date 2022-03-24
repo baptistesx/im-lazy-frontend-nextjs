@@ -8,11 +8,11 @@ import {
 	Divider,
 	TextField,
 } from "@mui/material";
-import { useAuth } from "@providers/AuthProvider";
 import signInFormSchema from "@schemas/signInFormSchema";
 import Link from "next/link";
 import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useAuthActions } from "../../providers/AuthActionsProvider";
 import GoogleLoginButton from "./GoogleLoginButton";
 
 type SignInFormData = {
@@ -21,7 +21,7 @@ type SignInFormData = {
 };
 
 const SignInForm = (): ReactElement => {
-	const auth = useAuth();
+	const authActions = useAuthActions();
 
 	const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
 
@@ -43,7 +43,7 @@ const SignInForm = (): ReactElement => {
 	const onSubmit = (data: SignInFormData): void => {
 		setIsSigningIn(true);
 
-		auth?.login(data.email, data.password, () => {
+		authActions?.login(data.email, data.password, () => {
 			setIsSigningIn(false);
 
 			reset(data);

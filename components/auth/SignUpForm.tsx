@@ -8,7 +8,7 @@ import {
 	Divider,
 	TextField,
 } from "@mui/material";
-import { useAuth } from "@providers/AuthProvider";
+import { useAuthActions } from "@providers/AuthActionsProvider";
 import signUpFormSchema from "@schemas/signUpFormSchema";
 import Link from "next/link";
 import { ReactElement, useEffect, useState } from "react";
@@ -25,7 +25,7 @@ type SignUpSubmitFormData = {
 };
 
 const SignUpForm = (): ReactElement => {
-	const auth = useAuth();
+	const authActions = useAuthActions();
 
 	const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
 
@@ -48,7 +48,7 @@ const SignUpForm = (): ReactElement => {
 	const onSubmit = (data: SignUpSubmitFormData): void => {
 		setIsSigningUp(true);
 
-		auth?.register(data.name, data.email, data.password, () => {
+		authActions?.register(data.name, data.email, data.password, () => {
 			setIsSigningUp(false);
 
 			reset(data);

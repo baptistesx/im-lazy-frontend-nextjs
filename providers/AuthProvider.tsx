@@ -5,7 +5,7 @@ import {
 	useContext,
 	useState,
 } from "react";
-import { AuthValue, Connected, Loading, NotConnected } from "./user";
+import { AuthValue, Connected, Loading, NotConnected, User } from "./user";
 
 const AuthContext: Context<AuthValue | undefined> = createContext<
 	AuthValue | undefined
@@ -21,11 +21,18 @@ export const AuthProvider = ({
 		status: "not-connected",
 	});
 
+	const isAdmin = (user: User | undefined): boolean => user?.role === "admin";
+
+	const isPremium = (user: User | undefined): boolean =>
+		user?.role === "admin" || user?.role === "premium";
+
 	return (
 		<AuthContext.Provider
 			value={{
 				value,
 				setValue,
+				isAdmin,
+				isPremium,
 			}}
 		>
 			{children}
