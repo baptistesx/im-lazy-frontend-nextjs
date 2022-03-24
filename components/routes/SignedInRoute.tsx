@@ -4,7 +4,13 @@ import { useRouter } from "next/router";
 import { ReactElement, ReactNode, useEffect } from "react";
 import SignedInLayout from "../layout/SignedInLayout";
 
-const SignedInRoute = ({ children }: { children: ReactNode }): ReactElement => {
+const SignedInRoute = ({
+	children,
+	title,
+}: {
+	children: ReactNode;
+	title: string;
+}): ReactElement => {
 	const auth = useAuth();
 
 	const router = useRouter();
@@ -15,13 +21,15 @@ const SignedInRoute = ({ children }: { children: ReactNode }): ReactElement => {
 		}
 	}, [auth, router]);
 
-	return auth?.value.status === "loading" ||
-		(router.isReady && auth?.value.status !== "connected") ? (
-		<SignedInLayout>
-			<CircularProgress />
+	return (
+		<SignedInLayout title={title}>
+			{auth?.value.status === "loading" ||
+			(router.isReady && auth?.value.status !== "connected") ? (
+				<CircularProgress />
+			) : (
+				{ children }
+			)}
 		</SignedInLayout>
-	) : (
-		<SignedInLayout>{children}</SignedInLayout>
 	);
 };
 

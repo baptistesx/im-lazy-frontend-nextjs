@@ -7,8 +7,10 @@ import SignedInLayout from "../layout/SignedInLayout";
 
 const NotPremiumRoute = ({
 	children,
+	title,
 }: {
 	children: ReactNode;
+	title: string;
 }): ReactElement => {
 	const auth = useAuth();
 	const authActions = useAuthActions();
@@ -27,16 +29,18 @@ const NotPremiumRoute = ({
 		}
 	}, [auth, authActions, router]);
 
-	return auth?.value.status === "loading" ||
-		(router.isReady && auth?.value.status !== "connected") ||
-		(router.isReady &&
-			auth?.value.status === "connected" &&
-			auth?.isPremium(auth?.value.user)) ? (
-		<SignedInLayout>
-			<CircularProgress />
+	return (
+		<SignedInLayout title={title}>
+			{auth?.value.status === "loading" ||
+			(router.isReady && auth?.value.status !== "connected") ||
+			(router.isReady &&
+				auth?.value.status === "connected" &&
+				auth?.isPremium(auth?.value.user)) ? (
+				<CircularProgress />
+			) : (
+				{ children }
+			)}
 		</SignedInLayout>
-	) : (
-		<SignedInLayout>{children}</SignedInLayout>
 	);
 };
 

@@ -2,11 +2,12 @@ import { AuthActionsProvider } from "@providers/AuthActionsProvider";
 import { AuthProvider } from "@providers/AuthProvider";
 import { CustomThemeProvider } from "@providers/CustomThemeProvider";
 import { SnackBarProvider } from "@providers/SnackbarProvider";
+import { appWithTranslation } from "next-i18next";
 import type { AppProps } from "next/app";
-import { ReactNode } from "react";
+import { ReactElement } from "react";
 import "../styles/globals.css";
 
-const MyApp = ({ Component, pageProps }: AppProps): ReactNode => {
+const MyApp = ({ Component, pageProps }: AppProps): ReactElement => {
 	return (
 		<CustomThemeProvider>
 			<SnackBarProvider>
@@ -20,4 +21,4 @@ const MyApp = ({ Component, pageProps }: AppProps): ReactNode => {
 	);
 };
 
-export default MyApp;
+export default appWithTranslation(MyApp);

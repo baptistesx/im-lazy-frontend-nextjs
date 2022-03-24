@@ -3,14 +3,18 @@ import SignedInRoute from "@components/routes/SignedInRoute";
 import GetLicenceButton from "@components/users/GetLicenceButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { LoadingButton } from "@mui/lab";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { sendVerificationEmail } from "@services/userApi";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Link from "next/link";
 import { ReactElement, useState } from "react";
 
 const Dashboard = (): ReactElement => {
+	const { t } = useTranslation("sign-in");
+
 	const auth = useAuth();
 
 	const snackbarsService = useSnackbars();
@@ -20,7 +24,7 @@ const Dashboard = (): ReactElement => {
 	const handleSendVerificationEmailAgain = async (): Promise<void> => {
 		if (auth?.value.user?.email === undefined) {
 			snackbarsService?.addSnackbar({
-				message: "Email not valid.",
+				message: t("email-not-valid"),
 				severity: "error",
 			});
 		} else {
@@ -30,7 +34,7 @@ const Dashboard = (): ReactElement => {
 				setLoading(false);
 
 				snackbarsService?.addSnackbar({
-					message: "Confirmation email has been well sent",
+					message: t("email-well-sent"),
 					severity: "success",
 				});
 			});
@@ -38,13 +42,11 @@ const Dashboard = (): ReactElement => {
 	};
 
 	return (
-		<SignedInRoute>
-			<Typography variant="h1">Dashboard</Typography>
-
+		<SignedInRoute title={t("title")}>
 			{auth?.isPremium(auth?.value.user) ? (
 				<Link href="/workaway-bot" passHref>
 					<Button variant="contained" sx={{ m: 1 }}>
-						Workaway messaging
+						{t("bot-name")}
 						<ArrowForwardIcon />
 					</Button>
 				</Link>
@@ -55,7 +57,7 @@ const Dashboard = (): ReactElement => {
 			{!auth?.value.user?.isEmailVerified ? (
 				<CustomSnackbar
 					snackbarMessage={{
-						message: "Remember to check the confirmation email we sent you.",
+						message: t("remember-email-confirmation"),
 						severity: "error",
 					}}
 				>
@@ -64,7 +66,7 @@ const Dashboard = (): ReactElement => {
 						loading={loading}
 						onClick={handleSendVerificationEmailAgain}
 					>
-						Send again
+						{t("send-again")}
 					</LoadingButton>
 				</CustomSnackbar>
 			) : (
@@ -72,6 +74,18 @@ const Dashboard = (): ReactElement => {
 			)}
 		</SignedInRoute>
 	);
+};
+
+export const getStaticProps = async ({
+	locale,
+}: {
+	locale: string;
+}): Promise<{ props: unknown }> => {
+	return {
+		props: {
+			...(await serverSideTranslations(locale, ["common", "dashboard"])),
+		},
+	};
 };
 
 export default Dashboard;

@@ -25,9 +25,13 @@ import {
 import { useAuth, User } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { deleteUserById, getUsers } from "@services/userApi";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 
 const Users = (): ReactElement => {
+	const { t } = useTranslation("users");
+
 	const snackbarsService = useSnackbars();
 
 	const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -106,9 +110,7 @@ const Users = (): ReactElement => {
 	};
 
 	return (
-		<AdminRoute>
-			<Typography variant="h1">Users</Typography>
-
+		<AdminRoute title={t("title")}>
 			<Card>
 				<CardContent>
 					{users?.length === 0 && isLoading ? (
@@ -116,23 +118,25 @@ const Users = (): ReactElement => {
 					) : (
 						<Box>
 							<Typography variant="body1">
-								{`${users?.length} Available users`}
+								{`${users?.length} ${t("available-users")}`}
 							</Typography>
 
 							{users?.length === 0 ? (
-								<Typography>No users</Typography>
+								<Typography>{t("no-users")}</Typography>
 							) : (
 								//TODO: refactor (extract component)
 								<TableContainer component={Paper}>
 									<Table aria-label="users table">
 										<TableHead>
 											<TableRow>
-												<TableCell align="left">Name</TableCell>
-												<TableCell align="left">Email</TableCell>
-												<TableCell align="left">Admin</TableCell>
-												<TableCell align="left">Premium</TableCell>
-												<TableCell align="left">Email verified</TableCell>
-												<TableCell align="left">Actions</TableCell>
+												<TableCell align="left">{t("name")}</TableCell>
+												<TableCell align="left">{t("email")}</TableCell>
+												<TableCell align="left">{t("admin")}</TableCell>
+												<TableCell align="left">{t("premium")}</TableCell>
+												<TableCell align="left">
+													{t("email-verified")}
+												</TableCell>
+												<TableCell align="left">{t("actions")}</TableCell>
 											</TableRow>
 										</TableHead>
 
@@ -233,6 +237,18 @@ const Users = (): ReactElement => {
 			)}
 		</AdminRoute>
 	);
+};
+
+export const getStaticProps = async ({
+	locale,
+}: {
+	locale: string;
+}): Promise<{ props: unknown }> => {
+	return {
+		props: {
+			...(await serverSideTranslations(locale, ["common", "users"])),
+		},
+	};
 };
 
 export default Users;

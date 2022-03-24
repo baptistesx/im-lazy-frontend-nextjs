@@ -27,8 +27,8 @@ type NotConnected = {
 export type AuthValue = {
 	value: Connected | NotConnected | Loading;
 	setValue: (value: Connected | NotConnected | Loading) => void;
-	isAdmin: (user: User) => boolean;
-	isPremium: (user: User) => boolean;
+	isAdmin: (user: User | undefined) => boolean;
+	isPremium: (user: User | undefined) => boolean;
 };
 
 export type AuthActionsValue = {

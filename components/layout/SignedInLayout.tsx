@@ -5,6 +5,7 @@ import { IconButton } from "@mui/material";
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material/";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Theme } from "@mui/material/styles";
+import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useAuth } from "@providers/AuthProvider";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,14 +15,18 @@ import ToolBarUserInfo from "./ToolBarUserInfo";
 
 const SignedInLayout = ({
 	children,
+	title,
 }: {
 	children: ReactNode;
+	title: string;
 }): ReactElement => {
 	const theme: Theme = useTheme();
 
 	const auth = useAuth();
+	const authActions = useAuthActions();
 
-	const onLogoutClick = async (): Promise<void | undefined> => auth?.logout();
+	const onLogoutClick = async (): Promise<void | undefined> =>
+		authActions?.logout();
 
 	const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -111,6 +116,12 @@ const SignedInLayout = ({
 				}}
 			>
 				<Toolbar />
+				<Typography
+					variant="h1"
+					sx={{ textAlign: "center", color: "white", m: 1 }}
+				>
+					{title}
+				</Typography>
 				{children}
 			</Box>
 		</Box>

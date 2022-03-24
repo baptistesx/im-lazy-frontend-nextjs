@@ -1,13 +1,16 @@
 import NotSignedInRoute from "@components/routes/NotSignedInRoute";
 import { Box, Button, Link, Typography } from "@mui/material";
 import { ReactElement } from "react";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const Home = (): ReactElement => {
+	const { t } = useTranslation("index");
+
 	return (
-		<NotSignedInRoute title="Home">
+		<NotSignedInRoute title={t("title")}>
 			<Typography variant="body1" sx={{ color: "white", textAlign: "center" }}>
-				Welcome on ImLazy.dev! You'll find here different resources to save time
-				in your life...
+				{t("welcome-text")}
 			</Typography>
 
 			<Box
@@ -18,7 +21,7 @@ const Home = (): ReactElement => {
 						variant="outlined"
 						sx={{ color: "white", borderColor: "white", m: 1 }}
 					>
-						Sign In
+						{t("sign-in")}
 					</Button>
 				</Link>
 
@@ -29,12 +32,24 @@ const Home = (): ReactElement => {
 						variant="outlined"
 						sx={{ color: "white", borderColor: "white", m: 1 }}
 					>
-						Sign Up
+						{t("sign-up")}
 					</Button>
 				</Link>
 			</Box>
 		</NotSignedInRoute>
 	);
+};
+
+export const getStaticProps = async ({
+	locale,
+}: {
+	locale: string;
+}): Promise<{ props: unknown }> => {
+	return {
+		props: {
+			...(await serverSideTranslations(locale, ["common", "index"])),
+		},
+	};
 };
 
 export default Home;

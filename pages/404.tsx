@@ -1,18 +1,32 @@
 import SignedInLayout from "@components/layout/SignedInLayout";
-import { Button, Typography } from "@mui/material";
+import { Button } from "@mui/material";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Link from "next/link";
 import { ReactNode } from "react";
 
 const ResetPassword = (): ReactNode => {
-	return (
-		<SignedInLayout>
-			<Typography variant="h1">Page not found (Error 404)</Typography>
+	const { t } = useTranslation("404");
 
+	return (
+		<SignedInLayout title={t("title")}>
 			<Link href="/" passHref>
-				<Button variant="contained">Back to home page</Button>
+				<Button variant="contained">{t("back-button-message")}</Button>
 			</Link>
 		</SignedInLayout>
 	);
+};
+
+export const getStaticProps = async ({
+	locale,
+}: {
+	locale: string;
+}): Promise<{ props: unknown }> => {
+	return {
+		props: {
+			...(await serverSideTranslations(locale, ["common", "404"])),
+		},
+	};
 };
 
 export default ResetPassword;
