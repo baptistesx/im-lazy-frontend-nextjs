@@ -5,10 +5,10 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { ReactElement } from "react";
 
 const ResetPassword = (): ReactElement => {
-	const { t } = useTranslation("reset-password");
+	const { t } = useTranslation("auth");
 
 	return (
-		<NotSignedInRoute title={t("title")}>
+		<NotSignedInRoute title={t("reset-password")}>
 			<ResetPasswordForm />
 		</NotSignedInRoute>
 	);
@@ -21,7 +21,7 @@ export const getStaticProps = async ({
 }): Promise<{ props: unknown }> => {
 	return {
 		props: {
-			...(await serverSideTranslations(locale, ["common", "reset-password"])),
+			...(await serverSideTranslations(locale, ["common", "auth"])),
 		},
 	};
 };

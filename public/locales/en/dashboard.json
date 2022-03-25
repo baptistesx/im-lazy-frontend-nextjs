@@ -1,8 +1,8 @@
 {
-	"title": "Dashboard",
+	"bot-name": "Workaway messaging",
 	"email-not-valid": "Email not valid",
 	"email-well-sent": "Confirmation email has been well sent",
-	"bot-name": "Workaway messaging",
 	"remember-email-confirmation": "Remember to check the confirmation email we sent you.",
-	"send-again": "Send again"
+	"send-again": "Send again",
+	"title": "Dashboard"
 }

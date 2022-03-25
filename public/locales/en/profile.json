@@ -1,10 +1,10 @@
 {
-	"title": "Profile",
 	"change-password": "Change Password",
-	"password-well-updated": "Password well updated",
-	"error-updating-password": "Error while updating password, check your current password.",
 	"current-password": "Current password",
+	"error-updating-password": "Error while updating password, check your current password.",
+	"error-updating-profile": "Error while updating profile.",
 	"new-password": "New password",
-	"user-well-updated": "User well updated",
-	"error-updating-profile": "Error while updating profile."
+	"password-well-updated": "Password well updated",
+	"title": "Profile",
+	"user-well-updated": "User well updated"
 }

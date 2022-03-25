@@ -5,10 +5,10 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { ReactElement } from "react";
 
 const SignUp = (): ReactElement => {
-	const { t } = useTranslation("sign-in");
+	const { t } = useTranslation("auth");
 
 	return (
-		<NotSignedInRoute title={t("title")}>
+		<NotSignedInRoute title={t("sign-up")}>
 			<SignUpForm />
 		</NotSignedInRoute>
 	);
@@ -21,7 +21,7 @@ export const getStaticProps = async ({
 }): Promise<{ props: unknown }> => {
 	return {
 		props: {
-			...(await serverSideTranslations(locale, ["common", "sign-up"])),
+			...(await serverSideTranslations(locale, ["common", "auth"])),
 		},
 	};
 };

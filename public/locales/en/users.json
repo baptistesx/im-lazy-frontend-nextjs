@@ -1,8 +1,8 @@
 {
-	"title": "Users",
-	"available-users": "Available users",
-	"no-users": "No users",
 	"admin": "Admin",
+	"available-users": "Available users",
+	"email-verified": "Email verified",
+	"no-users": "No users",
 	"premium": "Premium",
-	"email-verified": "Email verified"
+	"title": "Users"
 }
