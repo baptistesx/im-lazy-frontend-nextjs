@@ -21,9 +21,13 @@ import {
 	downloadFileByName,
 	getFilesName,
 } from "@services/workawayBotApi";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 
 const FilesSection = (): ReactElement => {
+	const { t } = useTranslation("workaway-bot");
+
 	const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
 	const [filesName, setFilesName] = useState<string[] | undefined>(undefined);
@@ -41,8 +45,7 @@ const FilesSection = (): ReactElement => {
 			setIsRefreshing(false);
 
 			snackbarsService?.addSnackbar({
-				message:
-					"An error occurred while getting files name, are you a premium member?",
+				message: t("error-getting-filesname"),
 				severity: "error",
 			});
 		});
@@ -73,8 +76,7 @@ const FilesSection = (): ReactElement => {
 			a.remove();
 		}).catch(() => {
 			snackbarsService?.addSnackbar({
-				message:
-					"An error occurred while downloading file, are you a premium member?",
+				message: t("error-downloading-file"),
 				severity: "error",
 			});
 		});
@@ -83,8 +85,8 @@ const FilesSection = (): ReactElement => {
 	const handleDeleteFile = async (name: string): Promise<void> => {
 		await deleteFileByName(name, () => handleRefresh()).catch(() => {
 			snackbarsService?.addSnackbar({
-				message:
-					"An error occurred while deleting file, are you a premium member?",
+				message: t("error-deleting-file"),
+
 				severity: "error",
 			});
 		});
@@ -100,18 +102,18 @@ const FilesSection = (): ReactElement => {
 			}}
 		>
 			<CardContent>
-				<Typography variant="h2">Available files</Typography>
+				<Typography variant="h2">{t("available-files")}</Typography>
 
 				{filesName?.length === 0 ? (
-					<Typography>No file available</Typography>
+					<Typography>{t("no-file-available")}</Typography>
 				) : (
 					<TableContainer component={Paper}>
 						<Table aria-label="files table">
 							<TableHead>
 								<TableRow>
-									<TableCell align="left">Name</TableCell>
+									<TableCell align="left">{t("name")}</TableCell>
 
-									<TableCell align="left">Actions</TableCell>
+									<TableCell align="left">{t("actions")}</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
@@ -156,11 +158,23 @@ const FilesSection = (): ReactElement => {
 						m: 1,
 					}}
 				>
-					Refresh
+					{t("refresh")}
 				</LoadingButton>
 			</CardActions>
 		</Card>
 	);
+};
+
+export const getStaticProps = async ({
+	locale,
+}: {
+	locale: string;
+}): Promise<{ props: unknown }> => {
+	return {
+		props: {
+			...(await serverSideTranslations(locale, ["common", "workaway-bot"])),
+		},
+	};
 };
 
 export default FilesSection;

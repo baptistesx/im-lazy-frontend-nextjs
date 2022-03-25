@@ -2,10 +2,7 @@
 	"title": "Users",
 	"available-users": "Available users",
 	"no-users": "No users",
-	"name": "Name",
-	"email": "Email",
 	"admin": "Admin",
 	"premium": "Premium",
-	"email-verified": "Email verified",
-	"actions": "Actions"
+	"email-verified": "Email verified"
 }

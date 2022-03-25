@@ -17,6 +17,7 @@ import { createUser, updateUserById } from "@services/userApi";
 import PropTypes from "prop-types";
 import { ReactElement, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useAuthActions } from "../../providers/AuthActionsProvider";
 
 interface EditUserDialogFormData {
 	name: string;
@@ -36,6 +37,7 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 	const { onClose, open, user, ...other } = props;
 
 	const auth = useAuth();
+	const authActions = useAuthActions();
 
 	const snackbarsService = useSnackbars();
 
@@ -96,7 +98,7 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 					});
 
 					if (currentUser?.id === auth?.value.user?.id) {
-						auth.fetchCurrentUser();
+						authActions.fetchCurrentUser();
 					}
 
 					reset(data);

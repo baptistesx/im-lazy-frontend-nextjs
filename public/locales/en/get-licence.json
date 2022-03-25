@@ -1,5 +1,7 @@
 {
 	"title": "Get the Premium licence",
 	"already-premium": "You are already a premium member",
-	"get-premium-account": "Turn your account Premium for only 5€/month !"
+	"get-premium-account": "Turn your account Premium for only 5€/month !",
+	"payment-well-saved": "Payment well saved, you're now premium member!",
+	"loading-button": "Loading button..."
 }

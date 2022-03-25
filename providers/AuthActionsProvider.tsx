@@ -15,8 +15,11 @@ import {
 	useContext,
 	useEffect,
 } from "react";
+import routes from "./routes";
 import { useSnackbars } from "./SnackbarProvider";
 import { AuthActionsValue, User } from "./user";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const AuthActionsContext: Context<AuthActionsValue | undefined> = createContext<
 	AuthActionsValue | undefined
@@ -27,6 +30,8 @@ export const AuthActionsProvider = ({
 }: {
 	children: ReactElement;
 }): ReactElement => {
+	const { t } = useTranslation("auth");
+
 	const auth = useAuth();
 
 	const snackbarsService = useSnackbars();
@@ -43,13 +48,11 @@ export const AuthActionsProvider = ({
 
 			// TODO: there is probably a better way to get NotSignedInRoutes
 			if (
-				router.route !== "/" &&
-				router.route !== "/auth/sign-in" &&
-				router.route !== "/auth/sign-up" &&
-				router.route !== "/auth/reset-password"
+				!router.pathname.startsWith(routes.auth.root) &&
+				router.pathname !== routes.root
 			) {
 				snackbarsService?.addSnackbar({
-					message: "An error occurred while fetching user.",
+					message: t("error-fetching-user"),
 					severity: "error",
 				});
 			}
@@ -67,7 +70,7 @@ export const AuthActionsProvider = ({
 		}).catch(() => {
 			auth.setValue({ status: "not-connected", user: undefined });
 			snackbarsService?.addSnackbar({
-				message: "An error occurred while signing out",
+				message: t("error-sign-out"),
 				severity: "error",
 			});
 		});
@@ -88,20 +91,19 @@ export const AuthActionsProvider = ({
 			snackbarsService?.addSnackbar({
 				message:
 					user.lastLogin === undefined
-						? "Welcome to ImLazy app !"
-						: "Welcome back !",
+						? t("welcome-new-user")
+						: t("welcome-back"),
 				severity: "success",
 			});
 
-			router.push("/dashboard");
+			// Should be redirected to /dashboard
 		}).catch(() => {
 			cb();
 
 			auth.setValue({ status: "not-connected", user: undefined });
 			//TODO: add internet connection checker and customize message error
 			snackbarsService?.addSnackbar({
-				message:
-					"Check your internet connection or email/password might be invalid",
+				message: t("error-sign-in"),
 				severity: "error",
 			});
 		});
@@ -121,8 +123,8 @@ export const AuthActionsProvider = ({
 			snackbarsService?.addSnackbar({
 				message:
 					user.lastLogin === undefined
-						? "Welcome to ImLazy app !"
-						: "Welcome back !",
+						? t("welcome-new-user")
+						: t("welcome-back"),
 				severity: "success",
 			});
 
@@ -133,7 +135,7 @@ export const AuthActionsProvider = ({
 			auth.setValue({ status: "not-connected", user: undefined });
 
 			snackbarsService?.addSnackbar({
-				message: "An error occurred while signing in with Google",
+				message: t("error-sign-in-google"),
 				severity: "error",
 			});
 		});
@@ -153,7 +155,7 @@ export const AuthActionsProvider = ({
 			auth.setValue({ status: "connected", user });
 
 			snackbarsService?.addSnackbar({
-				message: "Welcome to ImLazy app !",
+				message: t("welcome-new-user"),
 				severity: "success",
 			});
 
@@ -164,8 +166,7 @@ export const AuthActionsProvider = ({
 			auth.setValue({ status: "not-connected", user: undefined });
 
 			snackbarsService?.addSnackbar({
-				message:
-					"An error occurred while signing up. This email might be used already",
+				message: t("error-sign-up"),
 				severity: "error",
 			});
 		});
@@ -184,6 +185,18 @@ export const AuthActionsProvider = ({
 			{children}
 		</AuthActionsContext.Provider>
 	);
+};
+
+export const getStaticProps = async ({
+	locale,
+}: {
+	locale: string;
+}): Promise<{ props: unknown }> => {
+	return {
+		props: {
+			...(await serverSideTranslations(locale, ["common", "auth"])),
+		},
+	};
 };
 
 export const useAuthActions = (): AuthActionsValue => {

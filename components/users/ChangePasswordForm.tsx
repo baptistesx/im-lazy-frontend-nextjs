@@ -5,6 +5,8 @@ import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import updatePasswordFormSchema from "@schemas/updatePasswordFormSchema";
 import { updateUserPasswordById } from "@services/userApi";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { ReactElement, useState } from "react";
 import { useForm } from "react-hook-form";
 import GetLicenceButton from "./GetLicenceButton";
@@ -15,6 +17,8 @@ type ChangePasswordFormData = {
 };
 
 const ChangePasswordForm = (): ReactElement => {
+	const { t } = useTranslation("profile");
+
 	const auth = useAuth();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -33,33 +37,35 @@ const ChangePasswordForm = (): ReactElement => {
 	const handleSavePassword = async (
 		data: ChangePasswordFormData
 	): Promise<void> => {
-		setIsLoading(true);
+		if (auth?.value.user !== undefined) {
+			setIsLoading(true);
 
-		updateUserPasswordById(
-			{
-				id: auth?.value.user?.id,
-				currentPassword: data.currentPassword,
-				newPassword: data.newPassword,
-			},
-			() => {
+			updateUserPasswordById(
+				{
+					id: auth?.value.user?.id,
+					currentPassword: data.currentPassword,
+					newPassword: data.newPassword,
+				},
+				() => {
+					setIsLoading(false);
+
+					snackbarsService?.addSnackbar({
+						message: t("password-well-updated"),
+						severity: "success",
+					});
+
+					reset();
+				}
+			).catch(() => {
 				setIsLoading(false);
 
 				snackbarsService?.addSnackbar({
-					message: "Password well updated",
-					severity: "success",
+					message: t("error-updating-password"),
+					severity: "error",
 				});
-
-				reset();
-			}
-		).catch(() => {
-			setIsLoading(false);
-
-			snackbarsService?.addSnackbar({
-				message: "Error while updating password, check your current password.",
-				severity: "error",
+				reset(data);
 			});
-			reset(data);
-		});
+		}
 	};
 
 	return (
@@ -71,7 +77,7 @@ const ChangePasswordForm = (): ReactElement => {
 			<CardContent>
 				<TextField
 					fullWidth
-					placeholder="Current password"
+					placeholder={t("current-password")}
 					{...register("currentPassword")}
 					sx={{ mb: 1 }}
 					error={errors.currentPassword != null}
@@ -80,7 +86,7 @@ const ChangePasswordForm = (): ReactElement => {
 
 				<TextField
 					fullWidth
-					placeholder="New password"
+					placeholder={t("new-password")}
 					{...register("newPassword")}
 					sx={{ mb: 1 }}
 					error={errors.newPassword != null}
@@ -98,13 +104,25 @@ const ChangePasswordForm = (): ReactElement => {
 						m: 1,
 					}}
 				>
-					Save
+					{t("save")}
 				</LoadingButton>
 
 				{!auth?.isPremium(auth?.value.user) ? <GetLicenceButton /> : <Box />}
 			</CardActions>
 		</Card>
 	);
+};
+
+export const getStaticProps = async ({
+	locale,
+}: {
+	locale: string;
+}): Promise<{ props: unknown }> => {
+	return {
+		props: {
+			...(await serverSideTranslations(locale, ["common", "profile"])),
+		},
+	};
 };
 
 export default ChangePasswordForm;

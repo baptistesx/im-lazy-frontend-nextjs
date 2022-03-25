@@ -69,7 +69,7 @@ export const deleteUserById = async (
 };
 
 export const updateUserById = async (
-	data: { id: string; email: string; role: string; name: string },
+	data: { id: string; email: string; role?: string; name: string },
 	cb: () => void
 ): Promise<void> => {
 	await userApi.axiosApiCall({

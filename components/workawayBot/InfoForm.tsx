@@ -14,11 +14,15 @@ import { Box } from "@mui/system";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import infoFormSchema from "@schemas/infoFormSchema";
 import { startBot, stopBot } from "@services/workawayBotApi";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { ReactElement, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FormBotParams } from "./workaway";
 
 const InfoForm = (): ReactElement => {
+	const { t } = useTranslation("workaway-bot");
+
 	const [isStarting, setIsStarting] = useState<boolean>(false);
 	const [isStopping, setIsStopping] = useState<boolean>(false);
 	const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -62,8 +66,7 @@ const InfoForm = (): ReactElement => {
 			}
 		).catch(() => {
 			snackbarsService?.addSnackbar({
-				message:
-					"An error occurred while starting bot, are you a premium member?",
+				message: t("error-starting-bot"),
 				severity: "error",
 			});
 		});
@@ -80,8 +83,7 @@ const InfoForm = (): ReactElement => {
 			setIsStopping(false);
 		}).catch(() => {
 			snackbarsService?.addSnackbar({
-				message:
-					"An error occurred while stopping bot, are you a premium member?",
+				message: t("error-stopping-bot"),
 				severity: "error",
 			});
 		});
@@ -116,7 +118,7 @@ const InfoForm = (): ReactElement => {
 				)}
 				<TextField
 					fullWidth
-					placeholder="Email"
+					placeholder={t("email")}
 					{...register("email")}
 					sx={{ m: 1 }}
 					error={errors.email != null}
@@ -125,7 +127,7 @@ const InfoForm = (): ReactElement => {
 				<TextField
 					fullWidth
 					type={"password"}
-					placeholder="Password"
+					placeholder={t("password")}
 					{...register("password")}
 					sx={{ m: 1 }}
 					error={errors.password != null}
@@ -133,7 +135,7 @@ const InfoForm = (): ReactElement => {
 				/>
 				<TextField
 					fullWidth
-					placeholder="City"
+					placeholder={t("city")}
 					{...register("city")}
 					sx={{ m: 1 }}
 					error={errors.city != null}
@@ -165,7 +167,7 @@ const InfoForm = (): ReactElement => {
 					<TextField
 						fullWidth
 						id="minimimAge"
-						label="Minimum age"
+						label={t("minimumAge")}
 						type="number"
 						InputLabelProps={{
 							shrink: true,
@@ -180,7 +182,7 @@ const InfoForm = (): ReactElement => {
 					<TextField
 						fullWidth
 						id="maximumAge"
-						label="Maximum age"
+						label={t("maximumAge")}
 						type="number"
 						InputLabelProps={{
 							shrink: true,
@@ -196,7 +198,7 @@ const InfoForm = (): ReactElement => {
 				<TextField
 					fullWidth
 					id="outlined-required"
-					label="Message subject"
+					label={t("message-subject")}
 					defaultValue="Let's meet!"
 					sx={{ m: 1 }}
 					{...register("messageSubject")}
@@ -206,7 +208,7 @@ const InfoForm = (): ReactElement => {
 				<TextField
 					fullWidth
 					id="outlined-required"
-					label="English message"
+					label={t("english-message")}
 					defaultValue="Hey! I'm in the area until next week, let's meet?!"
 					multiline
 					rows={4}
@@ -219,7 +221,7 @@ const InfoForm = (): ReactElement => {
 				<TextField
 					fullWidth
 					id="outlined-required"
-					label="French message"
+					label={t("french-message")}
 					defaultValue="Saluut! Je suis dans le coin jusqu'à la semaine prochaine, t'es chaud de faire un tour en ville?!"
 					multiline
 					rows={4}
@@ -240,7 +242,7 @@ const InfoForm = (): ReactElement => {
 					}}
 					disabled={isRunning}
 				>
-					Start the bot !
+					{t("start-bot")}
 				</LoadingButton>
 
 				<LoadingButton
@@ -252,11 +254,23 @@ const InfoForm = (): ReactElement => {
 					disabled={!isRunning}
 					onClick={handleStopBot}
 				>
-					Stop the bot !
+					{t("stop-bot")}
 				</LoadingButton>
 			</CardActions>
 		</Card>
 	);
+};
+
+export const getStaticProps = async ({
+	locale,
+}: {
+	locale: string;
+}): Promise<{ props: unknown }> => {
+	return {
+		props: {
+			...(await serverSideTranslations(locale, ["common", "workaway-bot"])),
+		},
+	};
 };
 
 export default InfoForm;

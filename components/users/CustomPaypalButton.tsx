@@ -11,6 +11,8 @@ import {
 } from "@paypal/react-paypal-js";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { savePayment } from "@services/userApi";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import { ReactElement } from "react";
 
@@ -24,6 +26,8 @@ const paypalScriptOptions: PayPalScriptOptions = {
 };
 
 const CustomButton = (): ReactElement => {
+	const { t } = useTranslation("get-licence");
+
 	const snackbarsService = useSnackbars();
 
 	const router = useRouter();
@@ -71,7 +75,7 @@ const CustomButton = (): ReactElement => {
 
 			savePayment(resume, () => {
 				snackbarsService?.addSnackbar({
-					message: "Payment well saved, you're now premium member!",
+					message: t("payment-well-saved"),
 					severity: "success",
 				});
 
@@ -81,7 +85,7 @@ const CustomButton = (): ReactElement => {
 	};
 	return (
 		<>
-			{isPending ? <h2>Load Smart Payment Button...</h2> : null}
+			{isPending ? <h2>{t("loading-button")}</h2> : null}
 			<PayPalButtons {...paypalbuttonTransactionProps} />
 		</>
 	);
@@ -93,6 +97,18 @@ const CustomPaypalButton = (): ReactElement => {
 			<CustomButton />
 		</PayPalScriptProvider>
 	);
+};
+
+export const getStaticProps = async ({
+	locale,
+}: {
+	locale: string;
+}): Promise<{ props: unknown }> => {
+	return {
+		props: {
+			...(await serverSideTranslations(locale, ["common", "get-licence"])),
+		},
+	};
 };
 
 export default CustomPaypalButton;

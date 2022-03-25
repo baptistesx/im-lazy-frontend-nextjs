@@ -11,6 +11,8 @@ import RadioGroup from "@mui/material/RadioGroup";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { ReactElement, useEffect, useRef, useState } from "react";
+import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 interface CitiesFormDialogProps {
 	keepMounted: boolean;
@@ -21,6 +23,8 @@ interface CitiesFormDialogProps {
 }
 
 const CitiesFormDialog = (props: CitiesFormDialogProps): ReactElement => {
+	const { t } = useTranslation("workaway-bot");
+
 	const { onClose, value: valueProp, open, cities, ...other } = props;
 
 	const [value, setValue] = useState<string | undefined>(valueProp);
@@ -55,7 +59,7 @@ const CitiesFormDialog = (props: CitiesFormDialogProps): ReactElement => {
 			open={open}
 			{...other}
 		>
-			<DialogTitle>Full city/country name</DialogTitle>
+			<DialogTitle>{t("full-city-name")}</DialogTitle>
 
 			<DialogContent dividers>
 				<RadioGroup
@@ -87,6 +91,18 @@ CitiesFormDialog.propTypes = {
 	onClose: PropTypes.func.isRequired,
 	open: PropTypes.bool.isRequired,
 	value: PropTypes.string.isRequired,
+};
+
+export const getStaticProps = async ({
+	locale,
+}: {
+	locale: string;
+}): Promise<{ props: unknown }> => {
+	return {
+		props: {
+			...(await serverSideTranslations(locale, ["common", "workaway-bot"])),
+		},
+	};
 };
 
 export default CitiesFormDialog;
