@@ -1,7 +1,7 @@
 {
-	"name": "Name",
 	"actions": "Actions",
 	"email": "Email",
+	"name": "Name",
 	"refresh": "Refresh",
 	"save": "Save"
 }
