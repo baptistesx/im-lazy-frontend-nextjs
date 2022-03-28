@@ -32,7 +32,12 @@ const CustomDrawerItem = ({
 }): ReactElement => {
 	const router = useRouter();
 
-	const [open, setOpen] = useState(true);
+	const isInSubMenu =
+		element.children !== undefined &&
+		element.children.find((child) => child.route === router.route) !==
+			undefined;
+
+	const [open, setOpen] = useState(isInSubMenu);
 
 	const toggleList = (): void => {
 		setOpen(!open);
