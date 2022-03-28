@@ -5,12 +5,15 @@ import {
 	Card,
 	CardActions,
 	CardContent,
-	Link,
 	TextField,
 } from "@mui/material";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import resetPasswordFormSchema from "@schemas/resetPasswordFormSchema";
 import { resetPassword } from "@services/userApi";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -20,6 +23,10 @@ type ResetPasswordFormData = {
 
 const ResetPasswordForm = (): ReactElement => {
 	const snackbarsService = useSnackbars();
+
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -45,7 +52,7 @@ const ResetPasswordForm = (): ReactElement => {
 			setIsLoading(false);
 
 			snackbarsService?.addSnackbar({
-				message: "If email is valid, a reset password email has been sent",
+				message: t.auth["email-well-sent"],
 				severity: "success",
 			});
 
@@ -54,7 +61,7 @@ const ResetPasswordForm = (): ReactElement => {
 			setIsLoading(false);
 
 			snackbarsService?.addSnackbar({
-				message: "An error occurred while sending a reset password email",
+				message: t.auth["error-sending-email"],
 				severity: "error",
 			});
 		});
@@ -65,7 +72,7 @@ const ResetPasswordForm = (): ReactElement => {
 			<CardContent>
 				<TextField
 					fullWidth
-					placeholder="Email"
+					placeholder={t.common.email}
 					{...register("email")}
 					error={errors.email != null}
 					helperText={errors.email?.message}
@@ -82,16 +89,16 @@ const ResetPasswordForm = (): ReactElement => {
 					disabled={!isDirty}
 					loading={isLoading}
 				>
-					Reset password
+					{t.auth["reset-password"]}
 				</LoadingButton>
 
-				<Link href="/auth/sign-in">
+				<Link href="/auth/sign-in" passHref>
 					<Button
 						sx={{
 							m: 1,
 						}}
 					>
-						Back
+						{t.common.back}
 					</Button>
 				</Link>
 			</CardActions>

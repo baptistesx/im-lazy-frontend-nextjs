@@ -8,11 +8,12 @@ import {
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import RadioGroup from "@mui/material/RadioGroup";
+import { useRouter } from "next/router";
 import PropTypes from "prop-types";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import * as React from "react";
 import { ReactElement, useEffect, useRef, useState } from "react";
-import { useTranslation } from "next-i18next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 interface CitiesFormDialogProps {
 	keepMounted: boolean;
@@ -23,7 +24,9 @@ interface CitiesFormDialogProps {
 }
 
 const CitiesFormDialog = (props: CitiesFormDialogProps): ReactElement => {
-	const { t } = useTranslation("workaway-bot");
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
 	const { onClose, value: valueProp, open, cities, ...other } = props;
 
@@ -59,7 +62,7 @@ const CitiesFormDialog = (props: CitiesFormDialogProps): ReactElement => {
 			open={open}
 			{...other}
 		>
-			<DialogTitle>{t("full-city-name")}</DialogTitle>
+			<DialogTitle>{t.workawayBot["full-city-name"]}</DialogTitle>
 
 			<DialogContent dividers>
 				<RadioGroup
@@ -91,18 +94,6 @@ CitiesFormDialog.propTypes = {
 	onClose: PropTypes.func.isRequired,
 	open: PropTypes.bool.isRequired,
 	value: PropTypes.string.isRequired,
-};
-
-export const getStaticProps = async ({
-	locale,
-}: {
-	locale: string;
-}): Promise<{ props: unknown }> => {
-	return {
-		props: {
-			...(await serverSideTranslations(locale, ["common", "workaway-bot"])),
-		},
-	};
 };
 
 export default CitiesFormDialog;

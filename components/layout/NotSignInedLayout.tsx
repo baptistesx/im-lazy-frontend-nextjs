@@ -1,8 +1,7 @@
-import { useTheme } from "@emotion/react";
-import { Box, Button, Link, Typography } from "@mui/material/";
-import { Theme } from "@mui/material/styles";
+import { Box, Button, Typography } from "@mui/material/";
+import { useTheme } from "@mui/material/styles";
 import Image from "next/image";
-import { useRouter } from "next/router";
+import Link from "next/link";
 import { ReactElement, ReactNode } from "react";
 
 const NotSignedInLayout = ({
@@ -12,8 +11,7 @@ const NotSignedInLayout = ({
 	children: ReactNode;
 	title?: string;
 }): ReactElement => {
-	const theme: Theme = useTheme();
-	const router = useRouter();
+	const theme = useTheme();
 
 	return (
 		<Box
@@ -33,7 +31,7 @@ const NotSignedInLayout = ({
 					alignItems: "center",
 				}}
 			>
-				<Link href={router.route !== "/" ? "/" : "#"}>
+				<Link href="/" passHref>
 					<Button sx={{ height: 150, display: { xs: "none", sm: "block" } }}>
 						<Image
 							alt="logo-dark"
@@ -56,7 +54,7 @@ const NotSignedInLayout = ({
 					p: 1,
 				}}
 			>
-				<Link href={router.route !== "/" ? "/" : "#"}>
+				<Link href="/" passHref>
 					<Button sx={{ height: 150, display: { xs: "block", sm: "none" } }}>
 						<Image
 							alt="logo-light"
@@ -64,7 +62,7 @@ const NotSignedInLayout = ({
 							height={100}
 							width={200}
 						/>
-					</Button>{" "}
+					</Button>
 				</Link>
 				<Typography
 					variant="h1"

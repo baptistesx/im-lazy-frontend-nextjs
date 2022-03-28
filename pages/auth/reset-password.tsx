@@ -1,29 +1,20 @@
 import ResetPasswordForm from "@components/auth/ResetPasswordForm";
 import NotSignedInRoute from "@components/routes/NotSignedInRoute";
-import { useTranslation } from "next-i18next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import { ReactElement } from "react";
 
 const ResetPassword = (): ReactElement => {
-	const { t } = useTranslation("auth");
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
 	return (
-		<NotSignedInRoute title={t("reset-password")}>
+		<NotSignedInRoute title={t.auth["reset-password"]}>
 			<ResetPasswordForm />
 		</NotSignedInRoute>
 	);
-};
-
-export const getStaticProps = async ({
-	locale,
-}: {
-	locale: string;
-}): Promise<{ props: unknown }> => {
-	return {
-		props: {
-			...(await serverSideTranslations(locale, ["common", "auth"])),
-		},
-	};
 };
 
 export default ResetPassword;

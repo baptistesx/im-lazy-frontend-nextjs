@@ -11,9 +11,10 @@ import {
 } from "@paypal/react-paypal-js";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { savePayment } from "@services/userApi";
-import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import { ReactElement } from "react";
 
 const paypalScriptOptions: PayPalScriptOptions = {
@@ -26,11 +27,11 @@ const paypalScriptOptions: PayPalScriptOptions = {
 };
 
 const CustomButton = (): ReactElement => {
-	const { t } = useTranslation("get-licence");
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
 	const snackbarsService = useSnackbars();
-
-	const router = useRouter();
 
 	/**
 	 * usePayPalScriptReducer use within PayPalScriptProvider
@@ -75,7 +76,7 @@ const CustomButton = (): ReactElement => {
 
 			savePayment(resume, () => {
 				snackbarsService?.addSnackbar({
-					message: t("payment-well-saved"),
+					message: t.getLicence["payment-well-saved"],
 					severity: "success",
 				});
 
@@ -85,7 +86,7 @@ const CustomButton = (): ReactElement => {
 	};
 	return (
 		<>
-			{isPending ? <h2>{t("loading-button")}</h2> : null}
+			{isPending ? <h2>{t.getLicence["loading-button"]}</h2> : null}
 			<PayPalButtons {...paypalbuttonTransactionProps} />
 		</>
 	);

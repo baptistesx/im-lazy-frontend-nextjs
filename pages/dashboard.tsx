@@ -7,14 +7,17 @@ import { Box, Button } from "@mui/material";
 import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { sendVerificationEmail } from "@services/userApi";
-import { useTranslation } from "next-i18next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import { ReactElement, useState } from "react";
 
 const Dashboard = (): ReactElement => {
-	const { t } = useTranslation("sign-in");
-
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
+	console.log("LOCALE: ", locale, t.dashboard.title);
 	const auth = useAuth();
 
 	const snackbarsService = useSnackbars();
@@ -24,7 +27,7 @@ const Dashboard = (): ReactElement => {
 	const handleSendVerificationEmailAgain = async (): Promise<void> => {
 		if (auth?.value.user?.email === undefined) {
 			snackbarsService?.addSnackbar({
-				message: t("email-not-valid"),
+				message: t.dashboard["email-not-valid"],
 				severity: "error",
 			});
 		} else {
@@ -34,7 +37,7 @@ const Dashboard = (): ReactElement => {
 				setLoading(false);
 
 				snackbarsService?.addSnackbar({
-					message: t("email-well-sent"),
+					message: t.dashboard["email-well-sent"],
 					severity: "success",
 				});
 			});
@@ -42,11 +45,11 @@ const Dashboard = (): ReactElement => {
 	};
 
 	return (
-		<SignedInRoute title={t("title")}>
+		<SignedInRoute title={t.dashboard.title}>
 			{auth?.isPremium(auth?.value.user) ? (
 				<Link href="/workaway-bot" passHref>
 					<Button variant="contained" sx={{ m: 1 }}>
-						{t("bot-name")}
+						{t.dashboard["bot-name"]}
 						<ArrowForwardIcon />
 					</Button>
 				</Link>
@@ -57,7 +60,7 @@ const Dashboard = (): ReactElement => {
 			{!auth?.value.user?.isEmailVerified ? (
 				<CustomSnackbar
 					snackbarMessage={{
-						message: t("remember-email-confirmation"),
+						message: t.dashboard["remember-email-confirmation"],
 						severity: "error",
 					}}
 				>
@@ -66,7 +69,7 @@ const Dashboard = (): ReactElement => {
 						loading={loading}
 						onClick={handleSendVerificationEmailAgain}
 					>
-						{t("send-again")}
+						{t.dashboard["send-again"]}
 					</LoadingButton>
 				</CustomSnackbar>
 			) : (
@@ -74,18 +77,6 @@ const Dashboard = (): ReactElement => {
 			)}
 		</SignedInRoute>
 	);
-};
-
-export const getStaticProps = async ({
-	locale,
-}: {
-	locale: string;
-}): Promise<{ props: unknown }> => {
-	return {
-		props: {
-			...(await serverSideTranslations(locale, ["common", "dashboard"])),
-		},
-	};
 };
 
 export default Dashboard;

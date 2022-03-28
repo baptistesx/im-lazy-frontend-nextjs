@@ -36,7 +36,7 @@ const AdminRoute = ({
 				!auth.isAdmin(auth?.value.user)) ? (
 				<CircularProgress />
 			) : (
-				{ children }
+				children
 			)}
 		</SignedInLayout>
 	);

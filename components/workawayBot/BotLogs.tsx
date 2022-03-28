@@ -2,16 +2,19 @@ import { LoadingButton } from "@mui/lab";
 import { Box, Card, Typography } from "@mui/material";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { clearLogs, setCity } from "@services/workawayBotApi";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
 import socketIOClient, { Socket } from "socket.io-client";
 import CitiesFormDialog from "./CitiesFormDialog";
-import { useTranslation } from "next-i18next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 let botLogsMessageSentIsFirst = true;
 
 const BotLogs = (): ReactElement => {
-	const { t } = useTranslation("workaway-bot");
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
 	const [socket, setSocket] = useState<Socket | undefined>(undefined);
 	const [isSocketInitialized, setIsSocketInitialized] =
@@ -45,7 +48,7 @@ const BotLogs = (): ReactElement => {
 
 			await setCity(city).catch(() => {
 				snackbarsService?.addSnackbar({
-					message: t("error-setting-city"),
+					message: t.workawayBot["error-setting-city"],
 					severity: "error",
 				});
 			});
@@ -53,7 +56,7 @@ const BotLogs = (): ReactElement => {
 			setIsCitiesDialogOpen(false);
 		} else {
 			snackbarsService?.addSnackbar({
-				message: t("no-city-selected"),
+				message: t.workawayBot["no-city-selected"],
 				severity: "error",
 			});
 		}
@@ -121,7 +124,7 @@ const BotLogs = (): ReactElement => {
 			setIsClearingLogs(false);
 
 			snackbarsService?.addSnackbar({
-				message: t("error-clearing-logs"),
+				message: t.workawayBot["error-clearing-logs"],
 				severity: "error",
 			});
 		});
@@ -169,7 +172,7 @@ const BotLogs = (): ReactElement => {
 				disabled={false}
 				onClick={handleClickClearConsole}
 			>
-				{t("clear-logs")}
+				{t.workawayBot["clear-logs"]}
 			</LoadingButton>
 
 			<CitiesFormDialog
@@ -181,18 +184,6 @@ const BotLogs = (): ReactElement => {
 			/>
 		</Card>
 	);
-};
-
-export const getStaticProps = async ({
-	locale,
-}: {
-	locale: string;
-}): Promise<{ props: unknown }> => {
-	return {
-		props: {
-			...(await serverSideTranslations(locale, ["common", "workaway-bot"])),
-		},
-	};
 };
 
 export default BotLogs;

@@ -22,15 +22,19 @@ import {
 	Tooltip,
 	Typography,
 } from "@mui/material";
-import { useAuth, User } from "@providers/AuthProvider";
+import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
+import { User } from "@providers/user";
 import { deleteUserById, getUsers } from "@services/userApi";
-import { useTranslation } from "next-i18next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 
 const Users = (): ReactElement => {
-	const { t } = useTranslation("users");
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
 	const snackbarsService = useSnackbars();
 
@@ -58,7 +62,7 @@ const Users = (): ReactElement => {
 			setIsLoading(false);
 		}).catch(() => {
 			snackbarsService?.addSnackbar({
-				message: "An error occurred while getting users",
+				message: t.users["error-getting-users"],
 				severity: "error",
 			});
 		});
@@ -81,12 +85,12 @@ const Users = (): ReactElement => {
 			setIsLoading(false);
 
 			snackbarsService?.addSnackbar({
-				message: "User well deleted",
+				message: t.users["user-well-deleted"],
 				severity: "success",
 			});
 		}).catch(() => {
 			snackbarsService?.addSnackbar({
-				message: "An error occurred while deleting user",
+				message: t.users["error-deleting-user"],
 				severity: "error",
 			});
 		});
@@ -110,7 +114,7 @@ const Users = (): ReactElement => {
 	};
 
 	return (
-		<AdminRoute title={t("title")}>
+		<AdminRoute title={t.users.title}>
 			<Card>
 				<CardContent>
 					{users?.length === 0 && isLoading ? (
@@ -118,25 +122,25 @@ const Users = (): ReactElement => {
 					) : (
 						<Box>
 							<Typography variant="body1">
-								{`${users?.length} ${t("available-users")}`}
+								{`${users?.length} ${t.users["available-users"]}`}
 							</Typography>
 
 							{users?.length === 0 ? (
-								<Typography>{t("no-users")}</Typography>
+								<Typography>{t.users["no-users"]}</Typography>
 							) : (
 								//TODO: refactor (extract component)
 								<TableContainer component={Paper}>
 									<Table aria-label="users table">
 										<TableHead>
 											<TableRow>
-												<TableCell align="left">{t("name")}</TableCell>
-												<TableCell align="left">{t("email")}</TableCell>
-												<TableCell align="left">{t("admin")}</TableCell>
-												<TableCell align="left">{t("premium")}</TableCell>
+												<TableCell align="left">{t.common.name}</TableCell>
+												<TableCell align="left">{t.common.email}</TableCell>
+												<TableCell align="left">{t.users.admin}</TableCell>
+												<TableCell align="left">{t.users.premium}</TableCell>
 												<TableCell align="left">
-													{t("email-verified")}
+													{t.users["email-verified"]}
 												</TableCell>
-												<TableCell align="left">{t("actions")}</TableCell>
+												<TableCell align="left">{t.common.actions}</TableCell>
 											</TableRow>
 										</TableHead>
 
@@ -171,7 +175,7 @@ const Users = (): ReactElement => {
 														)}
 													</TableCell>
 													<TableCell align="left">
-														<Tooltip title="Edit user">
+														<Tooltip title={t.users["edit-user"]}>
 															<IconButton
 																onClick={(): void => handleOpenUserDialog(user)}
 																disabled={isLoading}
@@ -180,7 +184,7 @@ const Users = (): ReactElement => {
 															</IconButton>
 														</Tooltip>
 
-														<Tooltip title="Delete user">
+														<Tooltip title={t.users["delete-user"]}>
 															<IconButton
 																aria-label="delete"
 																onClick={(): Promise<void> =>
@@ -209,7 +213,7 @@ const Users = (): ReactElement => {
 						variant="contained"
 						onClick={(): void => handleOpenUserDialog()}
 					>
-						Create a user
+						{t.users["create-user"]}
 					</Button>
 
 					<LoadingButton
@@ -219,7 +223,7 @@ const Users = (): ReactElement => {
 							m: 1,
 						}}
 					>
-						Refresh
+						{t.common.refresh}
 					</LoadingButton>
 				</CardActions>
 			</Card>
@@ -237,18 +241,6 @@ const Users = (): ReactElement => {
 			)}
 		</AdminRoute>
 	);
-};
-
-export const getStaticProps = async ({
-	locale,
-}: {
-	locale: string;
-}): Promise<{ props: unknown }> => {
-	return {
-		props: {
-			...(await serverSideTranslations(locale, ["common", "users"])),
-		},
-	};
 };
 
 export default Users;

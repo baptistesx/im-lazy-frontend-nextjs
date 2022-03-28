@@ -24,17 +24,16 @@ export const SnackBarProvider = ({
 }: {
 	children: ReactNode;
 }): ReactElement => {
-	const [snackbars, setAlerts] = useState<SnackbarMessage[] | undefined>(
+	const [snackbars, setSnackbars] = useState<SnackbarMessage[] | undefined>(
 		undefined
 	);
 
-	useTimeout(
-		() => setAlerts((snackbars) => snackbars?.slice(0, snackbars.length - 1)),
-		AUTO_DISMISS_MS
-	);
+	useTimeout(() => {
+		setSnackbars((snackbars) => snackbars?.slice(-1));
+	}, AUTO_DISMISS_MS);
 
 	const addSnackbar = (snackbar: SnackbarMessage): void => {
-		setAlerts((snackbars: SnackbarMessage[] | undefined) =>
+		setSnackbars((snackbars: SnackbarMessage[] | undefined) =>
 			snackbars === undefined ? [snackbar] : [snackbar, ...snackbars]
 		);
 	};

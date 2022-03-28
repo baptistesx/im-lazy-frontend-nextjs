@@ -1,4 +1,5 @@
 import { useAuth } from "@providers/AuthProvider";
+import routes from "@providers/routes";
 import {
 	getUser,
 	signInWithEmailAndPassword,
@@ -7,6 +8,8 @@ import {
 	signUpWithEmailAndPassword,
 } from "@services/authApi";
 import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import {
 	Context,
 	createContext,
@@ -15,11 +18,8 @@ import {
 	useContext,
 	useEffect,
 } from "react";
-import routes from "./routes";
 import { useSnackbars } from "./SnackbarProvider";
 import { AuthActionsValue, User } from "./user";
-import { useTranslation } from "next-i18next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const AuthActionsContext: Context<AuthActionsValue | undefined> = createContext<
 	AuthActionsValue | undefined
@@ -30,13 +30,12 @@ export const AuthActionsProvider = ({
 }: {
 	children: ReactElement;
 }): ReactElement => {
-	const { t } = useTranslation("auth");
-
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 	const auth = useAuth();
 
 	const snackbarsService = useSnackbars();
-
-	const router = useRouter();
 
 	const fetchCurrentUser = useCallback(() => {
 		auth.setValue({ status: "loading", user: undefined });
@@ -52,7 +51,7 @@ export const AuthActionsProvider = ({
 				router.pathname !== routes.root
 			) {
 				snackbarsService?.addSnackbar({
-					message: t("error-fetching-user"),
+					message: t.auth["error-fetching-user"],
 					severity: "error",
 				});
 			}
@@ -61,7 +60,7 @@ export const AuthActionsProvider = ({
 
 	useEffect(() => {
 		fetchCurrentUser();
-	}, [fetchCurrentUser]);
+	}, []);
 
 	const logout = async (): Promise<void> => {
 		await signOut(() => {
@@ -70,7 +69,7 @@ export const AuthActionsProvider = ({
 		}).catch(() => {
 			auth.setValue({ status: "not-connected", user: undefined });
 			snackbarsService?.addSnackbar({
-				message: t("error-sign-out"),
+				message: t.auth["error-sign-out"],
 				severity: "error",
 			});
 		});
@@ -91,8 +90,8 @@ export const AuthActionsProvider = ({
 			snackbarsService?.addSnackbar({
 				message:
 					user.lastLogin === undefined
-						? t("welcome-new-user")
-						: t("welcome-back"),
+						? t.auth["welcome-new-user"]
+						: t.auth["welcome-back"],
 				severity: "success",
 			});
 
@@ -103,7 +102,7 @@ export const AuthActionsProvider = ({
 			auth.setValue({ status: "not-connected", user: undefined });
 			//TODO: add internet connection checker and customize message error
 			snackbarsService?.addSnackbar({
-				message: t("error-sign-in"),
+				message: t.auth["error-sign-in"],
 				severity: "error",
 			});
 		});
@@ -123,8 +122,8 @@ export const AuthActionsProvider = ({
 			snackbarsService?.addSnackbar({
 				message:
 					user.lastLogin === undefined
-						? t("welcome-new-user")
-						: t("welcome-back"),
+						? t.auth["welcome-new-user"]
+						: t.auth["welcome-back"],
 				severity: "success",
 			});
 
@@ -135,7 +134,7 @@ export const AuthActionsProvider = ({
 			auth.setValue({ status: "not-connected", user: undefined });
 
 			snackbarsService?.addSnackbar({
-				message: t("error-sign-in-google"),
+				message: t.auth["error-sign-in-google"],
 				severity: "error",
 			});
 		});
@@ -155,7 +154,7 @@ export const AuthActionsProvider = ({
 			auth.setValue({ status: "connected", user });
 
 			snackbarsService?.addSnackbar({
-				message: t("welcome-new-user"),
+				message: t.auth["welcome-new-user"],
 				severity: "success",
 			});
 
@@ -166,7 +165,7 @@ export const AuthActionsProvider = ({
 			auth.setValue({ status: "not-connected", user: undefined });
 
 			snackbarsService?.addSnackbar({
-				message: t("error-sign-up"),
+				message: t.auth["error-sign-up"],
 				severity: "error",
 			});
 		});
@@ -185,18 +184,6 @@ export const AuthActionsProvider = ({
 			{children}
 		</AuthActionsContext.Provider>
 	);
-};
-
-export const getStaticProps = async ({
-	locale,
-}: {
-	locale: string;
-}): Promise<{ props: unknown }> => {
-	return {
-		props: {
-			...(await serverSideTranslations(locale, ["common", "auth"])),
-		},
-	};
 };
 
 export const useAuthActions = (): AuthActionsValue => {

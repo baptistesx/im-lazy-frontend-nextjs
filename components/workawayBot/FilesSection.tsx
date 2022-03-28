@@ -21,12 +21,15 @@ import {
 	downloadFileByName,
 	getFilesName,
 } from "@services/workawayBotApi";
-import { useTranslation } from "next-i18next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import { ReactElement, useCallback, useEffect, useState } from "react";
 
 const FilesSection = (): ReactElement => {
-	const { t } = useTranslation("workaway-bot");
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
 	const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
@@ -45,11 +48,11 @@ const FilesSection = (): ReactElement => {
 			setIsRefreshing(false);
 
 			snackbarsService?.addSnackbar({
-				message: t("error-getting-filesname"),
+				message: t.workawayBot["error-getting-filesname"],
 				severity: "error",
 			});
 		});
-	}, [snackbarsService]);
+	}, [snackbarsService, t.workawayBot]);
 
 	useEffect(() => {
 		handleRefresh();
@@ -76,7 +79,7 @@ const FilesSection = (): ReactElement => {
 			a.remove();
 		}).catch(() => {
 			snackbarsService?.addSnackbar({
-				message: t("error-downloading-file"),
+				message: t.workawayBot["error-downloading-file"],
 				severity: "error",
 			});
 		});
@@ -85,8 +88,7 @@ const FilesSection = (): ReactElement => {
 	const handleDeleteFile = async (name: string): Promise<void> => {
 		await deleteFileByName(name, () => handleRefresh()).catch(() => {
 			snackbarsService?.addSnackbar({
-				message: t("error-deleting-file"),
-
+				message: t.workawayBot["error-deleting-file"],
 				severity: "error",
 			});
 		});
@@ -102,18 +104,18 @@ const FilesSection = (): ReactElement => {
 			}}
 		>
 			<CardContent>
-				<Typography variant="h2">{t("available-files")}</Typography>
+				<Typography variant="h2">{t.workawayBot["available-files"]}</Typography>
 
 				{filesName?.length === 0 ? (
-					<Typography>{t("no-file-available")}</Typography>
+					<Typography>{t.workawayBot["no-file-available"]}</Typography>
 				) : (
 					<TableContainer component={Paper}>
 						<Table aria-label="files table">
 							<TableHead>
 								<TableRow>
-									<TableCell align="left">{t("name")}</TableCell>
+									<TableCell align="left">{t.common.name}</TableCell>
 
-									<TableCell align="left">{t("actions")}</TableCell>
+									<TableCell align="left">{t.common.actions}</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
@@ -158,23 +160,11 @@ const FilesSection = (): ReactElement => {
 						m: 1,
 					}}
 				>
-					{t("refresh")}
+					{t.common.refresh}
 				</LoadingButton>
 			</CardActions>
 		</Card>
 	);
-};
-
-export const getStaticProps = async ({
-	locale,
-}: {
-	locale: string;
-}): Promise<{ props: unknown }> => {
-	return {
-		props: {
-			...(await serverSideTranslations(locale, ["common", "workaway-bot"])),
-		},
-	};
 };
 
 export default FilesSection;

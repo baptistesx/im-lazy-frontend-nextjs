@@ -5,12 +5,13 @@ import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import editProfileFormSchema from "@schemas/editProfileFormSchema";
 import { updateUserById } from "@services/userApi";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import { ReactElement, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuthActions } from "../../providers/AuthActionsProvider";
 import GetLicenceButton from "./GetLicenceButton";
-import { useTranslation } from "next-i18next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 type ProfileFormData = {
 	email: string;
@@ -18,7 +19,9 @@ type ProfileFormData = {
 };
 
 const ProfileForm = (): ReactElement => {
-	const { t } = useTranslation("profile");
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
 	const auth = useAuth();
 	const authActions = useAuthActions();
@@ -50,7 +53,7 @@ const ProfileForm = (): ReactElement => {
 					setIsLoading(false);
 
 					snackbarsService?.addSnackbar({
-						message: t("user-well-updated"),
+						message: t.profile["user-well-updated"],
 						severity: "success",
 					});
 
@@ -60,7 +63,7 @@ const ProfileForm = (): ReactElement => {
 				}
 			).catch(() => {
 				snackbarsService?.addSnackbar({
-					message: t("error-updating-profile"),
+					message: t.profile["error-updating-profile"],
 					severity: "error",
 				});
 				reset(data);
@@ -77,7 +80,7 @@ const ProfileForm = (): ReactElement => {
 			<CardContent>
 				<TextField
 					fullWidth
-					placeholder={t("name")}
+					placeholder={t.common.name}
 					{...register("name")}
 					sx={{ mb: 1, textTransform: "capitalize" }}
 					defaultValue={auth?.value.user?.name}
@@ -87,7 +90,7 @@ const ProfileForm = (): ReactElement => {
 
 				<TextField
 					fullWidth
-					placeholder={t("email")}
+					placeholder={t.common.email}
 					{...register("email")}
 					sx={{ mb: 1 }}
 					defaultValue={auth?.value.user?.email}
@@ -106,25 +109,13 @@ const ProfileForm = (): ReactElement => {
 						m: 1,
 					}}
 				>
-					{t("save")}
+					{t.common.save}
 				</LoadingButton>
 
 				{!auth?.isPremium(auth?.value.user) ? <GetLicenceButton /> : <Box />}
 			</CardActions>
 		</Card>
 	);
-};
-
-export const getStaticProps = async ({
-	locale,
-}: {
-	locale: string;
-}): Promise<{ props: unknown }> => {
-	return {
-		props: {
-			...(await serverSideTranslations(locale, ["common", "profile"])),
-		},
-	};
 };
 
 export default ProfileForm;

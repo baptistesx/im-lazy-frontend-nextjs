@@ -14,14 +14,17 @@ import { Box } from "@mui/system";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import infoFormSchema from "@schemas/infoFormSchema";
 import { startBot, stopBot } from "@services/workawayBotApi";
-import { useTranslation } from "next-i18next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FormBotParams } from "./workaway";
 
 const InfoForm = (): ReactElement => {
-	const { t } = useTranslation("workaway-bot");
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
 	const [isStarting, setIsStarting] = useState<boolean>(false);
 	const [isStopping, setIsStopping] = useState<boolean>(false);
@@ -66,7 +69,7 @@ const InfoForm = (): ReactElement => {
 			}
 		).catch(() => {
 			snackbarsService?.addSnackbar({
-				message: t("error-starting-bot"),
+				message: t.workawayBot["error-starting-bot"],
 				severity: "error",
 			});
 		});
@@ -83,7 +86,7 @@ const InfoForm = (): ReactElement => {
 			setIsStopping(false);
 		}).catch(() => {
 			snackbarsService?.addSnackbar({
-				message: t("error-stopping-bot"),
+				message: t.workawayBot["error-stopping-bot"],
 				severity: "error",
 			});
 		});
@@ -118,7 +121,7 @@ const InfoForm = (): ReactElement => {
 				)}
 				<TextField
 					fullWidth
-					placeholder={t("email")}
+					placeholder={t.common.email}
 					{...register("email")}
 					sx={{ m: 1 }}
 					error={errors.email != null}
@@ -127,7 +130,7 @@ const InfoForm = (): ReactElement => {
 				<TextField
 					fullWidth
 					type={"password"}
-					placeholder={t("password")}
+					placeholder={t.common.password}
 					{...register("password")}
 					sx={{ m: 1 }}
 					error={errors.password != null}
@@ -135,7 +138,7 @@ const InfoForm = (): ReactElement => {
 				/>
 				<TextField
 					fullWidth
-					placeholder={t("city")}
+					placeholder={t.workawayBot.city}
 					{...register("city")}
 					sx={{ m: 1 }}
 					error={errors.city != null}
@@ -167,7 +170,7 @@ const InfoForm = (): ReactElement => {
 					<TextField
 						fullWidth
 						id="minimimAge"
-						label={t("minimumAge")}
+						label={t.workawayBot["minimum-age"]}
 						type="number"
 						InputLabelProps={{
 							shrink: true,
@@ -182,7 +185,7 @@ const InfoForm = (): ReactElement => {
 					<TextField
 						fullWidth
 						id="maximumAge"
-						label={t("maximumAge")}
+						label={t.workawayBot["maximum-age"]}
 						type="number"
 						InputLabelProps={{
 							shrink: true,
@@ -198,7 +201,7 @@ const InfoForm = (): ReactElement => {
 				<TextField
 					fullWidth
 					id="outlined-required"
-					label={t("message-subject")}
+					label={t.workawayBot["message-subject"]}
 					defaultValue="Let's meet!"
 					sx={{ m: 1 }}
 					{...register("messageSubject")}
@@ -208,7 +211,7 @@ const InfoForm = (): ReactElement => {
 				<TextField
 					fullWidth
 					id="outlined-required"
-					label={t("english-message")}
+					label={t.workawayBot["english-message"]}
 					defaultValue="Hey! I'm in the area until next week, let's meet?!"
 					multiline
 					rows={4}
@@ -221,7 +224,7 @@ const InfoForm = (): ReactElement => {
 				<TextField
 					fullWidth
 					id="outlined-required"
-					label={t("french-message")}
+					label={t.workawayBot["french-message"]}
 					defaultValue="Saluut! Je suis dans le coin jusqu'à la semaine prochaine, t'es chaud de faire un tour en ville?!"
 					multiline
 					rows={4}
@@ -242,7 +245,7 @@ const InfoForm = (): ReactElement => {
 					}}
 					disabled={isRunning}
 				>
-					{t("start-bot")}
+					{t.workawayBot["start-bot"]}
 				</LoadingButton>
 
 				<LoadingButton
@@ -254,23 +257,11 @@ const InfoForm = (): ReactElement => {
 					disabled={!isRunning}
 					onClick={handleStopBot}
 				>
-					{t("stop-bot")}
+					{t.workawayBot["stop-bot"]}
 				</LoadingButton>
 			</CardActions>
 		</Card>
 	);
-};
-
-export const getStaticProps = async ({
-	locale,
-}: {
-	locale: string;
-}): Promise<{ props: unknown }> => {
-	return {
-		props: {
-			...(await serverSideTranslations(locale, ["common", "workaway-bot"])),
-		},
-	};
 };
 
 export default InfoForm;

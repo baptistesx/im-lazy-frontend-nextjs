@@ -11,6 +11,9 @@ import {
 import { useAuthActions } from "@providers/AuthActionsProvider";
 import signUpFormSchema from "@schemas/signUpFormSchema";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import GoogleLoginButton from "./GoogleLoginButton";
@@ -25,6 +28,10 @@ type SignUpSubmitFormData = {
 };
 
 const SignUpForm = (): ReactElement => {
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
+
 	const authActions = useAuthActions();
 
 	const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
@@ -64,7 +71,7 @@ const SignUpForm = (): ReactElement => {
 			<CardContent>
 				<TextField
 					fullWidth
-					placeholder="Name"
+					placeholder={t.common.name}
 					sx={{ mb: 2 }}
 					{...register("name")}
 					error={errors.name != null}
@@ -73,7 +80,7 @@ const SignUpForm = (): ReactElement => {
 
 				<TextField
 					fullWidth
-					placeholder="Email"
+					placeholder={t.common.email}
 					sx={{ mb: 2 }}
 					{...register("email")}
 					error={errors.email != null}
@@ -83,7 +90,7 @@ const SignUpForm = (): ReactElement => {
 				<TextField
 					fullWidth
 					type={"password"}
-					placeholder="Password"
+					placeholder={t.common.password}
 					sx={{ mb: 2 }}
 					{...register("password")}
 					error={errors.password != null}
@@ -93,7 +100,7 @@ const SignUpForm = (): ReactElement => {
 				<TextField
 					fullWidth
 					type={"password"}
-					placeholder="Confirm password"
+					placeholder={t.auth["confirm-password"]}
 					{...register("passwordConfirmation")}
 					error={errors.passwordConfirmation != null}
 					helperText={errors.passwordConfirmation?.message}
@@ -110,7 +117,7 @@ const SignUpForm = (): ReactElement => {
 						m: 1,
 					}}
 				>
-					Sign up
+					{t.auth["sign-up"]}
 				</LoadingButton>
 
 				<Link href="/auth/sign-in" passHref>
@@ -119,7 +126,7 @@ const SignUpForm = (): ReactElement => {
 							m: 1,
 						}}
 					>
-						I already have an account
+						{t.auth["already-have-account"]}
 					</Button>
 				</Link>
 			</CardActions>
@@ -136,7 +143,7 @@ const SignUpForm = (): ReactElement => {
 							m: 1,
 						}}
 					>
-						Sign In
+						{t.auth["sign-in"]}
 					</Button>
 				</Link>
 

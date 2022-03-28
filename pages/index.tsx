@@ -1,55 +1,47 @@
 import NotSignedInRoute from "@components/routes/NotSignedInRoute";
-import { Box, Button, Link, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import { ReactElement } from "react";
-import { useTranslation } from "next-i18next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import Link from "next/link";
 
 const Home = (): ReactElement => {
-	const { t } = useTranslation("index");
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
 	return (
-		<NotSignedInRoute title={t("title")}>
+		<NotSignedInRoute title={t.index.title}>
 			<Typography variant="body1" sx={{ color: "white", textAlign: "center" }}>
-				{t("welcome-text")}
+				{t.index["welcome-text"]}
 			</Typography>
 
 			<Box
 				sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
 			>
-				<Link href="/auth/sign-in">
+				<Link href="/auth/sign-in" passHref>
 					<Button
 						variant="outlined"
 						sx={{ color: "white", borderColor: "white", m: 1 }}
 					>
-						{t("sign-in")}
+						{t.index["sign-in"]}
 					</Button>
 				</Link>
 
 				<Typography sx={{ color: "white" }}>|</Typography>
 
-				<Link href="/auth/sign-up">
+				<Link href="/auth/sign-up" passHref>
 					<Button
 						variant="outlined"
 						sx={{ color: "white", borderColor: "white", m: 1 }}
 					>
-						{t("sign-up")}
+						{t.index["sign-up"]}
 					</Button>
 				</Link>
 			</Box>
 		</NotSignedInRoute>
 	);
-};
-
-export const getStaticProps = async ({
-	locale,
-}: {
-	locale: string;
-}): Promise<{ props: unknown }> => {
-	return {
-		props: {
-			...(await serverSideTranslations(locale, ["common", "index"])),
-		},
-	};
 };
 
 export default Home;

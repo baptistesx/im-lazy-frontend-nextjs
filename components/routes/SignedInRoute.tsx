@@ -1,14 +1,14 @@
 import { CircularProgress } from "@mui/material";
 import { useAuth } from "@providers/AuthProvider";
 import { useRouter } from "next/router";
-import { ReactElement, ReactNode, useEffect } from "react";
+import { ReactElement, useEffect } from "react";
 import SignedInLayout from "../layout/SignedInLayout";
 
 const SignedInRoute = ({
 	children,
 	title,
 }: {
-	children: ReactNode;
+	children: ReactElement[];
 	title: string;
 }): ReactElement => {
 	const auth = useAuth();
@@ -27,7 +27,7 @@ const SignedInRoute = ({
 			(router.isReady && auth?.value.status !== "connected") ? (
 				<CircularProgress />
 			) : (
-				{ children }
+				children
 			)}
 		</SignedInLayout>
 	);

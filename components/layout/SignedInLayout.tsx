@@ -1,10 +1,9 @@
 import { DRAWER_WIDTH } from "@components/layout/utils/constants";
-import { useTheme } from "@emotion/react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton } from "@mui/material";
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material/";
 import CssBaseline from "@mui/material/CssBaseline";
-import { Theme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useAuth } from "@providers/AuthProvider";
 import Image from "next/image";
@@ -20,7 +19,7 @@ const SignedInLayout = ({
 	children: ReactNode;
 	title: string;
 }): ReactElement => {
-	const theme: Theme = useTheme();
+	const theme = useTheme();
 
 	const auth = useAuth();
 	const authActions = useAuthActions();
@@ -116,10 +115,7 @@ const SignedInLayout = ({
 				}}
 			>
 				<Toolbar />
-				<Typography
-					variant="h1"
-					sx={{ textAlign: "center", color: "white", m: 1 }}
-				>
+				<Typography variant="h1" sx={{ textAlign: "center", m: 1 }}>
 					{title}
 				</Typography>
 				{children}

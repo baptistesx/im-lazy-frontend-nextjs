@@ -2,36 +2,27 @@ import SignedInRoute from "@components/routes/SignedInRoute";
 import ChangePasswordForm from "@components/users/ChangePasswordForm";
 import ProfileForm from "@components/users/ProfileForm";
 import { Typography } from "@mui/material";
-import { useTranslation } from "next-i18next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import { ReactElement } from "react";
 
 const Profile = (): ReactElement => {
-	const { t } = useTranslation("profile");
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
 	return (
-		<SignedInRoute title={t("title")}>
+		<SignedInRoute title={t.profile.title}>
 			<ProfileForm />
 
 			<Typography variant="h4" sx={{ mt: 1, mb: 1 }}>
-				{t("change-password")}
+				{t.profile["change-password"]}
 			</Typography>
 
 			<ChangePasswordForm />
 		</SignedInRoute>
 	);
-};
-
-export const getStaticProps = async ({
-	locale,
-}: {
-	locale: string;
-}): Promise<{ props: unknown }> => {
-	return {
-		props: {
-			...(await serverSideTranslations(locale, ["common", "profile"])),
-		},
-	};
 };
 
 export default Profile;

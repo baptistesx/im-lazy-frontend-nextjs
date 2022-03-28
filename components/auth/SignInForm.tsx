@@ -10,6 +10,9 @@ import {
 } from "@mui/material";
 import signInFormSchema from "@schemas/signInFormSchema";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuthActions } from "../../providers/AuthActionsProvider";
@@ -21,6 +24,10 @@ type SignInFormData = {
 };
 
 const SignInForm = (): ReactElement => {
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
+
 	const authActions = useAuthActions();
 
 	const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
@@ -59,7 +66,7 @@ const SignInForm = (): ReactElement => {
 			<CardContent>
 				<TextField
 					fullWidth
-					placeholder="Email"
+					placeholder={t.common.email}
 					sx={{ mb: 2 }}
 					{...register("email")}
 					error={errors.email != null}
@@ -69,7 +76,7 @@ const SignInForm = (): ReactElement => {
 				<TextField
 					fullWidth
 					type={"password"}
-					placeholder="Password"
+					placeholder={t.common.password}
 					{...register("password")}
 					error={errors.password != null}
 					helperText={errors.password?.message}
@@ -86,7 +93,7 @@ const SignInForm = (): ReactElement => {
 						m: 1,
 					}}
 				>
-					Sign In
+					{t.auth["sign-in"]}
 				</LoadingButton>
 
 				<Link href="/auth/reset-password" passHref>
@@ -95,12 +102,12 @@ const SignInForm = (): ReactElement => {
 							m: 1,
 						}}
 					>
-						I forgot my password
+						{t.auth["forgot-password"]}
 					</Button>
 				</Link>
 			</CardActions>
 
-			<Divider>or</Divider>
+			<Divider>{t.common.or}</Divider>
 
 			<CardActions
 				sx={{ display: "flex", justifyContent: "center", mt: 1, mb: 1 }}
@@ -112,7 +119,7 @@ const SignInForm = (): ReactElement => {
 							m: 1,
 						}}
 					>
-						Sign Up
+						{t.auth["sign-up"]}
 					</Button>
 				</Link>
 

@@ -14,7 +14,10 @@ import { useSnackbars } from "@providers/SnackbarProvider";
 import { Role, User } from "@providers/user";
 import editUserFormSchema from "@schemas/editUserFormSchema";
 import { createUser, updateUserById } from "@services/userApi";
+import { useRouter } from "next/router";
 import PropTypes from "prop-types";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useAuthActions } from "../../providers/AuthActionsProvider";
@@ -34,6 +37,10 @@ interface EditUserDialogProps {
 }
 
 const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
+
 	const { onClose, open, user, ...other } = props;
 
 	const auth = useAuth();
@@ -93,7 +100,7 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 					onClose({ modified: true });
 
 					snackbarsService?.addSnackbar({
-						message: "User well updated",
+						message: t.profile["user-well-updated"],
 						severity: "success",
 					});
 
@@ -107,7 +114,7 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 				setIsSaving(false);
 
 				snackbarsService?.addSnackbar({
-					message: "An error occurred while updating user",
+					message: t.profile["error-updating-profile"],
 					severity: "error",
 				});
 			});
@@ -125,7 +132,7 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 					onClose({ modified: true });
 
 					snackbarsService?.addSnackbar({
-						message: "User well created",
+						message: t.profile["user-well-created"],
 						severity: "success",
 					});
 
@@ -135,8 +142,7 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 				setIsSaving(false);
 
 				snackbarsService?.addSnackbar({
-					message:
-						"An error occurred while creating user, email might be already used.",
+					message: t.auth["error-creating-user"],
 					severity: "error",
 				});
 			});
@@ -152,13 +158,14 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 		>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<DialogTitle>
-					{currentUser?.id !== undefined ? "Edit" : "Create"} user
+					{currentUser?.id !== undefined ? t.common.edit : t.common.create}{" "}
+					{t.common.user}
 				</DialogTitle>
 
 				<DialogContent>
 					<TextField
 						fullWidth
-						placeholder="Name"
+						placeholder={t.common.name}
 						{...register("name")}
 						sx={{ mb: 1, textTransform: "capitalize" }}
 						defaultValue={currentUser?.name}
@@ -168,7 +175,7 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 
 					<TextField
 						fullWidth
-						placeholder="Email"
+						placeholder={t.common.email}
 						{...register("email")}
 						sx={{ mb: 1 }}
 						defaultValue={currentUser?.email}
@@ -180,12 +187,12 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 					<Controller
 						name="role"
 						control={control}
-						rules={{ required: "Role needed" }}
+						rules={{ required: t.profile["role-needed"] }}
 						render={({ field: { onChange, value } }): ReactElement => (
 							<TextField
 								fullWidth
 								select
-								label="Role"
+								label={t.common.role}
 								value={value}
 								onChange={onChange}
 								defaultValue={currentUser?.role}
@@ -207,7 +214,7 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 
 				<DialogActions>
 					<Button onClick={(): Promise<void> => onClose({ modified: false })}>
-						Cancel
+						{t.common.cancel}
 					</Button>
 
 					<LoadingButton
@@ -219,7 +226,7 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 							m: 1,
 						}}
 					>
-						Save
+						{t.common.save}
 					</LoadingButton>
 				</DialogActions>
 			</form>

@@ -38,7 +38,7 @@ const PremiumRoute = ({
 				!auth?.isPremium(auth?.value.user)) ? (
 				<CircularProgress />
 			) : (
-				{ children }
+				children
 			)}
 		</SignedInLayout>
 	);

@@ -2,7 +2,6 @@ import { AuthActionsProvider } from "@providers/AuthActionsProvider";
 import { AuthProvider } from "@providers/AuthProvider";
 import { CustomThemeProvider } from "@providers/CustomThemeProvider";
 import { SnackBarProvider } from "@providers/SnackbarProvider";
-import { appWithTranslation } from "next-i18next";
 import type { AppProps } from "next/app";
 import { ReactElement } from "react";
 import "../styles/globals.css";
@@ -21,4 +20,4 @@ const MyApp = ({ Component, pageProps }: AppProps): ReactElement => {
 	);
 };
 
-export default appWithTranslation(MyApp);
+export default MyApp;

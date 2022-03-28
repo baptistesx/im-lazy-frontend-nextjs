@@ -1,20 +1,20 @@
-import SignUpForm from "@components/auth/SignUpForm";
-import NotSignedInRoute from "@components/routes/NotSignedInRoute";
+import SignedInRoute from "@components/routes/SignedInRoute";
+import LanguageMenu from "@components/settings/LanguageMenu";
 import { useRouter } from "next/router";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement } from "react";
 
-const SignUp = (): ReactElement => {
+const Settings = (): ReactElement => {
 	const router = useRouter();
 	const { locale } = router;
 	const t = locale === "en" ? en : fr;
 
 	return (
-		<NotSignedInRoute title={t.auth["sign-up"]}>
-			<SignUpForm />
-		</NotSignedInRoute>
+		<SignedInRoute title={t.settings.title}>
+			<LanguageMenu />
+		</SignedInRoute>
 	);
 };
 
-export default SignUp;
+export default Settings;

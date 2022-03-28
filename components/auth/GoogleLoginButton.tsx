@@ -1,4 +1,7 @@
 import { useSnackbars } from "@providers/SnackbarProvider";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import { Dispatch, ReactElement, SetStateAction } from "react";
 import GoogleLogin, {
 	GoogleLoginResponse,
@@ -11,15 +14,18 @@ const GoogleLoginButton = ({
 }: {
 	setIsLoading: Dispatch<SetStateAction<boolean>>;
 }): ReactElement => {
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
+
 	const snackbarsService = useSnackbars();
 
 	const authActions = useAuthActions();
 
 	const isResponseAGoogleLoginResponse = (
 		response: GoogleLoginResponse | GoogleLoginResponseOffline
-	): response is GoogleLoginResponse => {
-		return (response as GoogleLoginResponse).accessToken !== null;
-	};
+	): response is GoogleLoginResponse =>
+		(response as GoogleLoginResponse).accessToken !== null;
 
 	const onGetOauthGoogleTokenSuccess = async (
 		response: GoogleLoginResponse | GoogleLoginResponseOffline
@@ -45,7 +51,7 @@ const GoogleLoginButton = ({
 	return (
 		<GoogleLogin
 			clientId={`${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}`}
-			buttonText="Sign in with Google"
+			buttonText={t.auth["sign-in-with-google"]}
 			onSuccess={onGetOauthGoogleTokenSuccess}
 			onFailure={onGetOauthGoogleTokenFail}
 		/>
