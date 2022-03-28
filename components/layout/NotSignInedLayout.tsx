@@ -1,5 +1,4 @@
-import { Box, Button, Typography } from "@mui/material/";
-import { useTheme } from "@mui/material/styles";
+import { Box, Button, Typography, useTheme } from "@mui/material/";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactElement, ReactNode } from "react";
@@ -26,7 +25,7 @@ const NotSignedInLayout = ({
 				sx={{
 					display: { xs: "none", sm: "flex" },
 					width: "50%",
-					backgroundColor: "white",
+					backgroundColor: "text.primary",
 					justifyContent: "center",
 					alignItems: "center",
 				}}
@@ -34,8 +33,12 @@ const NotSignedInLayout = ({
 				<Link href="/" passHref>
 					<Button sx={{ height: 150, display: { xs: "none", sm: "block" } }}>
 						<Image
-							alt="logo-dark"
-							src="/logo-dark-400-200.png"
+							alt="logo"
+							src={
+								theme.palette.mode === "dark"
+									? "/logo-dark-400-200.png"
+									: "/logo-light.png"
+							}
 							height={100}
 							width={200}
 						/>
@@ -47,7 +50,7 @@ const NotSignedInLayout = ({
 				sx={{
 					display: "flex",
 					width: { xs: "100%", sm: "50%" },
-					backgroundColor: theme.palette.primary.main,
+					backgroundColor: "background.default",
 					justifyContent: "center",
 					alignItems: "center",
 					flexDirection: "column",
@@ -66,7 +69,7 @@ const NotSignedInLayout = ({
 				</Link>
 				<Typography
 					variant="h1"
-					sx={{ textAlign: "center", color: "white", m: 1 }}
+					sx={{ textAlign: "center", color: "text.primary", m: 1 }}
 				>
 					{title}
 				</Typography>

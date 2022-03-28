@@ -12,7 +12,7 @@ const ToolBarUserInfo = (): ReactElement => {
 			{auth?.isAdmin(auth?.value.user) ? (
 				<Tooltip title="Admin">
 					<IconButton>
-						<AdminPanelSettingsIcon sx={{ color: "white" }} />
+						<AdminPanelSettingsIcon />
 					</IconButton>
 				</Tooltip>
 			) : (
@@ -21,14 +21,14 @@ const ToolBarUserInfo = (): ReactElement => {
 			{auth?.isPremium(auth?.value.user) ? (
 				<Tooltip title="Premium">
 					<IconButton>
-						<WorkspacePremiumIcon sx={{ color: "white" }} />
+						<WorkspacePremiumIcon />
 					</IconButton>
 				</Tooltip>
 			) : (
 				<Box />
 			)}
 			<Typography
-				sx={{ textTransform: "capitalize" }}
+				sx={{ textTransform: "capitalize", color: "text.primary" }}
 			>{`${auth?.value.user?.name} |`}</Typography>
 		</Box>
 	);

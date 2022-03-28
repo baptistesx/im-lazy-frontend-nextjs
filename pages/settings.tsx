@@ -1,5 +1,6 @@
 import SignedInRoute from "@components/routes/SignedInRoute";
 import LanguageMenu from "@components/settings/LanguageMenu";
+import ThemeSwitch from "@components/settings/ThemeSwitch";
 import { useRouter } from "next/router";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
@@ -13,6 +14,8 @@ const Settings = (): ReactElement => {
 	return (
 		<SignedInRoute title={t.settings.title}>
 			<LanguageMenu />
+
+			<ThemeSwitch />
 		</SignedInRoute>
 	);
 };

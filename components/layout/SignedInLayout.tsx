@@ -1,9 +1,8 @@
 import { DRAWER_WIDTH } from "@components/layout/utils/constants";
 import MenuIcon from "@mui/icons-material/Menu";
-import { IconButton } from "@mui/material";
+import { IconButton, useTheme } from "@mui/material";
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material/";
 import CssBaseline from "@mui/material/CssBaseline";
-import { useTheme } from "@mui/material/styles";
 import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useAuth } from "@providers/AuthProvider";
 import Image from "next/image";
@@ -19,10 +18,10 @@ const SignedInLayout = ({
 	children: ReactNode;
 	title: string;
 }): ReactElement => {
-	const theme = useTheme();
-
 	const auth = useAuth();
 	const authActions = useAuthActions();
+
+	const theme = useTheme();
 
 	const onLogoutClick = async (): Promise<void | undefined> =>
 		authActions?.logout();
@@ -41,7 +40,7 @@ const SignedInLayout = ({
 					zIndex: (theme) => theme.zIndex.drawer + 1,
 					// width: { sm: `calc(100% - ${drawerWidth}px)` },
 					ml: { sm: `${DRAWER_WIDTH}px` },
-					backgroundColor: theme.palette.primary.main,
+					backgroundColor: "background.default", //theme.palette.primary.main,
 				}}
 			>
 				<Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -67,8 +66,12 @@ const SignedInLayout = ({
 					>
 						<Button>
 							<Image
-								alt="logo-light"
-								src="/logo-light.png"
+								alt="logo"
+								src={
+									theme.palette.mode === "light"
+										? "/logo-dark-400-200.png"
+										: "/logo-light.png"
+								}
 								height={50}
 								width={100}
 							/>
@@ -79,22 +82,10 @@ const SignedInLayout = ({
 						<Box sx={{ display: "flex", alignItems: "center" }}>
 							<ToolBarUserInfo />
 
-							<Button sx={{ color: "white" }} onClick={onLogoutClick}>
-								Logout
-							</Button>
+							<Button onClick={onLogoutClick}>Logout</Button>
 						</Box>
 					) : (
-						<Box sx={{ display: "flex", alignItems: "center" }}>
-							<Link href="/auth/sign-in" passHref>
-								<Button sx={{ color: "white" }}>Sign In</Button>
-							</Link>
-
-							<Typography>|</Typography>
-
-							<Link href="/auth/sign-up" passHref>
-								<Button sx={{ color: "white" }}>Sign Up</Button>
-							</Link>
-						</Box>
+						<Box />
 					)}
 				</Toolbar>
 			</AppBar>

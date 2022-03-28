@@ -24,7 +24,7 @@ const NotSignedInRoute = ({
 	return auth?.value.status === "loading" ||
 		(router.isReady && auth?.value.status === "connected") ? (
 		<NotSignedInLayout>
-			<CircularProgress sx={{ color: "white" }} />
+			<CircularProgress />
 		</NotSignedInLayout>
 	) : (
 		<NotSignedInLayout title={title}>{children}</NotSignedInLayout>

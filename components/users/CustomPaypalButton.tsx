@@ -11,7 +11,6 @@ import {
 } from "@paypal/react-paypal-js";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { savePayment } from "@services/userApi";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
@@ -98,18 +97,6 @@ const CustomPaypalButton = (): ReactElement => {
 			<CustomButton />
 		</PayPalScriptProvider>
 	);
-};
-
-export const getStaticProps = async ({
-	locale,
-}: {
-	locale: string;
-}): Promise<{ props: unknown }> => {
-	return {
-		props: {
-			...(await serverSideTranslations(locale, ["common", "get-licence"])),
-		},
-	};
 };
 
 export default CustomPaypalButton;
