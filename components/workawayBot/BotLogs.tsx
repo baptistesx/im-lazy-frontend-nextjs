@@ -63,11 +63,11 @@ const BotLogs = (): ReactElement => {
 	};
 
 	useEffect(() => {
-		if (socket === null) {
+		if (socket === undefined) {
 			setSocket(socketIOClient(process.env.NEXT_PUBLIC_ENDPOINT));
 		}
 
-		if (socket !== null && !isSocketInitialized) {
+		if (socket !== undefined && !isSocketInitialized) {
 			setIsSocketInitialized(true);
 
 			socket?.on("connection", (log: string) => {

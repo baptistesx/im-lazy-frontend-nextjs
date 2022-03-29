@@ -7,7 +7,7 @@ type RequestBody = {
 };
 
 type ApiResponse = {
-	fileNames?: string[];
+	filesName?: string[];
 	file?: File;
 };
 
@@ -61,8 +61,8 @@ export const getFilesName = async (
 		method: "get",
 	});
 
-	if (res.data.fileNames !== undefined) {
-		cb(res.data.fileNames);
+	if (res.data.filesName !== undefined) {
+		cb(res.data.filesName);
 	}
 };
 
@@ -96,7 +96,7 @@ export const startBot = async (
 	const res = await workawayBotApi.axiosApiCall({
 		url: "start-bot",
 		method: "post",
-		body: { params: { ...data } },
+		body: { ...data },
 	});
 
 	cb(res.status);
