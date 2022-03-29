@@ -17,7 +17,7 @@ const Dashboard = (): ReactElement => {
 	const router = useRouter();
 	const { locale } = router;
 	const t = locale === "en" ? en : fr;
-	console.log("LOCALE: ", locale, t.dashboard.title);
+
 	const auth = useAuth();
 
 	const snackbarsService = useSnackbars();

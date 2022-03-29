@@ -14,6 +14,8 @@ import ListItemText from "@mui/material/ListItemText";
 import { useAuth } from "@providers/AuthProvider";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
 import { ReactElement, useState } from "react";
 
 type DrawerItem = {
@@ -43,34 +45,29 @@ const CustomDrawerItem = ({
 		setOpen(!open);
 	};
 
-	if (element.children === undefined) {
-		return (
+	return (
+		<>
 			<Link key={element.title} href={element.route} passHref>
 				<ListItem
 					sx={{ pl: paddingLeft !== undefined ? paddingLeft : 2 }}
 					button
 					selected={router.pathname === element.route}
+					onClick={toggleList}
 				>
 					<ListItemIcon>{element.icon}</ListItemIcon>
 					<ListItemText primary={element.title} />
+					{element.children === undefined ? (
+						<Box />
+					) : open ? (
+						<ExpandLess />
+					) : (
+						<ExpandMore />
+					)}
 				</ListItem>
 			</Link>
-		);
-	} else {
-		return (
-			<>
-				<Link key={element.title} href={element.route} passHref>
-					<ListItem
-						sx={{ pl: paddingLeft !== undefined ? paddingLeft : 2 }}
-						button
-						selected={router.pathname === element.route}
-						onClick={toggleList}
-					>
-						<ListItemIcon>{element.icon}</ListItemIcon>
-						<ListItemText primary={element.title} />
-						{open ? <ExpandLess /> : <ExpandMore />}
-					</ListItem>
-				</Link>
+			{element.children === undefined ? (
+				<Box />
+			) : (
 				<Collapse in={open} timeout="auto" unmountOnExit>
 					<List component="div" disablePadding>
 						{element.children.map((element) => (
@@ -83,9 +80,9 @@ const CustomDrawerItem = ({
 						))}
 					</List>
 				</Collapse>
-			</>
-		);
-	}
+			)}
+		</>
+	);
 };
 
 const CustomDrawer = ({
@@ -97,22 +94,26 @@ const CustomDrawer = ({
 }): ReactElement => {
 	const auth = useAuth();
 
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
+
 	const drawerItems: DrawerItem[] = [
-		{ route: "/dashboard", icon: <HomeIcon />, title: "Dashboard" },
+		{ route: "/dashboard", icon: <HomeIcon />, title: t.dashboard.title },
 		{
 			route: "",
 			icon: <MoreHorizIcon />,
-			title: "Options",
+			title: t.common.options,
 			children: [
 				{
 					route: "/profile",
 					icon: <AccountBoxIcon />,
-					title: "Profile",
+					title: t.profile.title,
 				},
 				{
 					route: "/settings",
 					icon: <SettingsIcon />,
-					title: "Settings",
+					title: t.settings.title,
 				},
 			],
 		},
