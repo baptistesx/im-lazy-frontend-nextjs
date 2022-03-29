@@ -12,17 +12,14 @@ const useTimeout = (callback: () => void, delay: number): void => {
 	// Set up the timeout.
 	useEffect(() => {
 		const tick = (): void => {
-			console.log("in tiick");
 			if (savedCallback.current !== undefined) {
 				savedCallback.current();
 			}
 		};
 		if (delay !== null) {
-			console.log("setting timeout", delay);
 			const id = setTimeout(tick, delay);
 
 			return () => {
-				console.log("clearing timeout", delay);
 				clearTimeout(id);
 			};
 		}

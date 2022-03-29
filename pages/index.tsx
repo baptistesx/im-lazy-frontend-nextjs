@@ -25,7 +25,7 @@ const Home = (): ReactElement => {
 			>
 				<Link href="/auth/sign-in" passHref>
 					<Button variant="outlined" sx={{ m: 1 }}>
-						{t.index["sign-in"]}
+						{t.auth["sign-in"]}
 					</Button>
 				</Link>
 
@@ -33,7 +33,7 @@ const Home = (): ReactElement => {
 
 				<Link href="/auth/sign-up" passHref>
 					<Button variant="outlined" sx={{ m: 1 }}>
-						{t.index["sign-up"]}
+						{t.auth["sign-up"]}
 					</Button>
 				</Link>
 			</Box>

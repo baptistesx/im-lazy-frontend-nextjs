@@ -1,16 +1,16 @@
 {
 	"actions": "Actions",
-	"back": "Back",
-	"cancel": "Cancel",
-	"create": "Create",
-	"edit": "Edit",
+	"back": "Retour",
+	"cancel": "Annuler",
+	"create": "Créer",
+	"edit": "Editer",
 	"email": "Email",
-	"name": "Name",
-	"or": "or",
-	"password": "Password",
-	"refresh": "Refresh",
-	"role": "Role",
-	"save": "Save",
-	"user": "Users",
-	"users": "User"
+	"name": "Nom",
+	"or": "ou",
+	"password": "Mot de passe",
+	"refresh": "Rafraichir",
+	"role": "Rôle",
+	"save": "Enregistrer",
+	"user": "Utilisateurs",
+	"users": "Utilisateur"
 }

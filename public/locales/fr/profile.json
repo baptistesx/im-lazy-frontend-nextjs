@@ -1,12 +1,12 @@
 {
-	"change-password": "Change Password",
-	"current-password": "Current password",
-	"error-updating-password": "Error while updating password, check your current password.",
-	"error-updating-profile": "Error while updating profile.",
-	"new-password": "New password",
-	"password-well-updated": "Password well updated",
-	"role-needed": "Role needed",
-	"title": "Profile",
-	"user-well-created": " User well created",
-	"user-well-updated": "User well updated"
+	"change-password": "Changer de mot de passe",
+	"current-password": "Mot de passe courant",
+	"error-updating-password": "Une erreur est survenue lors de la mise à jour du mot de pass, veuillez vérifier votre mot de passe courant.",
+	"error-updating-profile": "Une erreur est survenue lors de la mise à jour de votre profil.",
+	"new-password": "Nouveau mot de passe",
+	"password-well-updated": "Mot de passe mis à jour",
+	"role-needed": "Rôle nécéssaire",
+	"title": "Profil",
+	"user-well-created": "Utilisateur créé avec succès.",
+	"user-well-updated": "Utilisateur mis à jour avec succès."
 }

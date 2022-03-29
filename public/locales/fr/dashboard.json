@@ -1,8 +1,8 @@
 {
 	"bot-name": "Envoi de message automatique",
-	"email-not-valid": "Email non confirmée",
-	"email-well-sent": "Confirmation email has been well sent",
-	"remember-email-confirmation": "N'oublie pas de valider ton compte via l'email reçu.",
+	"email-not-valid": "Email non confirmé",
+	"email-well-sent": "Email de confirmation bien envoyé",
+	"remember-email-confirmation": "N'oubliez pas de valider votre compte via l'email reçu.",
 	"send-again": "Ré-envoyer",
 	"title": "Tableau de bord"
 }

@@ -1,14 +1,14 @@
 {
 	"admin": "Admin",
-	"available-users": "Available users",
-	"create-user": "Create a user",
-	"delete-user": "Delete user",
-	"edit-user": "Edit user",
-	"email-verified": "Email verified",
-	"error-deleting-user": "An error occurred while deleting user",
-	"error-getting-users": "An error occurred while getting users",
-	"no-users": "No users",
+	"available-users": "Utilisateurs",
+	"create-user": "Créer un utilisateur",
+	"delete-user": "Supprimer un utilisateur",
+	"edit-user": "Editer un utilisateur",
+	"email-verified": "Email vérifié",
+	"error-deleting-user": "Une erreur est survenue lors de la suppression de l'utilisateur",
+	"error-getting-users": "Une erreur est suvrenue lors de la requête des utilisateurs",
+	"no-users": "Aucun utilisateur",
 	"premium": "Premium",
-	"title": "Users",
-	"user-well-deleted": "User well deleted"
+	"title": "Utilisateurs",
+	"user-well-deleted": "Utilisateur supprimée avec succès."
 }

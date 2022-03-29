@@ -22,7 +22,6 @@ export const CustomThemeProvider = ({
 	children: ReactNode;
 }): ReactElement => {
 	const [cookies, setCookie] = useCookies(["theme"]);
-	console.log(cookies["theme"]);
 	// It seems it doesn't work when mode is set automatically as system in browser
 	const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
@@ -39,13 +38,14 @@ export const CustomThemeProvider = ({
 				return setMode((prevMode) => {
 					setCookie("theme", prevMode === "light" ? "dark" : "light", {
 						expires: new Date(2030, 1, 1),
+						path: "/",
 					});
 
 					return prevMode === "light" ? "dark" : "light";
 				});
 			},
 		}),
-		[]
+		[setCookie]
 	);
 
 	const theme = useMemo(
