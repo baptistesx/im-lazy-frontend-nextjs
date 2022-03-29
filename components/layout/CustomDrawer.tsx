@@ -1,10 +1,7 @@
 import { DRAWER_WIDTH } from "@components/layout/utils/constants";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import GroupIcon from "@mui/icons-material/Group";
 import HomeIcon from "@mui/icons-material/Home";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import SettingsIcon from "@mui/icons-material/Settings";
 import { Box, CircularProgress, Collapse, Toolbar } from "@mui/material/";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -100,30 +97,13 @@ const CustomDrawer = ({
 
 	const drawerItems: DrawerItem[] = [
 		{ route: "/dashboard", icon: <HomeIcon />, title: t.dashboard.title },
-		{
-			route: "",
-			icon: <MoreHorizIcon />,
-			title: t.common.options,
-			children: [
-				{
-					route: "/profile",
-					icon: <AccountBoxIcon />,
-					title: t.profile.title,
-				},
-				{
-					route: "/settings",
-					icon: <SettingsIcon />,
-					title: t.settings.title,
-				},
-			],
-		},
 	];
 
 	if (auth?.value.user && auth.isAdmin(auth?.value.user)) {
 		drawerItems.push({
 			route: "/users",
 			icon: <GroupIcon />,
-			title: "Users",
+			title: t.common.users,
 		});
 	}
 

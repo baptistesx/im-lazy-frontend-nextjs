@@ -3,12 +3,12 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton, useTheme } from "@mui/material";
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material/";
 import CssBaseline from "@mui/material/CssBaseline";
-import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useAuth } from "@providers/AuthProvider";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactElement, ReactNode, useState } from "react";
 import CustomDrawer from "./CustomDrawer";
+import ToolBarMenu from "./ToolBarMenu";
 import ToolBarUserInfo from "./ToolBarUserInfo";
 
 const SignedInLayout = ({
@@ -19,12 +19,8 @@ const SignedInLayout = ({
 	title: string;
 }): ReactElement => {
 	const auth = useAuth();
-	const authActions = useAuthActions();
 
 	const theme = useTheme();
-
-	const onLogoutClick = async (): Promise<void | undefined> =>
-		authActions?.logout();
 
 	const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -82,7 +78,7 @@ const SignedInLayout = ({
 						<Box sx={{ display: "flex", alignItems: "center" }}>
 							<ToolBarUserInfo />
 
-							<Button onClick={onLogoutClick}>Logout</Button>
+							<ToolBarMenu />
 						</Box>
 					) : (
 						<Box />
