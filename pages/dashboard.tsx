@@ -1,9 +1,8 @@
-import { CustomSnackbar } from "@components/layout/CustomSnackbar";
 import SignedInRoute from "@components/routes/SignedInRoute";
 import GetLicenceButton from "@components/users/GetLicenceButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { LoadingButton } from "@mui/lab";
-import { Box, Button } from "@mui/material";
+import { Alert, Box, Button } from "@mui/material";
 import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { sendVerificationEmail } from "@services/userApi";
@@ -58,20 +57,26 @@ const Dashboard = (): ReactElement => {
 			)}
 
 			{!auth?.value.user?.isEmailVerified ? (
-				<CustomSnackbar
-					snackbarMessage={{
-						message: t.dashboard["remember-email-confirmation"],
-						severity: "error",
+				<Alert
+					severity="error"
+					action={
+						<LoadingButton
+							variant="outlined"
+							loading={loading}
+							onClick={handleSendVerificationEmailAgain}
+						>
+							{t.dashboard["send-again"]}
+						</LoadingButton>
+					}
+					sx={{
+						// width: "50%",
+						display: "flex",
+						justifyContent: "space-between",
+						alignContent: "center",
 					}}
 				>
-					<LoadingButton
-						variant="outlined"
-						loading={loading}
-						onClick={handleSendVerificationEmailAgain}
-					>
-						{t.dashboard["send-again"]}
-					</LoadingButton>
-				</CustomSnackbar>
+					{t.dashboard["remember-email-confirmation"]}
+				</Alert>
 			) : (
 				<Box />
 			)}

@@ -102,7 +102,7 @@ const SignedInLayout = ({
 				}}
 			>
 				<Toolbar />
-				<Typography variant="h1" sx={{ textAlign: "center", m: 1 }}>
+				<Typography variant="h1" sx={{ m: 1 }}>
 					{title}
 				</Typography>
 				{children}

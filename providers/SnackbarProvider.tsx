@@ -1,11 +1,11 @@
 import { SnackbarMessage } from "@components/layout/CustomSnackbar";
 import { Alert, Snackbar } from "@mui/material";
-import useTimeout from "hooks/useTimeout";
 import {
 	createContext,
 	ReactElement,
 	ReactNode,
 	useContext,
+	useEffect,
 	useState,
 } from "react";
 
@@ -28,9 +28,24 @@ export const SnackBarProvider = ({
 		undefined
 	);
 
-	useTimeout(() => {
-		setSnackbars((snackbars) => snackbars?.slice(-1));
-	}, AUTO_DISMISS_MS);
+	useEffect(() => {
+		if (snackbars !== undefined && snackbars.length > 0) {
+			const timer = setTimeout(
+				() =>
+					setSnackbars((snackbars) =>
+						snackbars?.slice(0, snackbars.length - 1)
+					),
+				AUTO_DISMISS_MS
+			);
+			return () => clearTimeout(timer);
+		}
+		return;
+	}, [snackbars]);
+
+	// TODO: replace useEffect with useTimeout, but how?
+	// useTimeout(() => {
+	// 	setSnackbars((snackbars) => snackbars?.slice(-1));
+	// }, AUTO_DISMISS_MS);
 
 	const addSnackbar = (snackbar: SnackbarMessage): void => {
 		setSnackbars((snackbars: SnackbarMessage[] | undefined) =>
@@ -45,9 +60,9 @@ export const SnackBarProvider = ({
 	return (
 		<SnackbarContext.Provider value={snackbarContext}>
 			{children}
+
 			{snackbars?.map((snackbar, index) => (
 				<Snackbar open={true} key={snackbar.message + index}>
-					{/* //TODO: replace with CustomSnackbar */}
 					<Alert severity={snackbar.severity} sx={{ width: "100%" }}>
 						{snackbar.message}
 					</Alert>

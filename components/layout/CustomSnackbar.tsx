@@ -14,9 +14,17 @@ export const CustomSnackbar = ({
 	children: ReactNode;
 }): ReactElement => {
 	return (
-		<Alert severity={snackbarMessage.severity} sx={{ width: "100%" }}>
+		<Alert
+			severity={snackbarMessage.severity}
+			action={{ children }}
+			sx={{
+				width: "100%",
+				display: "flex",
+				justifyContent: "space-between",
+				alignContent: "center",
+			}}
+		>
 			{snackbarMessage.message}
-			{children}
 		</Alert>
 	);
 };
