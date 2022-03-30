@@ -25,7 +25,10 @@ const NotSignedInLayout = ({
 				sx={{
 					display: { xs: "none", sm: "flex" },
 					width: "50%",
-					backgroundColor: "text.primary",
+					backgroundColor:
+						theme.palette.mode === "dark"
+							? theme.palette.primary.dark
+							: theme.palette.primary.main,
 					justifyContent: "center",
 					alignItems: "center",
 				}}
@@ -50,7 +53,10 @@ const NotSignedInLayout = ({
 				sx={{
 					display: "flex",
 					width: { xs: "100%", sm: "50%" },
-					backgroundColor: "background.default",
+					backgroundColor:
+						theme.palette.mode === "dark"
+							? theme.palette.background.default
+							: "background.primary",
 					justifyContent: "center",
 					alignItems: "center",
 					flexDirection: "column",

@@ -1,5 +1,5 @@
 import MenuIcon from "@mui/icons-material/Menu";
-import { IconButton, useTheme } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material/";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useAuth } from "@providers/AuthProvider";
@@ -20,14 +20,12 @@ const SignedInLayout = ({
 }): ReactElement => {
 	const auth = useAuth();
 
-	const theme = useTheme();
-
 	const [mobileOpen, setMobileOpen] = useState(false);
 
 	const handleDrawerToggle = (): void => setMobileOpen(!mobileOpen);
 
 	return (
-		<Box sx={{ display: "flex" }}>
+		<Box sx={{ display: "flex", height: "100%" }}>
 			<CssBaseline />
 
 			<AppBar
@@ -36,7 +34,6 @@ const SignedInLayout = ({
 					zIndex: (theme) => theme.zIndex.drawer + 1,
 					// width: { sm: `calc(100% - ${drawerWidth}px)` },
 					ml: { sm: `${DRAWER_WIDTH}px` },
-					backgroundColor: "background.default",
 				}}
 			>
 				<Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -61,16 +58,7 @@ const SignedInLayout = ({
 						passHref
 					>
 						<Button>
-							<Image
-								alt="logo"
-								src={
-									theme.palette.mode === "light"
-										? "/logo-dark.png"
-										: "/logo-light.png"
-								}
-								height={50}
-								width={100}
-							/>
+							<Image alt="logo" src="/logo-light.png" height={50} width={100} />
 						</Button>
 					</Link>
 
@@ -99,6 +87,9 @@ const SignedInLayout = ({
 				component="main"
 				sx={{
 					p: 3,
+					backgroundColor: "background.default",
+					color: "text.primary",
+					flexGrow: 1,
 				}}
 			>
 				<Toolbar />

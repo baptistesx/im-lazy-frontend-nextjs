@@ -1,6 +1,6 @@
 import { FormControlLabel, Switch } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useColorMode } from "@providers/CustomThemeProvider";
+import { useThemeActions } from "@providers/CustomThemeProvider";
 import { ChangeEvent, ReactElement, useState } from "react";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -51,13 +51,13 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 }));
 
 const ThemeSwitch = (): ReactElement => {
-	const colorMode = useColorMode();
+	const themeActions = useThemeActions();
 
 	const [checked, setChecked] = useState(true);
 
 	const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
 		setChecked(event.target.checked);
-		colorMode.toggleColorMode();
+		themeActions.toggleThemeActions();
 	};
 
 	return (

@@ -1,5 +1,9 @@
 import { useMediaQuery } from "@mui/material";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import {
+	createTheme,
+	responsiveFontSizes,
+	ThemeProvider,
+} from "@mui/material/styles";
 import {
 	createContext,
 	ReactElement,
@@ -9,9 +13,24 @@ import {
 	useState,
 } from "react";
 import { useCookies } from "react-cookie";
-import { ColorMode } from "./theme.d";
+import { ThemeActions } from "./theme.d";
 
-const ColorModeContext = createContext({ toggleColorMode: () => {} });
+const ThemeActionsContext = createContext({ toggleThemeActions: () => {} });
+
+const lightTheme = responsiveFontSizes(
+	createTheme({
+		palette: {
+			mode: "light",
+		},
+	})
+);
+const darkTheme = responsiveFontSizes(
+	createTheme({
+		palette: {
+			mode: "dark",
+		},
+	})
+);
 
 export const CustomThemeProvider = ({
 	children,
@@ -30,14 +49,19 @@ export const CustomThemeProvider = ({
 			: "light"
 	);
 
-	const colorMode = useMemo<ColorMode>(
+	const [theme, setTheme] = useState(mode === "light" ? lightTheme : darkTheme);
+
+	const themeActions = useMemo<ThemeActions>(
 		() => ({
-			toggleColorMode: (): void => {
+			toggleThemeActions: (): void => {
 				return setMode((prevMode) => {
+					console.log("toogle", prevMode);
 					setCookie("theme", prevMode === "light" ? "dark" : "light", {
 						expires: new Date(2030, 1, 1),
 						path: "/",
 					});
+
+					setTheme(prevMode === "light" ? darkTheme : lightTheme);
 
 					return prevMode === "light" ? "dark" : "light";
 				});
@@ -46,28 +70,18 @@ export const CustomThemeProvider = ({
 		[setCookie]
 	);
 
-	const theme = useMemo(
-		() =>
-			createTheme({
-				palette: {
-					mode,
-				},
-			}),
-		[mode]
-	);
-
 	return (
-		<ColorModeContext.Provider value={colorMode}>
+		<ThemeActionsContext.Provider value={themeActions}>
 			<ThemeProvider theme={theme}>{children}</ThemeProvider>
-		</ColorModeContext.Provider>
+		</ThemeActionsContext.Provider>
 	);
 };
 
-export const useColorMode = (): ColorMode => {
-	const context = useContext(ColorModeContext);
+export const useThemeActions = (): ThemeActions => {
+	const context = useContext(ThemeActionsContext);
 
 	if (context === undefined) {
-		throw new Error("useColorMode must be used withing a ThemeProvider");
+		throw new Error("useThemeActions must be used withing a ThemeProvider");
 	}
 
 	return context;
