@@ -1,4 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import {
 	Button,
@@ -6,6 +7,7 @@ import {
 	CardActions,
 	CardContent,
 	Divider,
+	IconButton,
 	TextField,
 } from "@mui/material";
 import { useAuthActions } from "@providers/AuthActionsProvider";
@@ -16,16 +18,10 @@ import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { SignUpSubmitFormData } from "./auth.d";
 import GoogleLoginButton from "./GoogleLoginButton";
 
 //TODO: on google signin, ask to choose an account and don't directly connect to the last used (remove token?)
-
-type SignUpSubmitFormData = {
-	name: string;
-	email: string;
-	password: string;
-	passwordConfirmation: string;
-};
 
 const SignUpForm = (): ReactElement => {
 	const router = useRouter();
@@ -35,6 +31,10 @@ const SignUpForm = (): ReactElement => {
 	const authActions = useAuthActions();
 
 	const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
+
+	const [showPassword, setShowPassword] = useState<boolean>(false);
+	const [showPasswordConfirmation, setShowPasswordConfirmation] =
+		useState<boolean>(false);
 
 	const {
 		register,
@@ -62,6 +62,14 @@ const SignUpForm = (): ReactElement => {
 		});
 	};
 
+	const handleClickShowPassword = (): void => {
+		setShowPassword(!showPassword);
+	};
+
+	const handleClickShowPasswordConfirmation = (): void => {
+		setShowPasswordConfirmation(!showPasswordConfirmation);
+	};
+
 	return (
 		<Card
 			component="form"
@@ -71,7 +79,7 @@ const SignUpForm = (): ReactElement => {
 			<CardContent>
 				<TextField
 					fullWidth
-					placeholder={t.common.name}
+					label={t.common.name}
 					sx={{ mb: 2 }}
 					{...register("name")}
 					error={errors.name != null}
@@ -80,7 +88,7 @@ const SignUpForm = (): ReactElement => {
 
 				<TextField
 					fullWidth
-					placeholder={t.common.email}
+					label={t.common.email}
 					sx={{ mb: 2 }}
 					{...register("email")}
 					error={errors.email != null}
@@ -89,8 +97,19 @@ const SignUpForm = (): ReactElement => {
 
 				<TextField
 					fullWidth
-					type={"password"}
-					placeholder={t.common.password}
+					type={showPassword ? "text" : "password"}
+					label={t.common.password}
+					InputProps={{
+						endAdornment: (
+							<IconButton
+								aria-label="toggle password visibility"
+								onClick={handleClickShowPassword}
+								edge="end"
+							>
+								{showPassword ? <VisibilityOff /> : <Visibility />}
+							</IconButton>
+						),
+					}}
 					sx={{ mb: 2 }}
 					{...register("password")}
 					error={errors.password != null}
@@ -99,8 +118,19 @@ const SignUpForm = (): ReactElement => {
 
 				<TextField
 					fullWidth
-					type={"password"}
-					placeholder={t.auth["confirm-password"]}
+					type={showPasswordConfirmation ? "text" : "password"}
+					label={t.auth["confirm-password"]}
+					InputProps={{
+						endAdornment: (
+							<IconButton
+								aria-label="toggle password visibility"
+								onClick={handleClickShowPasswordConfirmation}
+								edge="end"
+							>
+								{showPasswordConfirmation ? <VisibilityOff /> : <Visibility />}
+							</IconButton>
+						),
+					}}
 					{...register("passwordConfirmation")}
 					error={errors.passwordConfirmation != null}
 					helperText={errors.passwordConfirmation?.message}
@@ -136,17 +166,6 @@ const SignUpForm = (): ReactElement => {
 			<CardActions
 				sx={{ display: "flex", justifyContent: "center", mt: 1, mb: 1 }}
 			>
-				<Link href="/auth/sign-in" passHref>
-					<Button
-						variant="outlined"
-						sx={{
-							m: 1,
-						}}
-					>
-						{t.auth["sign-in"]}
-					</Button>
-				</Link>
-
 				<GoogleLoginButton setIsLoading={setIsSigningUp} />
 			</CardActions>
 		</Card>

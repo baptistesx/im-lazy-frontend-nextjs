@@ -24,3 +24,11 @@ export type FormBotParams = {
 export type File = {
 	content: { members: MemberProfile[] } | FormBotParams;
 };
+
+export type CitiesFormDialogProps = {
+	keepMounted: boolean;
+	open: boolean;
+	onClose: (city: string | undefined) => Promise<void>;
+	value: string | undefined;
+	cities: string[] | undefined;
+};

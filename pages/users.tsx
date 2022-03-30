@@ -24,7 +24,7 @@ import {
 } from "@mui/material";
 import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
-import { User } from "@providers/user";
+import { User } from "@providers/user.d";
 import { deleteUserById, getUsers } from "@services/userApi";
 import { useRouter } from "next/router";
 import en from "public/locales/en/en";

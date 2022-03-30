@@ -1,19 +1,6 @@
-import { PaymentResume, User } from "@providers/user";
-import axios, { Method, AxiosResponse } from "axios";
-
-type RequestBody = {
-	id?: string;
-	name?: string;
-	email?: string;
-	newPassword?: string;
-	currentPassword?: string;
-	role?: string;
-	paymentResume?: PaymentResume;
-};
-
-type ApiResponse = {
-	users?: User[];
-};
+import { PaymentResume, User } from "@providers/user.d";
+import axios, { AxiosResponse, Method } from "axios";
+import { ApiResponse, RequestBody } from "./user.d";
 
 const userApi = {
 	// All api requests are made thanks to this function

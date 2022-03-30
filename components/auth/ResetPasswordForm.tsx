@@ -16,10 +16,7 @@ import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-
-type ResetPasswordFormData = {
-	email: string;
-};
+import { ResetPasswordFormData } from "./auth.d";
 
 const ResetPasswordForm = (): ReactElement => {
 	const snackbarsService = useSnackbars();
@@ -42,6 +39,7 @@ const ResetPasswordForm = (): ReactElement => {
 
 	useEffect(() => {
 		const subscription = watch(() => {});
+
 		return () => subscription.unsubscribe();
 	}, [watch]);
 
@@ -72,7 +70,7 @@ const ResetPasswordForm = (): ReactElement => {
 			<CardContent>
 				<TextField
 					fullWidth
-					placeholder={t.common.email}
+					label={t.common.email}
 					{...register("email")}
 					error={errors.email != null}
 					helperText={errors.email?.message}

@@ -9,12 +9,9 @@ import {
 	useState,
 } from "react";
 import { useCookies } from "react-cookie";
+import { ColorMode } from "./theme.d";
 
 const ColorModeContext = createContext({ toggleColorMode: () => {} });
-
-type ColorMode = {
-	toggleColorMode: () => void;
-};
 
 export const CustomThemeProvider = ({
 	children,
@@ -32,6 +29,7 @@ export const CustomThemeProvider = ({
 			? "dark"
 			: "light"
 	);
+
 	const colorMode = useMemo<ColorMode>(
 		() => ({
 			toggleColorMode: (): void => {

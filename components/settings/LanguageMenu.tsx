@@ -64,6 +64,7 @@ const LanguageMenu = (): ReactElement => {
 							<Link passHref href="/settings" locale={language.locale}>
 								<Box sx={{ display: "flex", justifyContent: "space-between" }}>
 									<Typography>{language.name}</Typography>
+
 									<Box sx={{ width: 30, display: "flex" }}>{language.flag}</Box>
 								</Box>
 							</Link>

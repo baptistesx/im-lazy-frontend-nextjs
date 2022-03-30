@@ -1,15 +1,6 @@
-import { FormBotParams } from "@components/workawayBot/workaway";
+import { FormBotParams } from "@components/workawayBot/workaway.d";
 import axios, { AxiosResponse, Method } from "axios";
-
-type RequestBody = {
-	city?: string;
-	params?: FormBotParams;
-};
-
-type ApiResponse = {
-	filesName?: string[];
-	file?: File;
-};
+import { RequestBody, ApiResponse } from "./workaway.d";
 
 const workawayBotApi = {
 	// All api requests are made thanks to this function

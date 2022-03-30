@@ -1,6 +1,6 @@
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
-import { Box, IconButton, Tooltip } from "@mui/material/";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material/";
 import { useAuth } from "@providers/AuthProvider";
 import { ReactElement } from "react";
 
@@ -28,6 +28,14 @@ const ToolBarUserInfo = (): ReactElement => {
 			) : (
 				<Box />
 			)}
+
+			<Typography
+				sx={{
+					display: { xs: "none", sm: "flex" },
+					textTransform: "capitalize",
+					color: "text.primary",
+				}}
+			>{`${auth?.value.user?.name}`}</Typography>
 		</Box>
 	);
 };

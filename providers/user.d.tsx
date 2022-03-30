@@ -1,3 +1,5 @@
+import { Address } from "@paypal/paypal-js";
+
 export type Role = "admin" | "premium" | "classic";
 
 export type User = {
@@ -41,7 +43,6 @@ export type AuthActionsValue = {
 		cb: () => void
 	) => void;
 	loginWithGoogle: (token: string, cb: () => void) => void;
-	fetchCurrentUser: () => void;
 };
 
 export type PaymentResume = {

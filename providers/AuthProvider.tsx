@@ -5,7 +5,7 @@ import {
 	useContext,
 	useState,
 } from "react";
-import { AuthValue, Connected, Loading, NotConnected, User } from "./user";
+import { AuthValue, Connected, Loading, NotConnected, User } from "./user.d";
 
 const AuthContext: Context<AuthValue | undefined> = createContext<
 	AuthValue | undefined

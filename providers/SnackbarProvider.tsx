@@ -1,4 +1,4 @@
-import { SnackbarMessage } from "@components/layout/CustomSnackbar";
+import { SnackbarMessage } from "@components/layout/snackbar.d";
 import { Alert, Snackbar } from "@mui/material";
 import {
 	createContext,
@@ -8,16 +8,11 @@ import {
 	useEffect,
 	useState,
 } from "react";
-
-export interface SnackbarContextInterface {
-	addSnackbar: (snackbar: SnackbarMessage) => void;
-}
+import { AUTO_DISMISS_MS, SnackbarContextInterface } from "./snackbar.d";
 
 export const SnackbarContext = createContext<
 	SnackbarContextInterface | undefined
 >(undefined);
-
-const AUTO_DISMISS_MS = 5000;
 
 export const SnackBarProvider = ({
 	children,

@@ -1,4 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import {
 	Card,
@@ -6,6 +7,7 @@ import {
 	CardContent,
 	Checkbox,
 	FormControlLabel,
+	IconButton,
 	MenuItem,
 	TextField,
 	Typography,
@@ -19,7 +21,7 @@ import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { FormBotParams } from "./workaway";
+import { FormBotParams } from "./workaway.d";
 
 const InfoForm = (): ReactElement => {
 	const router = useRouter();
@@ -29,6 +31,8 @@ const InfoForm = (): ReactElement => {
 	const [isStarting, setIsStarting] = useState<boolean>(false);
 	const [isStopping, setIsStopping] = useState<boolean>(false);
 	const [isRunning, setIsRunning] = useState<boolean>(false);
+
+	const [showPassword, setShowPassword] = useState<boolean>(false);
 
 	const snackbarsService = useSnackbars();
 
@@ -92,6 +96,10 @@ const InfoForm = (): ReactElement => {
 		});
 	};
 
+	const handleClickShowPassword = (): void => {
+		setShowPassword(!showPassword);
+	};
+
 	return (
 		<Card
 			component="form"
@@ -121,7 +129,7 @@ const InfoForm = (): ReactElement => {
 				)}
 				<TextField
 					fullWidth
-					placeholder={t.common.email}
+					label={t.common.email}
 					{...register("email")}
 					sx={{ m: 1 }}
 					error={errors.email != null}
@@ -129,8 +137,19 @@ const InfoForm = (): ReactElement => {
 				/>
 				<TextField
 					fullWidth
-					type={"password"}
-					placeholder={t.common.password}
+					type={showPassword ? "text" : "password"}
+					label={t.common.password}
+					InputProps={{
+						endAdornment: (
+							<IconButton
+								aria-label="toggle password visibility"
+								onClick={handleClickShowPassword}
+								edge="end"
+							>
+								{showPassword ? <VisibilityOff /> : <Visibility />}
+							</IconButton>
+						),
+					}}
 					{...register("password")}
 					sx={{ m: 1 }}
 					error={errors.password != null}
@@ -138,7 +157,7 @@ const InfoForm = (): ReactElement => {
 				/>
 				<TextField
 					fullWidth
-					placeholder={t.workawayBot.city}
+					label={t.workawayBot.city}
 					{...register("city")}
 					sx={{ m: 1 }}
 					error={errors.city != null}

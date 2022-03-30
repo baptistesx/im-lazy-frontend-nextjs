@@ -1,4 +1,4 @@
-import { DRAWER_WIDTH } from "@components/layout/utils/constants";
+import { DrawerItem, DRAWER_WIDTH } from "@components/layout/layout.d";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import GroupIcon from "@mui/icons-material/Group";
 import HomeIcon from "@mui/icons-material/Home";
@@ -15,14 +15,7 @@ import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useState } from "react";
 
-type DrawerItem = {
-	route: string;
-	icon: ReactElement;
-	title: string;
-	children?: DrawerItem[];
-};
-
-const CustomDrawerItem = ({
+const ParentDrawerItem = ({
 	element,
 	paddingLeft,
 }: {
@@ -31,28 +24,41 @@ const CustomDrawerItem = ({
 }): ReactElement => {
 	const router = useRouter();
 
-	const isInSubMenu =
-		element.children !== undefined &&
-		element.children.find((child) => child.route === router.route) !==
-			undefined;
+	const isAChildTheCurrentRoute = (element: DrawerItem): boolean => {
+		return (
+			element.children !== undefined &&
+			element.children.find(
+				(child) =>
+					child.route === router.route || isAChildTheCurrentRoute(child)
+			) !== undefined
+		);
+	};
 
-	const [open, setOpen] = useState(isInSubMenu);
+	// Check if the current route corresponds to one of the children
+	const currentRouteIsAChild = isAChildTheCurrentRoute(element);
 
-	const toggleList = (): void => {
+	// Open or close Collapse item
+	const [open, setOpen] = useState(currentRouteIsAChild);
+
+	const toggleChildrenList = (): void => {
 		setOpen(!open);
 	};
 
-	return (
+	return element.children === undefined ? (
+		<SimpleDrawerItem element={element} />
+	) : (
 		<>
 			<Link key={element.title} href={element.route} passHref>
 				<ListItem
 					sx={{ pl: paddingLeft !== undefined ? paddingLeft : 2 }}
 					button
 					selected={router.pathname === element.route}
-					onClick={toggleList}
+					onClick={toggleChildrenList}
 				>
 					<ListItemIcon>{element.icon}</ListItemIcon>
+
 					<ListItemText primary={element.title} />
+
 					{element.children === undefined ? (
 						<Box />
 					) : open ? (
@@ -62,23 +68,55 @@ const CustomDrawerItem = ({
 					)}
 				</ListItem>
 			</Link>
+
 			{element.children === undefined ? (
 				<Box />
 			) : (
 				<Collapse in={open} timeout="auto" unmountOnExit>
 					<List component="div" disablePadding>
-						{element.children.map((element) => (
-							<Box key={element.title}>
-								<CustomDrawerItem
+						{element.children.map((element) =>
+							element.children === undefined ? (
+								<SimpleDrawerItem
+									key={element.title}
 									element={element}
 									paddingLeft={paddingLeft !== undefined ? paddingLeft + 4 : 4}
 								/>
-							</Box>
-						))}
+							) : (
+								<ParentDrawerItem
+									key={element.title}
+									element={element}
+									paddingLeft={paddingLeft !== undefined ? paddingLeft + 4 : 4}
+								/>
+							)
+						)}
 					</List>
 				</Collapse>
 			)}
 		</>
+	);
+};
+
+const SimpleDrawerItem = ({
+	element,
+	paddingLeft,
+}: {
+	element: DrawerItem;
+	paddingLeft?: number;
+}): ReactElement => {
+	const router = useRouter();
+
+	return (
+		<Link key={element.title} href={element.route} passHref>
+			<ListItem
+				sx={{ pl: paddingLeft !== undefined ? paddingLeft : 2 }}
+				button
+				selected={router.pathname === element.route}
+			>
+				<ListItemIcon>{element.icon}</ListItemIcon>
+
+				<ListItemText primary={element.title} />
+			</ListItem>
+		</Link>
 	);
 };
 
@@ -96,9 +134,14 @@ const CustomDrawer = ({
 	const t = locale === "en" ? en : fr;
 
 	const drawerItems: DrawerItem[] = [
-		{ route: "/dashboard", icon: <HomeIcon />, title: t.dashboard.title },
+		{
+			route: "/dashboard",
+			icon: <HomeIcon />,
+			title: t.dashboard.title,
+		},
 	];
 
+	// Add admin  routes to the drawer
 	if (auth?.value.user && auth.isAdmin(auth?.value.user)) {
 		drawerItems.push({
 			route: "/users",
@@ -108,24 +151,28 @@ const CustomDrawer = ({
 	}
 
 	const drawer = (
-		<div>
+		<>
 			<Toolbar />
 
 			<Box sx={{ overflow: "auto" }}>
 				<List component="nav">
-					{drawerItems.map((element: DrawerItem) => (
-						<CustomDrawerItem key={element.title} element={element} />
-					))}
+					{drawerItems.map((element: DrawerItem) =>
+						element.children === undefined ? (
+							<SimpleDrawerItem key={element.title} element={element} />
+						) : (
+							<ParentDrawerItem key={element.title} element={element} />
+						)
+					)}
 				</List>
 			</Box>
-		</div>
+		</>
 	);
 
-	return auth?.value.user !== null && auth?.value.user !== undefined ? (
+	return auth?.value.user !== undefined &&
+		auth?.value.status === "connected" ? (
 		<Box
 			component="nav"
 			sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}
-			aria-label="mailbox folders"
 		>
 			<Drawer
 				variant="temporary"
@@ -156,11 +203,11 @@ const CustomDrawer = ({
 				}}
 				open
 			>
-				{auth?.value.status === "loading" ? <CircularProgress /> : drawer}
+				{drawer}
 			</Drawer>
 		</Box>
 	) : (
-		<Box />
+		<CircularProgress />
 	);
 };
 

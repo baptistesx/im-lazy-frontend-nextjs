@@ -11,30 +11,15 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
-import { Role, User } from "@providers/user";
+import { User } from "@providers/user.d";
 import editUserFormSchema from "@schemas/editUserFormSchema";
 import { createUser, updateUserById } from "@services/userApi";
 import { useRouter } from "next/router";
-import PropTypes from "prop-types";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useAuthActions } from "../../providers/AuthActionsProvider";
-
-interface EditUserDialogFormData {
-	name: string;
-	role: Role;
-	email: string;
-	password: string;
-}
-
-interface EditUserDialogProps {
-	keepMounted: boolean;
-	open: boolean;
-	onClose: ({ modified }: { modified: boolean }) => Promise<void>;
-	user?: User | undefined;
-}
+import { EditUserDialogFormData, EditUserDialogProps } from "./users.d";
 
 const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 	const router = useRouter();
@@ -44,13 +29,10 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 	const { onClose, open, user, ...other } = props;
 
 	const auth = useAuth();
-	const authActions = useAuthActions();
 
 	const snackbarsService = useSnackbars();
 
 	const [currentUser, setUser] = useState<User | undefined>(user);
-
-	// const radioGroupRef = useRef(null);
 
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
@@ -76,12 +58,6 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 		}
 	}, [user, open]);
 
-	const handleEntering = (): void => {
-		// if (radioGroupRef.current != null) {
-		//   radioGroupRef.current.focus();
-		// }
-	};
-
 	const onSubmit = async (data: EditUserDialogFormData): Promise<void> => {
 		setIsSaving(true);
 
@@ -105,7 +81,14 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 					});
 
 					if (currentUser?.id === auth?.value.user?.id) {
-						authActions.fetchCurrentUser();
+						auth.setValue({
+							user: {
+								...auth.value.user,
+								email: data.email,
+								name: data.name,
+							},
+							status: "connected",
+						});
 					}
 
 					reset(data);
@@ -151,7 +134,6 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 
 	return (
 		<Dialog
-			TransitionProps={{ onEntering: handleEntering }}
 			open={open}
 			{...other}
 			onClose={(): Promise<void> => onClose({ modified: false })}
@@ -165,9 +147,9 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 				<DialogContent>
 					<TextField
 						fullWidth
-						placeholder={t.common.name}
+						label={t.common.name}
 						{...register("name")}
-						sx={{ mb: 1, textTransform: "capitalize" }}
+						sx={{ mb: 1, mt: 1, textTransform: "capitalize" }}
 						defaultValue={currentUser?.name}
 						error={errors.name != null}
 						helperText={errors.name?.message}
@@ -175,9 +157,9 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 
 					<TextField
 						fullWidth
-						placeholder={t.common.email}
+						label={t.common.email}
 						{...register("email")}
-						sx={{ mb: 1 }}
+						sx={{ mb: 1, mt: 1 }}
 						defaultValue={currentUser?.email}
 						error={errors.email != null}
 						helperText={errors.email?.message}
@@ -195,6 +177,7 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 								label={t.common.role}
 								value={value}
 								onChange={onChange}
+								sx={{ mt: 1 }}
 								defaultValue={currentUser?.role}
 								disabled={currentUser?.id === auth?.value.user?.id}
 							>
@@ -235,9 +218,3 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 };
 
 export default EditUserDialog;
-
-EditUserDialog.propTypes = {
-	onClose: PropTypes.func.isRequired,
-	open: PropTypes.bool.isRequired,
-	user: PropTypes.object,
-};

@@ -1,4 +1,3 @@
-import { DRAWER_WIDTH } from "@components/layout/utils/constants";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton, useTheme } from "@mui/material";
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material/";
@@ -8,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ReactElement, ReactNode, useState } from "react";
 import CustomDrawer from "./CustomDrawer";
+import { DRAWER_WIDTH } from "./layout.d";
 import ToolBarMenu from "./ToolBarMenu";
 import ToolBarUserInfo from "./ToolBarUserInfo";
 
@@ -36,7 +36,7 @@ const SignedInLayout = ({
 					zIndex: (theme) => theme.zIndex.drawer + 1,
 					// width: { sm: `calc(100% - ${drawerWidth}px)` },
 					ml: { sm: `${DRAWER_WIDTH}px` },
-					backgroundColor: "background.default", //theme.palette.primary.main,
+					backgroundColor: "background.default",
 				}}
 			>
 				<Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -65,7 +65,7 @@ const SignedInLayout = ({
 								alt="logo"
 								src={
 									theme.palette.mode === "light"
-										? "/logo-dark-400-200.png"
+										? "/logo-dark.png"
 										: "/logo-light.png"
 								}
 								height={50}

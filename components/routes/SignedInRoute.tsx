@@ -8,7 +8,7 @@ const SignedInRoute = ({
 	children,
 	title,
 }: {
-	children: ReactElement[];
+	children: ReactElement[] | ReactElement;
 	title: string;
 }): ReactElement => {
 	const auth = useAuth();

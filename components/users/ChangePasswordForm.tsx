@@ -1,6 +1,15 @@
+import { ChangePasswordFormData } from "@components/auth/auth.d";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import { Box, Card, CardActions, CardContent, TextField } from "@mui/material";
+import {
+	Box,
+	Card,
+	CardActions,
+	CardContent,
+	IconButton,
+	TextField,
+} from "@mui/material";
 import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import updatePasswordFormSchema from "@schemas/updatePasswordFormSchema";
@@ -12,11 +21,6 @@ import { ReactElement, useState } from "react";
 import { useForm } from "react-hook-form";
 import GetLicenceButton from "./GetLicenceButton";
 
-type ChangePasswordFormData = {
-	currentPassword: string;
-	newPassword: string;
-};
-
 const ChangePasswordForm = (): ReactElement => {
 	const router = useRouter();
 	const { locale } = router;
@@ -25,6 +29,9 @@ const ChangePasswordForm = (): ReactElement => {
 	const auth = useAuth();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+
+	const [showPassword, setShowPassword] = useState<boolean>(false);
+	const [showPasswordNew, setShowPasswordNew] = useState<boolean>(false);
 
 	const snackbarsService = useSnackbars();
 
@@ -66,9 +73,18 @@ const ChangePasswordForm = (): ReactElement => {
 					message: t.profile["error-updating-password"],
 					severity: "error",
 				});
+
 				reset(data);
 			});
 		}
+	};
+
+	const handleClickShowPassword = (): void => {
+		setShowPassword(!showPassword);
+	};
+
+	const handleClickShowPasswordNew = (): void => {
+		setShowPasswordNew(!showPasswordNew);
 	};
 
 	return (
@@ -80,7 +96,19 @@ const ChangePasswordForm = (): ReactElement => {
 			<CardContent>
 				<TextField
 					fullWidth
-					placeholder={t.profile["current-password"]}
+					type={showPassword ? "text" : "password"}
+					label={t.profile["current-password"]}
+					InputProps={{
+						endAdornment: (
+							<IconButton
+								aria-label="toggle password visibility"
+								onClick={handleClickShowPassword}
+								edge="end"
+							>
+								{showPassword ? <VisibilityOff /> : <Visibility />}
+							</IconButton>
+						),
+					}}
 					{...register("currentPassword")}
 					sx={{ mb: 1 }}
 					error={errors.currentPassword != null}
@@ -89,7 +117,19 @@ const ChangePasswordForm = (): ReactElement => {
 
 				<TextField
 					fullWidth
-					placeholder={t.profile["new-password"]}
+					type={showPasswordNew ? "text" : "password"}
+					label={t.profile["new-password"]}
+					InputProps={{
+						endAdornment: (
+							<IconButton
+								aria-label="toggle password visibility"
+								onClick={handleClickShowPasswordNew}
+								edge="end"
+							>
+								{showPasswordNew ? <VisibilityOff /> : <Visibility />}
+							</IconButton>
+						),
+					}}
 					{...register("newPassword")}
 					sx={{ mb: 1 }}
 					error={errors.newPassword != null}

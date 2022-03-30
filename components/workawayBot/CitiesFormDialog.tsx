@@ -9,19 +9,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import RadioGroup from "@mui/material/RadioGroup";
 import { useRouter } from "next/router";
-import PropTypes from "prop-types";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import * as React from "react";
 import { ReactElement, useEffect, useRef, useState } from "react";
-
-interface CitiesFormDialogProps {
-	keepMounted: boolean;
-	open: boolean;
-	onClose: (city: string | undefined) => Promise<void>;
-	value: string | undefined;
-	cities: string[] | undefined;
-}
+import { CitiesFormDialogProps } from "./workaway.d";
 
 const CitiesFormDialog = (props: CitiesFormDialogProps): ReactElement => {
 	const router = useRouter();
@@ -40,12 +32,6 @@ const CitiesFormDialog = (props: CitiesFormDialogProps): ReactElement => {
 		}
 	}, [valueProp, open]);
 
-	const handleEntering = (): void => {
-		if (radioGroupRef.current != null) {
-			// radioGroupRef.current.focus();
-		}
-	};
-
 	const handleSubmit = (): void => {
 		onClose(value);
 	};
@@ -58,7 +44,6 @@ const CitiesFormDialog = (props: CitiesFormDialogProps): ReactElement => {
 		<Dialog
 			sx={{ "& .MuiDialog-paper": { width: "80%", maxHeight: 435 } }}
 			maxWidth="xs"
-			TransitionProps={{ onEntering: handleEntering }}
 			open={open}
 			{...other}
 		>
@@ -88,12 +73,6 @@ const CitiesFormDialog = (props: CitiesFormDialogProps): ReactElement => {
 			</DialogActions>
 		</Dialog>
 	);
-};
-
-CitiesFormDialog.propTypes = {
-	onClose: PropTypes.func.isRequired,
-	open: PropTypes.bool.isRequired,
-	value: PropTypes.string.isRequired,
 };
 
 export default CitiesFormDialog;

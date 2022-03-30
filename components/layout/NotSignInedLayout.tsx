@@ -36,7 +36,7 @@ const NotSignedInLayout = ({
 							alt="logo"
 							src={
 								theme.palette.mode === "dark"
-									? "/logo-dark-400-200.png"
+									? "/logo-dark.png"
 									: "/logo-light.png"
 							}
 							height={100}
@@ -67,12 +67,14 @@ const NotSignedInLayout = ({
 						/>
 					</Button>
 				</Link>
+
 				<Typography
 					variant="h1"
 					sx={{ textAlign: "center", color: "text.primary", m: 1 }}
 				>
 					{title}
 				</Typography>
+
 				{children}
 			</Box>
 		</Box>

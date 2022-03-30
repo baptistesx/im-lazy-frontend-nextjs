@@ -36,6 +36,13 @@ const GoogleLoginButton = ({
 			authActions?.loginWithGoogle(response.accessToken, () => {
 				setIsLoading(false);
 			});
+		} else {
+			setIsLoading(false);
+
+			snackbarsService?.addSnackbar({
+				message: t.auth["error-sign-in-google"],
+				severity: "error",
+			});
 		}
 	};
 

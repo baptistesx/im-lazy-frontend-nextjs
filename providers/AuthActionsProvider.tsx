@@ -19,7 +19,7 @@ import {
 	useEffect,
 } from "react";
 import { useSnackbars } from "./SnackbarProvider";
-import { AuthActionsValue, User } from "./user";
+import { AuthActionsValue, User } from "./user.d";
 
 const AuthActionsContext: Context<AuthActionsValue | undefined> = createContext<
 	AuthActionsValue | undefined
@@ -45,7 +45,6 @@ export const AuthActionsProvider = ({
 		}).catch(() => {
 			auth.setValue({ status: "not-connected", user: undefined });
 
-			// TODO: there is probably a better way to get NotSignedInRoutes
 			if (
 				!router.pathname.startsWith(routes.auth.root) &&
 				router.pathname !== routes.root
@@ -95,7 +94,7 @@ export const AuthActionsProvider = ({
 				severity: "success",
 			});
 
-			// Should be redirected to /dashboard
+			// The NotSignedInRoute will redirect to /dashboard
 		}).catch(() => {
 			cb();
 
@@ -127,7 +126,7 @@ export const AuthActionsProvider = ({
 				severity: "success",
 			});
 
-			router.replace("/dashboard");
+			// The NotSignedInRoute will redirect to /dashboard
 		}).catch(() => {
 			cb();
 
@@ -158,7 +157,7 @@ export const AuthActionsProvider = ({
 				severity: "success",
 			});
 
-			router.replace("/dashboard");
+			// The NotSignedInRoute will redirect to /dashboard
 		}).catch(() => {
 			cb();
 
@@ -178,7 +177,6 @@ export const AuthActionsProvider = ({
 				login,
 				loginWithGoogle,
 				register,
-				fetchCurrentUser,
 			}}
 		>
 			{children}

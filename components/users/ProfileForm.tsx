@@ -10,13 +10,8 @@ import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAuthActions } from "../../providers/AuthActionsProvider";
 import GetLicenceButton from "./GetLicenceButton";
-
-type ProfileFormData = {
-	email: string;
-	name: string;
-};
+import { ProfileFormData } from "./users.d";
 
 const ProfileForm = (): ReactElement => {
 	const router = useRouter();
@@ -24,7 +19,6 @@ const ProfileForm = (): ReactElement => {
 	const t = locale === "en" ? en : fr;
 
 	const auth = useAuth();
-	const authActions = useAuthActions();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -57,7 +51,12 @@ const ProfileForm = (): ReactElement => {
 						severity: "success",
 					});
 
-					authActions?.fetchCurrentUser();
+					if (auth.value.status === "connected") {
+						auth.setValue({
+							user: { ...auth.value.user, email: data.email, name: data.name },
+							status: "connected",
+						});
+					}
 
 					reset(data);
 				}
@@ -80,7 +79,7 @@ const ProfileForm = (): ReactElement => {
 			<CardContent>
 				<TextField
 					fullWidth
-					placeholder={t.common.name}
+					label={t.common.name}
 					{...register("name")}
 					sx={{ mb: 1, textTransform: "capitalize" }}
 					defaultValue={auth?.value.user?.name}
@@ -90,7 +89,7 @@ const ProfileForm = (): ReactElement => {
 
 				<TextField
 					fullWidth
-					placeholder={t.common.email}
+					label={t.common.email}
 					{...register("email")}
 					sx={{ mb: 1 }}
 					defaultValue={auth?.value.user?.email}

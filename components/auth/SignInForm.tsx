@@ -1,4 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import {
 	Button,
@@ -6,6 +7,7 @@ import {
 	CardActions,
 	CardContent,
 	Divider,
+	IconButton,
 	TextField,
 } from "@mui/material";
 import signInFormSchema from "@schemas/signInFormSchema";
@@ -16,12 +18,8 @@ import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuthActions } from "../../providers/AuthActionsProvider";
+import { SignInFormData } from "./auth.d";
 import GoogleLoginButton from "./GoogleLoginButton";
-
-type SignInFormData = {
-	email: string;
-	password: string;
-};
 
 const SignInForm = (): ReactElement => {
 	const router = useRouter();
@@ -31,6 +29,8 @@ const SignInForm = (): ReactElement => {
 	const authActions = useAuthActions();
 
 	const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
+
+	const [showPassword, setShowPassword] = useState<boolean>(false);
 
 	const {
 		register,
@@ -57,6 +57,10 @@ const SignInForm = (): ReactElement => {
 		});
 	};
 
+	const handleClickShowPassword = (): void => {
+		setShowPassword(!showPassword);
+	};
+
 	return (
 		<Card
 			component="form"
@@ -66,7 +70,7 @@ const SignInForm = (): ReactElement => {
 			<CardContent>
 				<TextField
 					fullWidth
-					placeholder={t.common.email}
+					label={t.common.email}
 					sx={{ mb: 2 }}
 					{...register("email")}
 					error={errors.email != null}
@@ -75,8 +79,19 @@ const SignInForm = (): ReactElement => {
 
 				<TextField
 					fullWidth
-					type={"password"}
-					placeholder={t.common.password}
+					type={showPassword ? "text" : "password"}
+					label={t.common.password}
+					InputProps={{
+						endAdornment: (
+							<IconButton
+								aria-label="toggle password visibility"
+								onClick={handleClickShowPassword}
+								edge="end"
+							>
+								{showPassword ? <VisibilityOff /> : <Visibility />}
+							</IconButton>
+						),
+					}}
 					{...register("password")}
 					error={errors.password != null}
 					helperText={errors.password?.message}

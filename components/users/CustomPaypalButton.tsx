@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement } from "react";
+import { useAuth } from "../../providers/AuthProvider";
 
 const paypalScriptOptions: PayPalScriptOptions = {
 	"client-id":
@@ -30,6 +31,8 @@ const CustomButton = (): ReactElement => {
 	const { locale } = router;
 	const t = locale === "en" ? en : fr;
 
+	const auth = useAuth();
+
 	const snackbarsService = useSnackbars();
 
 	/**
@@ -39,6 +42,7 @@ const CustomButton = (): ReactElement => {
 	 * isRejected: failed to load
 	 */
 	const [{ isPending }] = usePayPalScriptReducer();
+
 	const paypalbuttonTransactionProps: PayPalButtonsComponentOptions = {
 		style: { layout: "vertical" },
 		createOrder(data, actions) {
@@ -79,6 +83,15 @@ const CustomButton = (): ReactElement => {
 					severity: "success",
 				});
 
+				if (auth.value.status === "connected") {
+					auth.setValue({
+						user: {
+							...auth.value.user,
+							role: "premium",
+						},
+						status: "connected",
+					});
+				}
 				router.push("/dashboard");
 			});
 		},
