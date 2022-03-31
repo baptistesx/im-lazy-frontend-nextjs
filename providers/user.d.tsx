@@ -1,5 +1,7 @@
 import { Address } from "@paypal/paypal-js";
 
+export const roles = ["admin", "premium", "classic"];
+
 export type Role = "admin" | "premium" | "classic";
 
 export type User = {

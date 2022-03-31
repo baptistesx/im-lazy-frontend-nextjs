@@ -2,6 +2,7 @@
 	"available-files": "Fichiers disponibles",
 	"city": "Ville",
 	"clear-logs": "Vider la console",
+	"detection-radius": "Rayon de détection",
 	"english-message": "Message anglais",
 	"error-clearing-logs": "Une erreur est survenue lors du vidage de la console, êtes vous membre premium?",
 	"error-deleting-file": "Une erreur est survenue lors de la suppression du fichier, êtes vous membre premium?",

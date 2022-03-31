@@ -21,8 +21,8 @@ import { useSnackbar } from "notistack";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { FormBotParams } from "./workaway.d";
+import { useForm } from "react-hook-form";
+import { detectionRadiuses, FormBotParams } from "./workaway.d";
 
 const InfoForm = (): ReactElement => {
 	const router = useRouter();
@@ -43,7 +43,6 @@ const InfoForm = (): ReactElement => {
 		register,
 		handleSubmit,
 		watch,
-		control,
 		formState: { errors },
 	} = useForm<FormBotParams>({
 		resolver: yupResolver(infoFormSchema),
@@ -144,6 +143,7 @@ const InfoForm = (): ReactElement => {
 				) : (
 					<Box />
 				)}
+
 				<TextField
 					fullWidth
 					label={t.common.email}
@@ -152,6 +152,7 @@ const InfoForm = (): ReactElement => {
 					error={errors.email != null}
 					helperText={errors.email?.message}
 				/>
+
 				<TextField
 					fullWidth
 					type={showPassword ? "text" : "password"}
@@ -172,6 +173,7 @@ const InfoForm = (): ReactElement => {
 					error={errors.password != null}
 					helperText={errors.password?.message}
 				/>
+
 				<TextField
 					fullWidth
 					label={t.workawayBot.city}
@@ -180,28 +182,23 @@ const InfoForm = (): ReactElement => {
 					error={errors.city != null}
 					helperText={errors.city?.message}
 				/>
-				{/* //TODO: add register to fit in infoFormSchema */}
-				<Controller
-					name="detectionRadius"
-					control={control}
-					rules={{ required: "Detection radius needed" }}
-					render={({ field: { onChange, value } }): ReactElement => (
-						<TextField
-							fullWidth
-							select
-							label="Detection radius"
-							value={value}
-							onChange={onChange}
-							sx={{ m: 1 }}
-						>
-							{[5, 10, 20, 50, 100, 250, 500].map((distance) => (
-								<MenuItem key={distance} value={distance}>
-									{distance} km
-								</MenuItem>
-							))}
-						</TextField>
-					)}
-				/>
+
+				<TextField
+					fullWidth
+					select
+					label={t.workawayBot["detection-radius"]}
+					{...register("detectionRadius")}
+					sx={{ m: 1 }}
+					error={errors.detectionRadius != null}
+					helperText={errors.detectionRadius?.message}
+				>
+					{detectionRadiuses.map((distance) => (
+						<MenuItem key={distance} value={distance}>
+							{distance} km
+						</MenuItem>
+					))}
+				</TextField>
+
 				<Box sx={{ minWidth: 180 }}>
 					<TextField
 						fullWidth

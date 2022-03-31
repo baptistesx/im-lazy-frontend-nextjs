@@ -32,3 +32,5 @@ export type CitiesFormDialogProps = {
 	value: string | undefined;
 	cities: string[] | undefined;
 };
+
+export const detectionRadiuses = [5, 10, 20, 50, 100, 250, 500];

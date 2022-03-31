@@ -19,7 +19,7 @@ import { useSnackbar } from "notistack";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { EditUserDialogFormData, EditUserDialogProps } from "./users.d";
 
 const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
@@ -42,7 +42,6 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 		register,
 		handleSubmit,
 		watch,
-		control,
 		formState: { isDirty, errors },
 		reset,
 	} = useForm<EditUserDialogFormData>({
@@ -179,34 +178,27 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 						helperText={errors.email?.message}
 					/>
 
-					{/* //TODO: add register to fit in EditUserFormSchema */}
-					<Controller
-						name="role"
-						control={control}
-						rules={{ required: t.profile["role-needed"] }}
-						render={({ field: { onChange, value } }): ReactElement => (
-							<TextField
-								fullWidth
-								select
-								label={t.common.role}
-								value={value}
-								onChange={onChange}
-								sx={{ mt: 1 }}
-								defaultValue={currentUser?.role}
-								disabled={currentUser?.id === auth?.value.user?.id}
+					<TextField
+						fullWidth
+						select
+						label={t.common.role}
+						{...register("role")}
+						sx={{ mt: 1 }}
+						defaultValue={currentUser?.role}
+						disabled={currentUser?.id === auth?.value.user?.id}
+						error={errors.role != null}
+						helperText={errors.role?.message}
+					>
+						{["admin", "premium", "classic"].map((role) => (
+							<MenuItem
+								key={role}
+								value={role}
+								sx={{ textTransform: "capitalize" }}
 							>
-								{["admin", "premium", "classic"].map((role) => (
-									<MenuItem
-										key={role}
-										value={role}
-										sx={{ textTransform: "capitalize" }}
-									>
-										{role}
-									</MenuItem>
-								))}
-							</TextField>
-						)}
-					/>
+								{role}
+							</MenuItem>
+						))}
+					</TextField>
 				</DialogContent>
 
 				<DialogActions>

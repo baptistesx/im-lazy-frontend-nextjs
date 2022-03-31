@@ -1,9 +1,6 @@
 import AdminRoute from "@components/routes/AdminRoute";
 import EditUserDialog from "@components/users/EditUserDialog";
-import CheckIcon from "@mui/icons-material/Check";
-import ClearIcon from "@mui/icons-material/Clear";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+import UsersTable from "@components/users/UsersTable";
 import { LoadingButton } from "@mui/lab";
 import {
 	Box,
@@ -12,19 +9,9 @@ import {
 	CardActions,
 	CardContent,
 	CircularProgress,
-	IconButton,
-	Paper,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Tooltip,
 	Typography,
 } from "@mui/material";
 import { useAuthActions } from "@providers/AuthActionsProvider";
-import { useAuth } from "@providers/AuthProvider";
 import { User } from "@providers/user.d";
 import { deleteUserById, getUsers } from "@services/userApi";
 import { useRouter } from "next/router";
@@ -40,6 +27,8 @@ const Users = (): ReactElement => {
 
 	const { enqueueSnackbar } = useSnackbar();
 
+	const authActions = useAuthActions();
+
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 
 	const [users, setUsers] = useState<User[] | undefined>(undefined);
@@ -48,11 +37,6 @@ const Users = (): ReactElement => {
 		useState<boolean>(false);
 
 	const [userSelected, setUserSelected] = useState<User | undefined>(undefined);
-
-	const auth = useAuth();
-	const authActions = useAuthActions();
-
-	const currentUser = auth?.value.user;
 
 	const fetchData = useCallback(() => {
 		setIsLoading(true);
@@ -84,10 +68,6 @@ const Users = (): ReactElement => {
 		fetchData();
 	}, []);
 
-	const onRefreshClick = (): void => {
-		fetchData();
-	};
-
 	const handleDelete = async (userId: string): Promise<void> => {
 		setIsLoading(true);
 
@@ -111,6 +91,10 @@ const Users = (): ReactElement => {
 				});
 			}
 		});
+	};
+
+	const onRefreshClick = (): void => {
+		fetchData();
 	};
 
 	const handleOpenUserDialog = (userToEdit?: User): void => {
@@ -144,84 +128,15 @@ const Users = (): ReactElement => {
 								{`${users?.length} ${t.common.users}`}
 							</Typography>
 
-							{users?.length === 0 ? (
+							{users === undefined ? (
 								<Typography>{t.users["no-users"]}</Typography>
 							) : (
-								//TODO: refactor (extract component)
-								<TableContainer component={Paper}>
-									<Table aria-label="users table">
-										<TableHead>
-											<TableRow>
-												<TableCell align="left">{t.common.name}</TableCell>
-												<TableCell align="left">{t.common.email}</TableCell>
-												<TableCell align="left">{t.users.admin}</TableCell>
-												<TableCell align="left">{t.users.premium}</TableCell>
-												<TableCell align="left">
-													{t.users["email-verified"]}
-												</TableCell>
-												<TableCell align="left">{t.common.actions}</TableCell>
-											</TableRow>
-										</TableHead>
-
-										<TableBody>
-											{users?.map((user) => (
-												<TableRow key={user?.id}>
-													<TableCell component="th" scope="row">
-														{user?.name}
-													</TableCell>
-													<TableCell component="th" scope="row">
-														{user?.email}
-													</TableCell>
-													<TableCell align="center" component="th" scope="row">
-														{auth?.isAdmin(user) ? (
-															<CheckIcon />
-														) : (
-															<ClearIcon />
-														)}
-													</TableCell>
-													<TableCell align="center" component="th" scope="row">
-														{auth?.isPremium(user) ? (
-															<CheckIcon />
-														) : (
-															<ClearIcon />
-														)}
-													</TableCell>
-													<TableCell align="center" component="th" scope="row">
-														{user?.isEmailVerified ? (
-															<CheckIcon />
-														) : (
-															<ClearIcon />
-														)}
-													</TableCell>
-													<TableCell align="left">
-														<Tooltip title={t.users["edit-user"]}>
-															<IconButton
-																onClick={(): void => handleOpenUserDialog(user)}
-																disabled={isLoading}
-															>
-																<EditIcon />
-															</IconButton>
-														</Tooltip>
-
-														<Tooltip title={t.users["delete-user"]}>
-															<IconButton
-																aria-label="delete"
-																onClick={(): Promise<void> =>
-																	handleDelete(user.id)
-																}
-																disabled={
-																	user.email === currentUser?.email || isLoading
-																}
-															>
-																<DeleteIcon />
-															</IconButton>
-														</Tooltip>
-													</TableCell>
-												</TableRow>
-											))}
-										</TableBody>
-									</Table>
-								</TableContainer>
+								<UsersTable
+									users={users}
+									isLoading={isLoading}
+									handleOpenUserDialog={handleOpenUserDialog}
+									handleDelete={handleDelete}
+								/>
 							)}
 						</Box>
 					</CardContent>
@@ -246,6 +161,7 @@ const Users = (): ReactElement => {
 					</CardActions>
 				</Card>
 			)}
+
 			{(userSelected !== null && userSelected !== undefined) ||
 			isEditUserDialogOpen ? (
 				<EditUserDialog
@@ -255,7 +171,7 @@ const Users = (): ReactElement => {
 					user={userSelected}
 				/>
 			) : (
-				<Box></Box>
+				<Box />
 			)}
 		</AdminRoute>
 	);

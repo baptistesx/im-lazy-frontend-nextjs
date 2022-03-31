@@ -18,3 +18,13 @@ export type EditUserDialogProps = {
 	onClose: ({ modified }: { modified: boolean }) => Promise<void>;
 	user?: User | undefined;
 };
+
+export type UsersTableHeader = { file: string; title: string };
+
+export const usersTableHeaders = [
+	{ file: "common", title: "name" },
+	{ file: "common", title: "email" },
+	{ file: "common", title: "role" },
+	{ file: "users", title: "email-verified" },
+	{ file: "common", title: "actions" },
+];

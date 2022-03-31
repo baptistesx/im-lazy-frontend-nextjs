@@ -104,7 +104,6 @@ export const AuthActionsProvider = ({
 			cb();
 
 			auth.setValue({ status: "not-connected", user: undefined });
-			//TODO: add internet connection checker and customize message error
 
 			enqueueSnackbar(t.auth["error-sign-in"], { variant: "error" });
 		});

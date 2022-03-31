@@ -2,6 +2,7 @@
 	"available-files": "Available files",
 	"city": "City",
 	"clear-logs": "Clear logs",
+	"detection-radius": "Detection radius",
 	"english-message": "English message",
 	"error-clearing-logs": "An error occurred while clearing logs, are you a premium member?",
 	"error-deleting-file": "An error occurred while deleting file, are you a premium member?",

@@ -15,6 +15,7 @@ const infoFormSchema = yup
 			.max(255)
 			.required("Password is required"),
 		city: yup.string().required("City name is required (or first letters)"),
+		detectionRadius: yup.number().required("Detection radius is required"),
 		minimumAge: yup
 			.number()
 			.min(15, "Minimum age must be at least 15")
