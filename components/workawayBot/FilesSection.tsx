@@ -15,6 +15,7 @@ import {
 	TableRow,
 	Typography,
 } from "@mui/material";
+import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import {
 	deleteFileByName,
@@ -31,6 +32,8 @@ const FilesSection = (): ReactElement => {
 	const { locale } = router;
 	const t = locale === "en" ? en : fr;
 
+	const authActions = useAuthActions();
+
 	const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
 	const [filesName, setFilesName] = useState<string[] | undefined>(undefined);
@@ -44,13 +47,21 @@ const FilesSection = (): ReactElement => {
 			setFilesName([...data]);
 
 			setIsRefreshing(false);
-		}).catch(() => {
+		}).catch((err) => {
 			setIsRefreshing(false);
 
-			snackbarsService?.addSnackbar({
-				message: t.workawayBot["error-getting-filesname"],
-				severity: "error",
-			});
+			if (err.response.status === 401) {
+				snackbarsService?.addSnackbar({
+					message: t.auth["sign-in-again"],
+					severity: "error",
+				});
+				authActions.logout();
+			} else {
+				snackbarsService?.addSnackbar({
+					message: t.workawayBot["error-getting-filesname"],
+					severity: "error",
+				});
+			}
 		});
 	}, [snackbarsService, t.workawayBot]);
 
@@ -77,20 +88,36 @@ const FilesSection = (): ReactElement => {
 			a.dispatchEvent(clickEvt);
 
 			a.remove();
-		}).catch(() => {
-			snackbarsService?.addSnackbar({
-				message: t.workawayBot["error-downloading-file"],
-				severity: "error",
-			});
+		}).catch((err) => {
+			if (err.response.status === 401) {
+				snackbarsService?.addSnackbar({
+					message: t.auth["sign-in-again"],
+					severity: "error",
+				});
+				authActions.logout();
+			} else {
+				snackbarsService?.addSnackbar({
+					message: t.workawayBot["error-downloading-file"],
+					severity: "error",
+				});
+			}
 		});
 	};
 
 	const handleDeleteFile = async (name: string): Promise<void> => {
-		await deleteFileByName(name, () => handleRefresh()).catch(() => {
-			snackbarsService?.addSnackbar({
-				message: t.workawayBot["error-deleting-file"],
-				severity: "error",
-			});
+		await deleteFileByName(name, () => handleRefresh()).catch((err) => {
+			if (err.response.status === 401) {
+				snackbarsService?.addSnackbar({
+					message: t.auth["sign-in-again"],
+					severity: "error",
+				});
+				authActions.logout();
+			} else {
+				snackbarsService?.addSnackbar({
+					message: t.workawayBot["error-deleting-file"],
+					severity: "error",
+				});
+			}
 		});
 	};
 

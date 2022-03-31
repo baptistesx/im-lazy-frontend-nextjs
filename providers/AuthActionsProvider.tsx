@@ -42,17 +42,25 @@ export const AuthActionsProvider = ({
 
 		getUser((user: User) => {
 			auth.setValue({ status: "connected", user });
-		}).catch(() => {
+		}).catch((err) => {
 			auth.setValue({ status: "not-connected", user: undefined });
 
-			if (
-				!router.pathname.startsWith(routes.auth.root) &&
-				router.pathname !== routes.root
-			) {
+			if (err.response.status === 401) {
 				snackbarsService?.addSnackbar({
-					message: t.auth["error-fetching-user"],
+					message: t.auth["sign-in-again"],
 					severity: "error",
 				});
+				logout();
+			} else {
+				if (
+					!router.pathname.startsWith(routes.auth.root) &&
+					router.pathname !== routes.root
+				) {
+					snackbarsService?.addSnackbar({
+						message: t.auth["error-fetching-user"],
+						severity: "error",
+					});
+				}
 			}
 		});
 	}, [auth, router.route, snackbarsService]);

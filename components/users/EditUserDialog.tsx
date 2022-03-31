@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { User } from "@providers/user.d";
@@ -29,6 +30,7 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 	const { onClose, open, user, ...other } = props;
 
 	const auth = useAuth();
+	const authActions = useAuthActions();
 
 	const snackbarsService = useSnackbars();
 
@@ -93,13 +95,21 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 
 					reset(data);
 				}
-			).catch(() => {
+			).catch((err) => {
 				setIsSaving(false);
 
-				snackbarsService?.addSnackbar({
-					message: t.profile["error-updating-profile"],
-					severity: "error",
-				});
+				if (err.response.status === 401) {
+					snackbarsService?.addSnackbar({
+						message: t.auth["sign-in-again"],
+						severity: "error",
+					});
+					authActions.logout();
+				} else {
+					snackbarsService?.addSnackbar({
+						message: t.profile["error-updating-profile"],
+						severity: "error",
+					});
+				}
 			});
 		} else {
 			// If creating user
@@ -121,13 +131,21 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 
 					reset(data);
 				}
-			).catch(() => {
+			).catch((err) => {
 				setIsSaving(false);
 
-				snackbarsService?.addSnackbar({
-					message: t.auth["error-creating-user"],
-					severity: "error",
-				});
+				if (err.response.status === 401) {
+					snackbarsService?.addSnackbar({
+						message: t.auth["sign-in-again"],
+						severity: "error",
+					});
+					authActions.logout();
+				} else {
+					snackbarsService?.addSnackbar({
+						message: t.auth["error-creating-user"],
+						severity: "error",
+					});
+				}
 			});
 		}
 	};

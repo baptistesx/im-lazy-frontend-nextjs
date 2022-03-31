@@ -1,6 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
 import { Box, Card, CardActions, CardContent, TextField } from "@mui/material";
+import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import editProfileFormSchema from "@schemas/editProfileFormSchema";
@@ -19,6 +20,7 @@ const ProfileForm = (): ReactElement => {
 	const t = locale === "en" ? en : fr;
 
 	const auth = useAuth();
+	const authActions = useAuthActions();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -60,11 +62,22 @@ const ProfileForm = (): ReactElement => {
 
 					reset(data);
 				}
-			).catch(() => {
-				snackbarsService?.addSnackbar({
-					message: t.profile["error-updating-profile"],
-					severity: "error",
-				});
+			).catch((err) => {
+				setIsLoading(false);
+
+				if (err.response.status === 401) {
+					snackbarsService?.addSnackbar({
+						message: t.auth["sign-in-again"],
+						severity: "error",
+					});
+					authActions.logout();
+				} else {
+					snackbarsService?.addSnackbar({
+						message: t.profile["error-updating-profile"],
+						severity: "error",
+					});
+				}
+
 				reset(data);
 			});
 		}

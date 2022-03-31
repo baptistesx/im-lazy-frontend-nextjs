@@ -11,6 +11,7 @@ import {
 	Card,
 	CardActions,
 	CardContent,
+	CircularProgress,
 	IconButton,
 	Paper,
 	Table,
@@ -22,6 +23,7 @@ import {
 	Tooltip,
 	Typography,
 } from "@mui/material";
+import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { User } from "@providers/user.d";
@@ -46,7 +48,9 @@ const Users = (): ReactElement => {
 		useState<boolean>(false);
 
 	const [userSelected, setUserSelected] = useState<User | undefined>(undefined);
+
 	const auth = useAuth();
+	const authActions = useAuthActions();
 
 	const currentUser = auth?.value.user;
 
@@ -60,17 +64,27 @@ const Users = (): ReactElement => {
 			users.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
 
 			setIsLoading(false);
-		}).catch(() => {
-			snackbarsService?.addSnackbar({
-				message: t.users["error-getting-users"],
-				severity: "error",
-			});
+		}).catch((err) => {
+			setIsLoading(false);
+
+			if (err.response.status === 401) {
+				snackbarsService?.addSnackbar({
+					message: t.auth["sign-in-again"],
+					severity: "error",
+				});
+				authActions.logout();
+			} else {
+				snackbarsService?.addSnackbar({
+					message: t.users["error-getting-users"],
+					severity: "error",
+				});
+			}
 		});
 	}, [snackbarsService]);
 
 	useEffect(() => {
 		fetchData();
-	}, [fetchData]);
+	}, []);
 
 	const onRefreshClick = (): void => {
 		fetchData();
@@ -88,11 +102,19 @@ const Users = (): ReactElement => {
 				message: t.users["user-well-deleted"],
 				severity: "success",
 			});
-		}).catch(() => {
-			snackbarsService?.addSnackbar({
-				message: t.users["error-deleting-user"],
-				severity: "error",
-			});
+		}).catch((err) => {
+			if (err.response.status === 401) {
+				snackbarsService?.addSnackbar({
+					message: t.auth["sign-in-again"],
+					severity: "error",
+				});
+				authActions.logout();
+			} else {
+				snackbarsService?.addSnackbar({
+					message: t.users["error-deleting-user"],
+					severity: "error",
+				});
+			}
 		});
 	};
 
@@ -115,14 +137,16 @@ const Users = (): ReactElement => {
 
 	return (
 		<AdminRoute title={t.users.title}>
-			<Card>
-				<CardContent>
-					{users?.length === 0 && isLoading ? (
-						<Box />
-					) : (
+			{isLoading ? (
+				<CircularProgress />
+			) : users === undefined ? (
+				<Typography>{t.users["no-users"]}</Typography>
+			) : (
+				<Card>
+					<CardContent>
 						<Box>
 							<Typography variant="body1">
-								{`${users?.length} ${t.users["available-users"]}`}
+								{`${users?.length} ${t.common.users}`}
 							</Typography>
 
 							{users?.length === 0 ? (
@@ -205,29 +229,28 @@ const Users = (): ReactElement => {
 								</TableContainer>
 							)}
 						</Box>
-					)}
-				</CardContent>
+					</CardContent>
 
-				<CardActions>
-					<Button
-						variant="contained"
-						onClick={(): void => handleOpenUserDialog()}
-					>
-						{t.users["create-user"]}
-					</Button>
+					<CardActions>
+						<Button
+							variant="contained"
+							onClick={(): void => handleOpenUserDialog()}
+						>
+							{t.users["create-user"]}
+						</Button>
 
-					<LoadingButton
-						loading={isLoading}
-						onClick={onRefreshClick}
-						sx={{
-							m: 1,
-						}}
-					>
-						{t.common.refresh}
-					</LoadingButton>
-				</CardActions>
-			</Card>
-
+						<LoadingButton
+							loading={isLoading}
+							onClick={onRefreshClick}
+							sx={{
+								m: 1,
+							}}
+						>
+							{t.common.refresh}
+						</LoadingButton>
+					</CardActions>
+				</Card>
+			)}
 			{(userSelected !== null && userSelected !== undefined) ||
 			isEditUserDialogOpen ? (
 				<EditUserDialog

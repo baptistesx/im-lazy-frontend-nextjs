@@ -1,5 +1,6 @@
 import { LoadingButton } from "@mui/lab";
 import { Box, Card, Typography } from "@mui/material";
+import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import { clearLogs, setCity } from "@services/workawayBotApi";
 import { useRouter } from "next/router";
@@ -15,6 +16,8 @@ const BotLogs = (): ReactElement => {
 	const router = useRouter();
 	const { locale } = router;
 	const t = locale === "en" ? en : fr;
+
+	const authActions = useAuthActions();
 
 	const [socket, setSocket] = useState<Socket | undefined>(undefined);
 	const [isSocketInitialized, setIsSocketInitialized] =
@@ -46,11 +49,19 @@ const BotLogs = (): ReactElement => {
 		if (city) {
 			setFullCitySelected(city);
 
-			await setCity(city).catch(() => {
-				snackbarsService?.addSnackbar({
-					message: t.workawayBot["error-setting-city"],
-					severity: "error",
-				});
+			await setCity(city).catch((err) => {
+				if (err.response.status === 401) {
+					snackbarsService?.addSnackbar({
+						message: t.auth["sign-in-again"],
+						severity: "error",
+					});
+					authActions.logout();
+				} else {
+					snackbarsService?.addSnackbar({
+						message: t.workawayBot["error-setting-city"],
+						severity: "error",
+					});
+				}
 			});
 
 			setIsCitiesDialogOpen(false);
@@ -120,13 +131,21 @@ const BotLogs = (): ReactElement => {
 			}
 
 			setIsClearingLogs(false);
-		}).catch(() => {
+		}).catch((err) => {
 			setIsClearingLogs(false);
 
-			snackbarsService?.addSnackbar({
-				message: t.workawayBot["error-clearing-logs"],
-				severity: "error",
-			});
+			if (err.response.status === 401) {
+				snackbarsService?.addSnackbar({
+					message: t.auth["sign-in-again"],
+					severity: "error",
+				});
+				authActions.logout();
+			} else {
+				snackbarsService?.addSnackbar({
+					message: t.workawayBot["error-clearing-logs"],
+					severity: "error",
+				});
+			}
 		});
 	};
 

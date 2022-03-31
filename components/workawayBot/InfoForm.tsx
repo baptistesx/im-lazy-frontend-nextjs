@@ -13,6 +13,7 @@ import {
 	Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
+import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import infoFormSchema from "@schemas/infoFormSchema";
 import { startBot, stopBot } from "@services/workawayBotApi";
@@ -27,6 +28,8 @@ const InfoForm = (): ReactElement => {
 	const router = useRouter();
 	const { locale } = router;
 	const t = locale === "en" ? en : fr;
+
+	const authActions = useAuthActions();
 
 	const [isStarting, setIsStarting] = useState<boolean>(false);
 	const [isStopping, setIsStopping] = useState<boolean>(false);
@@ -71,11 +74,21 @@ const InfoForm = (): ReactElement => {
 
 				setIsStarting(false);
 			}
-		).catch(() => {
-			snackbarsService?.addSnackbar({
-				message: t.workawayBot["error-starting-bot"],
-				severity: "error",
-			});
+		).catch((err) => {
+			setIsStarting(false);
+
+			if (err.response.status === 401) {
+				snackbarsService?.addSnackbar({
+					message: t.auth["sign-in-again"],
+					severity: "error",
+				});
+				authActions.logout();
+			} else {
+				snackbarsService?.addSnackbar({
+					message: t.workawayBot["error-starting-bot"],
+					severity: "error",
+				});
+			}
 		});
 	};
 
@@ -88,11 +101,19 @@ const InfoForm = (): ReactElement => {
 			}
 
 			setIsStopping(false);
-		}).catch(() => {
-			snackbarsService?.addSnackbar({
-				message: t.workawayBot["error-stopping-bot"],
-				severity: "error",
-			});
+		}).catch((err) => {
+			if (err.response.status === 401) {
+				snackbarsService?.addSnackbar({
+					message: t.auth["sign-in-again"],
+					severity: "error",
+				});
+				authActions.logout();
+			} else {
+				snackbarsService?.addSnackbar({
+					message: t.workawayBot["error-stopping-bot"],
+					severity: "error",
+				});
+			}
 		});
 	};
 

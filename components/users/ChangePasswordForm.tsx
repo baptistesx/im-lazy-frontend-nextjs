@@ -10,6 +10,7 @@ import {
 	IconButton,
 	TextField,
 } from "@mui/material";
+import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useAuth } from "@providers/AuthProvider";
 import { useSnackbars } from "@providers/SnackbarProvider";
 import updatePasswordFormSchema from "@schemas/updatePasswordFormSchema";
@@ -27,6 +28,7 @@ const ChangePasswordForm = (): ReactElement => {
 	const t = locale === "en" ? en : fr;
 
 	const auth = useAuth();
+	const authActions = useAuthActions();
 
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -66,13 +68,21 @@ const ChangePasswordForm = (): ReactElement => {
 
 					reset();
 				}
-			).catch(() => {
+			).catch((err) => {
 				setIsLoading(false);
 
-				snackbarsService?.addSnackbar({
-					message: t.profile["error-updating-password"],
-					severity: "error",
-				});
+				if (err.response.status === 401) {
+					snackbarsService?.addSnackbar({
+						message: t.auth["sign-in-again"],
+						severity: "error",
+					});
+					authActions.logout();
+				} else {
+					snackbarsService?.addSnackbar({
+						message: t.profile["error-updating-password"],
+						severity: "error",
+					});
+				}
 
 				reset(data);
 			});
