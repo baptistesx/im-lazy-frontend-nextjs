@@ -2,14 +2,7 @@ import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
-import {
-	Dispatch,
-	ReactChild,
-	ReactElement,
-	ReactFragment,
-	ReactPortal,
-	SetStateAction,
-} from "react";
+import { Dispatch, ReactElement, SetStateAction } from "react";
 import GoogleLogin, {
 	GoogleLoginResponse,
 	GoogleLoginResponseOffline,
@@ -50,17 +43,10 @@ const GoogleLoginButton = ({
 		}
 	};
 
-	const onGetOauthGoogleTokenFail = async (error: {
-		details:
-			| boolean
-			| ReactChild
-			| ReactFragment
-			| ReactPortal
-			| null
-			| undefined;
-	}): Promise<void> => {
-		console.log("hehehehehehhe", JSON.stringify(error));
-		enqueueSnackbar(t.auth["error-sign-in-google"], { variant: "error" });
+	const onGetOauthGoogleTokenFail = async (): Promise<void> => {
+		enqueueSnackbar(t.auth["error-sign-in-google"], {
+			variant: "error",
+		});
 	};
 
 	return (

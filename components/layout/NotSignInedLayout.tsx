@@ -1,3 +1,4 @@
+import SignalWifiOffIcon from "@mui/icons-material/SignalWifiOff";
 import { Box, Button, Typography, useTheme } from "@mui/material/";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,9 +7,11 @@ import { ReactElement, ReactNode } from "react";
 const NotSignedInLayout = ({
 	children,
 	title,
+	isOffline,
 }: {
-	children: ReactNode;
+	children?: ReactNode;
 	title?: string;
+	isOffline?: boolean;
 }): ReactElement => {
 	const theme = useTheme();
 
@@ -81,7 +84,13 @@ const NotSignedInLayout = ({
 					{title}
 				</Typography>
 
-				{children}
+				{isOffline ? (
+					<SignalWifiOffIcon
+						sx={{ width: 100, height: 100, color: "text.primary" }}
+					/>
+				) : (
+					children
+				)}
 			</Box>
 		</Box>
 	);

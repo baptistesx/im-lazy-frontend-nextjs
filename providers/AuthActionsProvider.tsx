@@ -28,7 +28,7 @@ const AuthActionsContext: Context<AuthActionsValue | undefined> = createContext<
 export const AuthActionsProvider = ({
 	children,
 }: {
-	children: ReactElement;
+	children: ReactElement | ReactElement[];
 }): ReactElement => {
 	const router = useRouter();
 	const { locale } = router;
