@@ -7,11 +7,11 @@ import {
 	CardContent,
 	TextField,
 } from "@mui/material";
-import { useSnackbars } from "@providers/SnackbarProvider";
 import resetPasswordFormSchema from "@schemas/resetPasswordFormSchema";
 import { resetPassword } from "@services/userApi";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
@@ -19,7 +19,7 @@ import { useForm } from "react-hook-form";
 import { ResetPasswordFormData } from "./auth.d";
 
 const ResetPasswordForm = (): ReactElement => {
-	const snackbarsService = useSnackbars();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const router = useRouter();
 	const { locale } = router;
@@ -49,18 +49,16 @@ const ResetPasswordForm = (): ReactElement => {
 		resetPassword(data.email, () => {
 			setIsLoading(false);
 
-			snackbarsService?.addSnackbar({
-				message: t.auth["email-well-sent"],
-				severity: "success",
+			enqueueSnackbar(t.auth["email-well-sent"], {
+				variant: "success",
 			});
 
 			reset(data);
 		}).catch(() => {
 			setIsLoading(false);
 
-			snackbarsService?.addSnackbar({
-				message: t.auth["error-sending-email"],
-				severity: "error",
+			enqueueSnackbar(t.auth["error-sending-email"], {
+				variant: "error",
 			});
 		});
 	};

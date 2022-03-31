@@ -11,11 +11,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useAuth } from "@providers/AuthProvider";
-import { useSnackbars } from "@providers/SnackbarProvider";
 import { User } from "@providers/user.d";
 import editUserFormSchema from "@schemas/editUserFormSchema";
 import { createUser, updateUserById } from "@services/userApi";
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
@@ -32,7 +32,7 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 	const auth = useAuth();
 	const authActions = useAuthActions();
 
-	const snackbarsService = useSnackbars();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const [currentUser, setUser] = useState<User | undefined>(user);
 
@@ -77,9 +77,8 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 
 					onClose({ modified: true });
 
-					snackbarsService?.addSnackbar({
-						message: t.profile["user-well-updated"],
-						severity: "success",
+					enqueueSnackbar(t.profile["user-well-updated"], {
+						variant: "success",
 					});
 
 					if (currentUser?.id === auth?.value.user?.id) {
@@ -99,15 +98,14 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 				setIsSaving(false);
 
 				if (err.response.status === 401) {
-					snackbarsService?.addSnackbar({
-						message: t.auth["sign-in-again"],
-						severity: "error",
+					enqueueSnackbar(t.auth["sign-in-again"], {
+						variant: "error",
 					});
+
 					authActions.logout();
 				} else {
-					snackbarsService?.addSnackbar({
-						message: t.profile["error-updating-profile"],
-						severity: "error",
+					enqueueSnackbar(t.profile["error-updating-profile"], {
+						variant: "error",
 					});
 				}
 			});
@@ -124,9 +122,8 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 
 					onClose({ modified: true });
 
-					snackbarsService?.addSnackbar({
-						message: t.profile["user-well-created"],
-						severity: "success",
+					enqueueSnackbar(t.profile["user-well-created"], {
+						variant: "success",
 					});
 
 					reset(data);
@@ -135,15 +132,14 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 				setIsSaving(false);
 
 				if (err.response.status === 401) {
-					snackbarsService?.addSnackbar({
-						message: t.auth["sign-in-again"],
-						severity: "error",
+					enqueueSnackbar(t.auth["sign-in-again"], {
+						variant: "error",
 					});
+
 					authActions.logout();
 				} else {
-					snackbarsService?.addSnackbar({
-						message: t.auth["error-creating-user"],
-						severity: "error",
+					enqueueSnackbar(t.auth["error-creating-user"], {
+						variant: "error",
 					});
 				}
 			});

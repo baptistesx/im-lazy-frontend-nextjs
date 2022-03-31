@@ -14,10 +14,10 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useAuthActions } from "@providers/AuthActionsProvider";
-import { useSnackbars } from "@providers/SnackbarProvider";
 import infoFormSchema from "@schemas/infoFormSchema";
 import { startBot, stopBot } from "@services/workawayBotApi";
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
@@ -37,7 +37,7 @@ const InfoForm = (): ReactElement => {
 
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 
-	const snackbarsService = useSnackbars();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const {
 		register,
@@ -78,15 +78,13 @@ const InfoForm = (): ReactElement => {
 			setIsStarting(false);
 
 			if (err.response.status === 401) {
-				snackbarsService?.addSnackbar({
-					message: t.auth["sign-in-again"],
-					severity: "error",
+				enqueueSnackbar(t.auth["sign-in-again"], {
+					variant: "error",
 				});
 				authActions.logout();
 			} else {
-				snackbarsService?.addSnackbar({
-					message: t.workawayBot["error-starting-bot"],
-					severity: "error",
+				enqueueSnackbar(t.workawayBot["error-starting-bot"], {
+					variant: "error",
 				});
 			}
 		});
@@ -103,15 +101,13 @@ const InfoForm = (): ReactElement => {
 			setIsStopping(false);
 		}).catch((err) => {
 			if (err.response.status === 401) {
-				snackbarsService?.addSnackbar({
-					message: t.auth["sign-in-again"],
-					severity: "error",
+				enqueueSnackbar(t.auth["sign-in-again"], {
+					variant: "error",
 				});
 				authActions.logout();
 			} else {
-				snackbarsService?.addSnackbar({
-					message: t.workawayBot["error-stopping-bot"],
-					severity: "error",
+				enqueueSnackbar(t.workawayBot["error-stopping-bot"], {
+					variant: "error",
 				});
 			}
 		});

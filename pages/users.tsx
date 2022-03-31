@@ -25,10 +25,10 @@ import {
 } from "@mui/material";
 import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useAuth } from "@providers/AuthProvider";
-import { useSnackbars } from "@providers/SnackbarProvider";
 import { User } from "@providers/user.d";
 import { deleteUserById, getUsers } from "@services/userApi";
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useCallback, useEffect, useState } from "react";
@@ -38,7 +38,7 @@ const Users = (): ReactElement => {
 	const { locale } = router;
 	const t = locale === "en" ? en : fr;
 
-	const snackbarsService = useSnackbars();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -68,19 +68,17 @@ const Users = (): ReactElement => {
 			setIsLoading(false);
 
 			if (err.response.status === 401) {
-				snackbarsService?.addSnackbar({
-					message: t.auth["sign-in-again"],
-					severity: "error",
+				enqueueSnackbar(t.auth["sign-in-again"], {
+					variant: "error",
 				});
 				authActions.logout();
 			} else {
-				snackbarsService?.addSnackbar({
-					message: t.users["error-getting-users"],
-					severity: "error",
+				enqueueSnackbar(t.users["error-getting-users"], {
+					variant: "error",
 				});
 			}
 		});
-	}, [snackbarsService]);
+	}, []);
 
 	useEffect(() => {
 		fetchData();
@@ -98,21 +96,18 @@ const Users = (): ReactElement => {
 
 			setIsLoading(false);
 
-			snackbarsService?.addSnackbar({
-				message: t.users["user-well-deleted"],
-				severity: "success",
+			enqueueSnackbar(t.users["user-well-deleted"], {
+				variant: "success",
 			});
 		}).catch((err) => {
 			if (err.response.status === 401) {
-				snackbarsService?.addSnackbar({
-					message: t.auth["sign-in-again"],
-					severity: "error",
+				enqueueSnackbar(t.auth["sign-in-again"], {
+					variant: "error",
 				});
 				authActions.logout();
 			} else {
-				snackbarsService?.addSnackbar({
-					message: t.users["error-deleting-user"],
-					severity: "error",
+				enqueueSnackbar(t.users["error-deleting-user"], {
+					variant: "error",
 				});
 			}
 		});

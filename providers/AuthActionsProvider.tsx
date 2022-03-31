@@ -8,6 +8,7 @@ import {
 	signUpWithEmailAndPassword,
 } from "@services/authApi";
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import {
@@ -18,7 +19,6 @@ import {
 	useContext,
 	useEffect,
 } from "react";
-import { useSnackbars } from "./SnackbarProvider";
 import { AuthActionsValue, User } from "./user.d";
 
 const AuthActionsContext: Context<AuthActionsValue | undefined> = createContext<
@@ -35,7 +35,7 @@ export const AuthActionsProvider = ({
 	const t = locale === "en" ? en : fr;
 	const auth = useAuth();
 
-	const snackbarsService = useSnackbars();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const fetchCurrentUser = useCallback(() => {
 		auth.setValue({ status: "loading", user: undefined });
@@ -46,9 +46,8 @@ export const AuthActionsProvider = ({
 			auth.setValue({ status: "not-connected", user: undefined });
 
 			if (err.response.status === 401) {
-				snackbarsService?.addSnackbar({
-					message: t.auth["sign-in-again"],
-					severity: "error",
+				enqueueSnackbar(t.auth["sign-in-again"], {
+					variant: "error",
 				});
 				logout();
 			} else {
@@ -56,14 +55,11 @@ export const AuthActionsProvider = ({
 					!router.pathname.startsWith(routes.auth.root) &&
 					router.pathname !== routes.root
 				) {
-					snackbarsService?.addSnackbar({
-						message: t.auth["error-fetching-user"],
-						severity: "error",
-					});
+					enqueueSnackbar(t.auth["error-fetching-user"], { variant: "error" });
 				}
 			}
 		});
-	}, [auth, router.route, snackbarsService]);
+	}, [auth, router.route]);
 
 	useEffect(() => {
 		fetchCurrentUser();
@@ -75,9 +71,9 @@ export const AuthActionsProvider = ({
 			router.push("/");
 		}).catch(() => {
 			auth.setValue({ status: "not-connected", user: undefined });
-			snackbarsService?.addSnackbar({
-				message: t.auth["error-sign-out"],
-				severity: "error",
+
+			enqueueSnackbar(t.auth["error-sign-out"], {
+				variant: "error",
 			});
 		});
 	};
@@ -94,13 +90,14 @@ export const AuthActionsProvider = ({
 
 			auth.setValue({ status: "connected", user });
 
-			snackbarsService?.addSnackbar({
-				message:
-					user.lastLogin === undefined
-						? t.auth["welcome-new-user"]
-						: t.auth["welcome-back"],
-				severity: "success",
-			});
+			enqueueSnackbar(
+				user.lastLogin === undefined
+					? t.auth["welcome-new-user"]
+					: t.auth["welcome-back"],
+				{
+					variant: "success",
+				}
+			);
 
 			// The NotSignedInRoute will redirect to /dashboard
 		}).catch(() => {
@@ -108,10 +105,8 @@ export const AuthActionsProvider = ({
 
 			auth.setValue({ status: "not-connected", user: undefined });
 			//TODO: add internet connection checker and customize message error
-			snackbarsService?.addSnackbar({
-				message: t.auth["error-sign-in"],
-				severity: "error",
-			});
+
+			enqueueSnackbar(t.auth["error-sign-in"], { variant: "error" });
 		});
 	};
 
@@ -126,13 +121,14 @@ export const AuthActionsProvider = ({
 
 			auth.setValue({ status: "connected", user });
 
-			snackbarsService?.addSnackbar({
-				message:
-					user.lastLogin === undefined
-						? t.auth["welcome-new-user"]
-						: t.auth["welcome-back"],
-				severity: "success",
-			});
+			enqueueSnackbar(
+				user.lastLogin === undefined
+					? t.auth["welcome-new-user"]
+					: t.auth["welcome-back"],
+				{
+					variant: "success",
+				}
+			);
 
 			// The NotSignedInRoute will redirect to /dashboard
 		}).catch(() => {
@@ -140,9 +136,8 @@ export const AuthActionsProvider = ({
 
 			auth.setValue({ status: "not-connected", user: undefined });
 
-			snackbarsService?.addSnackbar({
-				message: t.auth["error-sign-in-google"],
-				severity: "error",
+			enqueueSnackbar(t.auth["error-sign-in-google"], {
+				variant: "error",
 			});
 		});
 	};
@@ -160,9 +155,8 @@ export const AuthActionsProvider = ({
 
 			auth.setValue({ status: "connected", user });
 
-			snackbarsService?.addSnackbar({
-				message: t.auth["welcome-new-user"],
-				severity: "success",
+			enqueueSnackbar(t.auth["welcome-new-user"], {
+				variant: "success",
 			});
 
 			// The NotSignedInRoute will redirect to /dashboard
@@ -171,9 +165,8 @@ export const AuthActionsProvider = ({
 
 			auth.setValue({ status: "not-connected", user: undefined });
 
-			snackbarsService?.addSnackbar({
-				message: t.auth["error-sign-up"],
-				severity: "error",
+			enqueueSnackbar(t.auth["error-sign-up"], {
+				variant: "error",
 			});
 		});
 	};

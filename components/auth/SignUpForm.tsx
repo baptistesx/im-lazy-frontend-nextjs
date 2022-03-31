@@ -21,8 +21,6 @@ import { useForm } from "react-hook-form";
 import { SignUpSubmitFormData } from "./auth.d";
 import GoogleLoginButton from "./GoogleLoginButton";
 
-//TODO: on google signin, ask to choose an account and don't directly connect to the last used (remove token?)
-
 const SignUpForm = (): ReactElement => {
 	const router = useRouter();
 	const { locale } = router;

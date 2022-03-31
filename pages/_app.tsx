@@ -1,8 +1,8 @@
 import { AuthActionsProvider } from "@providers/AuthActionsProvider";
 import { AuthProvider } from "@providers/AuthProvider";
 import { CustomThemeProvider } from "@providers/CustomThemeProvider";
-import { SnackBarProvider } from "@providers/SnackbarProvider";
 import type { AppProps } from "next/app";
+import { SnackbarProvider } from "notistack";
 import { ReactElement } from "react";
 import { CookiesProvider } from "react-cookie";
 import "../styles/globals.css";
@@ -11,13 +11,13 @@ const MyApp = ({ Component, pageProps }: AppProps): ReactElement => {
 	return (
 		<CookiesProvider>
 			<CustomThemeProvider>
-				<SnackBarProvider>
+				<SnackbarProvider maxSnack={3}>
 					<AuthProvider>
 						<AuthActionsProvider>
 							<Component {...pageProps} />
 						</AuthActionsProvider>
 					</AuthProvider>
-				</SnackBarProvider>
+				</SnackbarProvider>
 			</CustomThemeProvider>
 		</CookiesProvider>
 	);

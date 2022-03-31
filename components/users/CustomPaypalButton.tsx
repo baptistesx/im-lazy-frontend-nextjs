@@ -9,9 +9,9 @@ import {
 	PayPalScriptProvider,
 	usePayPalScriptReducer,
 } from "@paypal/react-paypal-js";
-import { useSnackbars } from "@providers/SnackbarProvider";
 import { savePayment } from "@services/userApi";
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement } from "react";
@@ -33,7 +33,7 @@ const CustomButton = (): ReactElement => {
 
 	const auth = useAuth();
 
-	const snackbarsService = useSnackbars();
+	const { enqueueSnackbar } = useSnackbar();
 
 	/**
 	 * usePayPalScriptReducer use within PayPalScriptProvider
@@ -78,9 +78,8 @@ const CustomButton = (): ReactElement => {
 			};
 
 			savePayment(resume, () => {
-				snackbarsService?.addSnackbar({
-					message: t.getLicence["payment-well-saved"],
-					severity: "success",
+				enqueueSnackbar(t.getLicence["payment-well-saved"], {
+					variant: "success",
 				});
 
 				if (auth.value.status === "connected") {

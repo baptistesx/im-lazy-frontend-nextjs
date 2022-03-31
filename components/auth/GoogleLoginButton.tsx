@@ -1,8 +1,15 @@
-import { useSnackbars } from "@providers/SnackbarProvider";
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
-import { Dispatch, ReactElement, SetStateAction } from "react";
+import {
+	Dispatch,
+	ReactChild,
+	ReactElement,
+	ReactFragment,
+	ReactPortal,
+	SetStateAction,
+} from "react";
 import GoogleLogin, {
 	GoogleLoginResponse,
 	GoogleLoginResponseOffline,
@@ -18,7 +25,7 @@ const GoogleLoginButton = ({
 	const { locale } = router;
 	const t = locale === "en" ? en : fr;
 
-	const snackbarsService = useSnackbars();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const authActions = useAuthActions();
 
@@ -39,20 +46,21 @@ const GoogleLoginButton = ({
 		} else {
 			setIsLoading(false);
 
-			snackbarsService?.addSnackbar({
-				message: t.auth["error-sign-in-google"],
-				severity: "error",
-			});
+			enqueueSnackbar(t.auth["error-sign-in-google"], { variant: "error" });
 		}
 	};
 
 	const onGetOauthGoogleTokenFail = async (error: {
-		details: string;
+		details:
+			| boolean
+			| ReactChild
+			| ReactFragment
+			| ReactPortal
+			| null
+			| undefined;
 	}): Promise<void> => {
-		snackbarsService?.addSnackbar({
-			message: error?.details,
-			severity: "error",
-		});
+		console.log("hehehehehehhe", JSON.stringify(error));
+		enqueueSnackbar(t.auth["error-sign-in-google"], { variant: "error" });
 	};
 
 	return (

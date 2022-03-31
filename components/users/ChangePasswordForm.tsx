@@ -12,10 +12,10 @@ import {
 } from "@mui/material";
 import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useAuth } from "@providers/AuthProvider";
-import { useSnackbars } from "@providers/SnackbarProvider";
 import updatePasswordFormSchema from "@schemas/updatePasswordFormSchema";
 import { updateUserPasswordById } from "@services/userApi";
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useState } from "react";
@@ -35,7 +35,7 @@ const ChangePasswordForm = (): ReactElement => {
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [showPasswordNew, setShowPasswordNew] = useState<boolean>(false);
 
-	const snackbarsService = useSnackbars();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const {
 		register,
@@ -61,9 +61,8 @@ const ChangePasswordForm = (): ReactElement => {
 				() => {
 					setIsLoading(false);
 
-					snackbarsService?.addSnackbar({
-						message: t.profile["password-well-updated"],
-						severity: "success",
+					enqueueSnackbar(t.profile["password-well-updated"], {
+						variant: "success",
 					});
 
 					reset();
@@ -72,15 +71,14 @@ const ChangePasswordForm = (): ReactElement => {
 				setIsLoading(false);
 
 				if (err.response.status === 401) {
-					snackbarsService?.addSnackbar({
-						message: t.auth["sign-in-again"],
-						severity: "error",
+					enqueueSnackbar(t.auth["sign-in-again"], {
+						variant: "error",
 					});
+
 					authActions.logout();
 				} else {
-					snackbarsService?.addSnackbar({
-						message: t.profile["error-updating-password"],
-						severity: "error",
+					enqueueSnackbar(t.profile["error-updating-password"], {
+						variant: "error",
 					});
 				}
 

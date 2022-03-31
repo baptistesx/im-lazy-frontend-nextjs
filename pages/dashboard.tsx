@@ -4,10 +4,10 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { LoadingButton } from "@mui/lab";
 import { Alert, Box, Button } from "@mui/material";
 import { useAuth } from "@providers/AuthProvider";
-import { useSnackbars } from "@providers/SnackbarProvider";
 import { sendVerificationEmail } from "@services/userApi";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useState } from "react";
@@ -19,15 +19,14 @@ const Dashboard = (): ReactElement => {
 
 	const auth = useAuth();
 
-	const snackbarsService = useSnackbars();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const [loading, setLoading] = useState<boolean>(false);
 
 	const handleSendVerificationEmailAgain = async (): Promise<void> => {
 		if (auth?.value.user?.email === undefined) {
-			snackbarsService?.addSnackbar({
-				message: t.dashboard["email-not-valid"],
-				severity: "error",
+			enqueueSnackbar(t.dashboard["email-not-valid"], {
+				variant: "error",
 			});
 		} else {
 			setLoading(true);
@@ -35,9 +34,8 @@ const Dashboard = (): ReactElement => {
 			sendVerificationEmail(auth.value.user.email, () => {
 				setLoading(false);
 
-				snackbarsService?.addSnackbar({
-					message: t.dashboard["email-well-sent"],
-					severity: "success",
+				enqueueSnackbar(t.dashboard["email-well-sent"], {
+					variant: "success",
 				});
 			});
 		}

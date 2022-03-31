@@ -1,9 +1,9 @@
 import { LoadingButton } from "@mui/lab";
 import { Box, Card, Typography } from "@mui/material";
 import { useAuthActions } from "@providers/AuthActionsProvider";
-import { useSnackbars } from "@providers/SnackbarProvider";
 import { clearLogs, setCity } from "@services/workawayBotApi";
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
@@ -23,7 +23,7 @@ const BotLogs = (): ReactElement => {
 	const [isSocketInitialized, setIsSocketInitialized] =
 		useState<boolean>(false);
 
-	const snackbarsService = useSnackbars();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const [botLogs, setBotLogs] = useState<string[] | undefined>(undefined);
 
@@ -51,24 +51,22 @@ const BotLogs = (): ReactElement => {
 
 			await setCity(city).catch((err) => {
 				if (err.response.status === 401) {
-					snackbarsService?.addSnackbar({
-						message: t.auth["sign-in-again"],
-						severity: "error",
+					enqueueSnackbar(t.auth["sign-in-again"], {
+						variant: "error",
 					});
+
 					authActions.logout();
 				} else {
-					snackbarsService?.addSnackbar({
-						message: t.workawayBot["error-setting-city"],
-						severity: "error",
+					enqueueSnackbar(t.workawayBot["error-setting-city"], {
+						variant: "error",
 					});
 				}
 			});
 
 			setIsCitiesDialogOpen(false);
 		} else {
-			snackbarsService?.addSnackbar({
-				message: t.workawayBot["no-city-selected"],
-				severity: "error",
+			enqueueSnackbar(t.workawayBot["no-city-selected"], {
+				variant: "error",
 			});
 		}
 	};
@@ -135,15 +133,14 @@ const BotLogs = (): ReactElement => {
 			setIsClearingLogs(false);
 
 			if (err.response.status === 401) {
-				snackbarsService?.addSnackbar({
-					message: t.auth["sign-in-again"],
-					severity: "error",
+				enqueueSnackbar(t.auth["sign-in-again"], {
+					variant: "error",
 				});
+
 				authActions.logout();
 			} else {
-				snackbarsService?.addSnackbar({
-					message: t.workawayBot["error-clearing-logs"],
-					severity: "error",
+				enqueueSnackbar(t.workawayBot["error-clearing-logs"], {
+					variant: "error",
 				});
 			}
 		});

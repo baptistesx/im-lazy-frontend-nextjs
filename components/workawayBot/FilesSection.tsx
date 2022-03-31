@@ -16,13 +16,13 @@ import {
 	Typography,
 } from "@mui/material";
 import { useAuthActions } from "@providers/AuthActionsProvider";
-import { useSnackbars } from "@providers/SnackbarProvider";
 import {
 	deleteFileByName,
 	downloadFileByName,
 	getFilesName,
 } from "@services/workawayBotApi";
 import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useCallback, useEffect, useState } from "react";
@@ -38,7 +38,7 @@ const FilesSection = (): ReactElement => {
 
 	const [filesName, setFilesName] = useState<string[] | undefined>(undefined);
 
-	const snackbarsService = useSnackbars();
+	const { enqueueSnackbar } = useSnackbar();
 
 	const handleRefresh = useCallback(async () => {
 		setIsRefreshing(true);
@@ -51,19 +51,18 @@ const FilesSection = (): ReactElement => {
 			setIsRefreshing(false);
 
 			if (err.response.status === 401) {
-				snackbarsService?.addSnackbar({
-					message: t.auth["sign-in-again"],
-					severity: "error",
+				enqueueSnackbar(t.auth["sign-in-again"], {
+					variant: "error",
 				});
+
 				authActions.logout();
 			} else {
-				snackbarsService?.addSnackbar({
-					message: t.workawayBot["error-getting-filesname"],
-					severity: "error",
+				enqueueSnackbar(t.workawayBot["error-getting-filesname"], {
+					variant: "error",
 				});
 			}
 		});
-	}, [snackbarsService, t.workawayBot]);
+	}, [t.workawayBot]);
 
 	useEffect(() => {
 		handleRefresh();
@@ -90,15 +89,14 @@ const FilesSection = (): ReactElement => {
 			a.remove();
 		}).catch((err) => {
 			if (err.response.status === 401) {
-				snackbarsService?.addSnackbar({
-					message: t.auth["sign-in-again"],
-					severity: "error",
+				enqueueSnackbar(t.auth["sign-in-again"], {
+					variant: "error",
 				});
+
 				authActions.logout();
 			} else {
-				snackbarsService?.addSnackbar({
-					message: t.workawayBot["error-downloading-file"],
-					severity: "error",
+				enqueueSnackbar(t.workawayBot["error-downloading-file"], {
+					variant: "error",
 				});
 			}
 		});
@@ -107,15 +105,13 @@ const FilesSection = (): ReactElement => {
 	const handleDeleteFile = async (name: string): Promise<void> => {
 		await deleteFileByName(name, () => handleRefresh()).catch((err) => {
 			if (err.response.status === 401) {
-				snackbarsService?.addSnackbar({
-					message: t.auth["sign-in-again"],
-					severity: "error",
+				enqueueSnackbar(t.auth["sign-in-again"], {
+					variant: "error",
 				});
 				authActions.logout();
 			} else {
-				snackbarsService?.addSnackbar({
-					message: t.workawayBot["error-deleting-file"],
-					severity: "error",
+				enqueueSnackbar(t.workawayBot["error-deleting-file"], {
+					variant: "error",
 				});
 			}
 		});
