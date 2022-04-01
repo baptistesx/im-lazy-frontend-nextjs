@@ -187,6 +187,7 @@ const InfoForm = (): ReactElement => {
 					fullWidth
 					select
 					label={t.workawayBot["detection-radius"]}
+					defaultValue={detectionRadiuses[0]}
 					{...register("detectionRadius")}
 					sx={{ m: 1 }}
 					error={errors.detectionRadius != null}

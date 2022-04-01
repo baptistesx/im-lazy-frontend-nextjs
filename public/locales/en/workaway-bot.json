@@ -11,6 +11,7 @@
 	"error-setting-city": "An error occurred while setting the city/country name, are you a premium member?",
 	"error-starting-bot": "An error occurred while starting bot, are you a premium member?",
 	"error-stopping-bot": "An error occurred while stopping bot, are you a premium member?",
+	"file-well-deleted": "File well deleted",
 	"french-message": "French message",
 	"full-city-name": "Full city/country name",
 	"maximum-age": "Maximum age",
@@ -20,5 +21,5 @@
 	"no-file-available": "No file available",
 	"start-bot": "Start the bot !",
 	"stop-bot": "Stop the bot !",
-	"title": "Workaway bot"
+	"title": "Workaway bot."
 }

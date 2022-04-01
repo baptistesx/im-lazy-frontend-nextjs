@@ -21,8 +21,12 @@ export type FormBotParams = {
 	detectionRadius: number;
 };
 
-export type File = {
-	content: { members: MemberProfile[] } | FormBotParams;
+export type WorkawayFile = {
+	id: number;
+	name: string;
+	createdAt: Date;
+	updatedAt: Date;
+	content?: { members: MemberProfile[] } | FormBotParams;
 };
 
 export type CitiesFormDialogProps = {

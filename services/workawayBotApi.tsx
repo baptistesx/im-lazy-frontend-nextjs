@@ -1,6 +1,9 @@
-import { FormBotParams } from "@components/workawayBot/workaway.d";
+import {
+	FormBotParams,
+	WorkawayFile,
+} from "@components/workawayBot/workaway.d";
 import axios, { AxiosResponse, Method } from "axios";
-import { RequestBody, ApiResponse } from "./workaway.d";
+import { ApiResponse, RequestBody } from "./workaway.d";
 
 const workawayBotApi = {
 	// All api requests are made thanks to this function
@@ -44,38 +47,38 @@ export const clearLogs = async (
 	cb(res.status);
 };
 
-export const getFilesName = async (
-	cb: (data: string[]) => void
+export const getFilesInfo = async (
+	cb: (data: WorkawayFile[]) => void
 ): Promise<void> => {
 	const res = await workawayBotApi.axiosApiCall({
-		url: "files-name",
+		url: "files-info",
 		method: "get",
 	});
 
-	if (res.data.filesName !== undefined) {
-		cb(res.data.filesName);
+	if (res.data.files !== undefined) {
+		cb(res.data.files);
 	}
 };
 
-export const downloadFileByName = async (
-	name: string,
-	cb: (data: File) => void
+export const downloadFileById = async (
+	id: number,
+	cb: (data: WorkawayFile) => void
 ): Promise<void> => {
 	const res = await workawayBotApi.axiosApiCall({
-		url: `file/${name}`,
+		url: `file/${id}`,
 		method: "get",
 	});
-
 	if (res.data.file) {
+		console.log("calling cb");
 		cb(res.data.file);
 	}
 };
 
-export const deleteFileByName = async (
-	name: string,
+export const deleteFileById = async (
+	id: number,
 	cb: () => Promise<void>
 ): Promise<void> => {
-	await workawayBotApi.axiosApiCall({ url: `file/${name}`, method: "delete" });
+	await workawayBotApi.axiosApiCall({ url: `file/${id}`, method: "delete" });
 
 	cb();
 };

@@ -1,4 +1,7 @@
-import { FormBotParams } from "@components/workawayBot/workaway.d";
+import {
+	FormBotParams,
+	WorkawayFile,
+} from "@components/workawayBot/workaway.d";
 
 export type RequestBody = {
 	city?: string;
@@ -6,6 +9,6 @@ export type RequestBody = {
 };
 
 export type ApiResponse = {
-	filesName?: string[];
-	file?: File;
+	files?: WorkawayFile[];
+	file?: WorkawayFile;
 };

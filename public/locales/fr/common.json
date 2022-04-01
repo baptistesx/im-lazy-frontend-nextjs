@@ -3,6 +3,9 @@
 	"back": "Retour",
 	"cancel": "Annuler",
 	"create": "Créer",
+	"creation": "Création",
+	"delete": "Supprimer",
+	"download": "Télécharger",
 	"edit": "Editer",
 	"email": "Email",
 	"name": "Nom",
@@ -13,6 +16,7 @@
 	"refresh": "Rafraichir",
 	"role": "Rôle",
 	"save": "Enregistrer",
+	"update": "Mise à jour",
 	"user": "Utilisateur",
 	"users": "Utilisateurs"
 }
