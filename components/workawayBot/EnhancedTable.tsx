@@ -417,7 +417,7 @@ export default function EnhancedTable(): ReactElement {
 		page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
 	return (
-		<Box sx={{ width: "100%", m: 1, p: 1 }}>
+		<Box sx={{ p: 1, minWidth: "320px", flexGrow: 1 }}>
 			<Paper sx={{ width: "100%", mb: 2 }}>
 				<EnhancedTableToolbar
 					numSelected={selected.length}

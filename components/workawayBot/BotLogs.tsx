@@ -158,16 +158,13 @@ const BotLogs = (): ReactElement => {
 		<Card
 			id="logs"
 			sx={{
-				width: "45%",
-				minWidth: 320,
+				width: { xs: "100%", md: "45%" },
 				minHeight: 400,
 				maxHeight: "80vh",
-				m: 1,
 				p: 1,
 				bgcolor: "#353b48",
 				color: "#ffffff",
 				display: "flex",
-				flexGrow: 1,
 				justifyContent: "space-between",
 				flexDirection: "column",
 				overflow: "auto",

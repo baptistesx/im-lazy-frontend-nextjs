@@ -120,7 +120,8 @@ const InfoForm = (): ReactElement => {
 		<Card
 			component="form"
 			onSubmit={handleSubmit(handleStartBot)}
-			sx={{ width: "45%", minWidth: "320px", m: 1, p: 1 }}
+			sx={{ width: { xs: "100%", md: "45%" }, p: 1 }}
+			id="workaway-form"
 		>
 			<CardContent>
 				<Typography variant="h2">Info</Typography>

@@ -19,6 +19,7 @@ const WorkawayBot = (): ReactElement => {
 				sx={{
 					display: "flex",
 					flexWrap: "wrap",
+					gap: "20px",
 				}}
 			>
 				<InfoForm />
