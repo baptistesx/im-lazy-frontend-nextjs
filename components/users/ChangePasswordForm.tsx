@@ -1,4 +1,3 @@
-import { ChangePasswordFormData } from "@components/auth/auth.d";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
@@ -21,6 +20,11 @@ import fr from "public/locales/fr/fr";
 import { ReactElement, useState } from "react";
 import { useForm } from "react-hook-form";
 import GetLicenceButton from "./GetLicenceButton";
+
+export type ChangePasswordFormData = {
+	currentPassword: string;
+	newPassword: string;
+};
 
 const ChangePasswordForm = (): ReactElement => {
 	const router = useRouter();

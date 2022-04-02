@@ -16,7 +16,10 @@ import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ResetPasswordFormData } from "./auth.d";
+
+export type ResetPasswordFormData = {
+	email: string;
+};
 
 const ResetPasswordForm = (): ReactElement => {
 	const { enqueueSnackbar } = useSnackbar();

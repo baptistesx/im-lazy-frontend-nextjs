@@ -1,4 +1,3 @@
-import { DrawerItem, DRAWER_WIDTH } from "@components/layout/layout.d";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import GroupIcon from "@mui/icons-material/Group";
 import HomeIcon from "@mui/icons-material/Home";
@@ -14,6 +13,15 @@ import { useRouter } from "next/router";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useState } from "react";
+
+export const DRAWER_WIDTH = 240;
+
+export type DrawerItem = {
+	route: string;
+	icon: ReactElement;
+	title: string;
+	children?: DrawerItem[];
+};
 
 const ParentDrawerItem = ({
 	element,

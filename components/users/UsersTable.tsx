@@ -14,12 +14,21 @@ import {
 	Tooltip,
 } from "@mui/material";
 import { useAuth } from "@providers/AuthProvider";
-import { User } from "@providers/user.d";
 import { useRouter } from "next/router";
 import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement } from "react";
-import { UsersTableHeader, usersTableHeaders } from "./users.d";
+import { User } from "./EditUserDialog";
+
+type UsersTableHeader = { file: string; title: string };
+
+const usersTableHeaders = [
+	{ file: "common", title: "name" },
+	{ file: "common", title: "email" },
+	{ file: "common", title: "role" },
+	{ file: "users", title: "email-verified" },
+	{ file: "common", title: "actions" },
+];
 
 const UsersTable = ({
 	users,

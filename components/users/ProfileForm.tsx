@@ -12,7 +12,11 @@ import fr from "public/locales/fr/fr";
 import { ReactElement, useState } from "react";
 import { useForm } from "react-hook-form";
 import GetLicenceButton from "./GetLicenceButton";
-import { ProfileFormData } from "./users.d";
+
+type ProfileFormData = {
+	email: string;
+	name: string;
+};
 
 const ProfileForm = (): ReactElement => {
 	const router = useRouter();

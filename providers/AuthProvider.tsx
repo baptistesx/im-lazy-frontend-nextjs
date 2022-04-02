@@ -1,3 +1,4 @@
+import { User } from "@components/users/EditUserDialog";
 import {
 	Context,
 	createContext,
@@ -5,7 +6,26 @@ import {
 	useContext,
 	useState,
 } from "react";
-import { AuthValue, Connected, Loading, NotConnected, User } from "./user.d";
+
+type Connected = {
+	user: User;
+	status: "connected";
+};
+type Loading = {
+	user: User | undefined;
+	status: "loading";
+};
+type NotConnected = {
+	user: undefined;
+	status: "not-connected";
+};
+
+export type AuthValue = {
+	value: Connected | NotConnected | Loading;
+	setValue: (value: Connected | NotConnected | Loading) => void;
+	isAdmin: (user: User | undefined) => boolean;
+	isPremium: (user: User | undefined) => boolean;
+};
 
 const AuthContext: Context<AuthValue | undefined> = createContext<
 	AuthValue | undefined

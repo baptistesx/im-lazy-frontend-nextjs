@@ -9,7 +9,10 @@ import {
 	useMemo,
 	useState,
 } from "react";
-import { ThemeActions } from "./theme.d";
+
+type ThemeActions = {
+	toggleColorMode: () => void;
+};
 
 const ThemeActionsContext = createContext({ toggleColorMode: () => {} });
 

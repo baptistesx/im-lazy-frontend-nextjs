@@ -11,7 +11,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useAuth } from "@providers/AuthProvider";
-import { User } from "@providers/user.d";
 import editUserFormSchema from "@schemas/editUserFormSchema";
 import { createUser, updateUserById } from "@services/userApi";
 import { useRouter } from "next/router";
@@ -20,7 +19,31 @@ import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { EditUserDialogFormData, EditUserDialogProps } from "./users.d";
+
+type Role = "admin" | "premium" | "classic";
+
+export type User = {
+	id: string;
+	name: string;
+	email: string;
+	role: Role;
+	isEmailVerified: boolean;
+	lastLogin: Date;
+};
+
+type EditUserDialogFormData = {
+	name: string;
+	role: Role;
+	email: string;
+	password: string;
+};
+
+type EditUserDialogProps = {
+	keepMounted: boolean;
+	open: boolean;
+	onClose: ({ modified }: { modified: boolean }) => Promise<void>;
+	user?: User | undefined;
+};
 
 const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 	const router = useRouter();

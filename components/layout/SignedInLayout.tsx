@@ -6,8 +6,7 @@ import { useAuth } from "@providers/AuthProvider";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactElement, ReactNode, useState } from "react";
-import CustomDrawer from "./CustomDrawer";
-import { DRAWER_WIDTH } from "./layout.d";
+import CustomDrawer, { DRAWER_WIDTH } from "./CustomDrawer";
 import ToolBarMenu from "./ToolBarMenu";
 import ToolBarUserInfo from "./ToolBarUserInfo";
 

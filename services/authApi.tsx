@@ -1,6 +1,16 @@
 import { User } from "@providers/user.d";
 import axios, { AxiosResponse, Method } from "axios";
-import { AuthBody, AuthResponse } from "./auth.d";
+
+type AuthBody = {
+	name?: string;
+	email?: string;
+	password?: string;
+	access_token?: string;
+};
+
+type AuthResponse = {
+	user: User;
+};
 
 const authApi = {
 	// All api requests are made thanks to this function

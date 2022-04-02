@@ -1,5 +1,5 @@
+import { User } from "@components/users/EditUserDialog";
 import { useAuth } from "@providers/AuthProvider";
-import routes from "@providers/routes";
 import {
 	getUser,
 	signInWithEmailAndPassword,
@@ -19,7 +19,33 @@ import {
 	useContext,
 	useEffect,
 } from "react";
-import { AuthActionsValue, User } from "./user.d";
+
+const routes = {
+	auth: {
+		root: "/auth",
+		"sign-in": "/auth/sign-in",
+		"sign-up": "/auth/sign-up",
+		"reset-password": "/auth/reset-password",
+	},
+	dashboard: "/dashboard",
+	"get-licence": "/get-licence",
+	root: "/",
+	profile: "/profile",
+	users: "/users",
+	"workaway-bot": "/workaway-bot",
+};
+
+type AuthActionsValue = {
+	logout: () => void;
+	login: (email: string, password: string, cb: () => void) => void;
+	register: (
+		name: string,
+		email: string,
+		password: string,
+		cb: () => void
+	) => void;
+	loginWithGoogle: (token: string, cb: () => void) => void;
+};
 
 const AuthActionsContext: Context<AuthActionsValue | undefined> = createContext<
 	AuthActionsValue | undefined

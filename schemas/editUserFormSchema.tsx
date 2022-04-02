@@ -1,4 +1,3 @@
-import { roles } from "@providers/user.d";
 import * as yup from "yup";
 
 const editUserFormSchema = yup
@@ -13,7 +12,10 @@ const editUserFormSchema = yup
 			.email("Must be a valid email")
 			.max(255)
 			.required("Email is required"),
-		role: yup.mixed().oneOf(roles).required("Role is required"),
+		role: yup
+			.mixed()
+			.oneOf(["admin", "premium", "classic"])
+			.required("Role is required"),
 	})
 	.required();
 

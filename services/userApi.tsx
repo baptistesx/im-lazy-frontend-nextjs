@@ -1,6 +1,50 @@
-import { PaymentResume, User } from "@providers/user.d";
+import { User } from "@components/users/EditUserDialog";
+import { Address } from "@paypal/paypal-js";
 import axios, { AxiosResponse, Method } from "axios";
-import { ApiResponse, RequestBody } from "./user.d";
+
+export type PaymentResume = {
+	createTime: string | undefined;
+	updateTime: string | undefined;
+	payer: {
+		email: string | undefined;
+		name: string | undefined;
+		surname: string | undefined;
+		id: string | undefined;
+		address: Address | undefined;
+	};
+	amount: string | undefined;
+	currency: string | undefined;
+	status:
+		| "COMPLETED"
+		| "SAVED"
+		| "APPROVED"
+		| "VOIDED"
+		| "PAYER_ACTION_REQUIRED"
+		| undefined;
+	merchandEmail: string | undefined;
+	merchandId: string | undefined;
+	billingToken?: string | null | undefined;
+	facilitatorAccessToken: string;
+	orderID: string;
+	payerID?: string | null | undefined;
+	paymentID?: string | null | undefined;
+	subscriptionID?: string | null | undefined;
+	authCode?: string | null | undefined;
+};
+
+type RequestBody = {
+	id?: string;
+	name?: string;
+	email?: string;
+	newPassword?: string;
+	currentPassword?: string;
+	role?: string;
+	paymentResume?: PaymentResume;
+};
+
+type ApiResponse = {
+	users?: User[];
+};
 
 const userApi = {
 	// All api requests are made thanks to this function

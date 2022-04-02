@@ -3,7 +3,16 @@ import {
 	WorkawayFile,
 } from "@components/workawayBot/workaway.d";
 import axios, { AxiosResponse, Method } from "axios";
-import { ApiResponse, RequestBody } from "./workaway.d";
+
+type RequestBody = {
+	city?: string;
+	params?: FormBotParams;
+};
+
+type ApiResponse = {
+	files?: WorkawayFile[];
+	file?: WorkawayFile;
+};
 
 const workawayBotApi = {
 	// All api requests are made thanks to this function

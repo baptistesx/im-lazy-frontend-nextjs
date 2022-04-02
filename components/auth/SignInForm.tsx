@@ -18,8 +18,12 @@ import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuthActions } from "../../providers/AuthActionsProvider";
-import { SignInFormData } from "./auth.d";
 import GoogleLoginButton from "./GoogleLoginButton";
+
+export type SignInFormData = {
+	email: string;
+	password: string;
+};
 
 const SignInForm = (): ReactElement => {
 	const router = useRouter();
