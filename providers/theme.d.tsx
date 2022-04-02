@@ -1,3 +1,3 @@
 export type ThemeActions = {
-	toggleThemeActions: () => void;
+	toggleColorMode: () => void;
 };

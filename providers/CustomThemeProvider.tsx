@@ -1,77 +1,65 @@
 import { useMediaQuery } from "@mui/material";
-import {
-	createTheme,
-	responsiveFontSizes,
-	ThemeProvider,
-} from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
 	createContext,
 	ReactElement,
 	ReactNode,
 	useContext,
+	useEffect,
 	useMemo,
 	useState,
 } from "react";
-import { useCookies } from "react-cookie";
 import { ThemeActions } from "./theme.d";
 
-const ThemeActionsContext = createContext({ toggleThemeActions: () => {} });
-
-const lightTheme = responsiveFontSizes(
-	createTheme({
-		palette: {
-			mode: "light",
-		},
-	})
-);
-const darkTheme = responsiveFontSizes(
-	createTheme({
-		palette: {
-			mode: "dark",
-		},
-	})
-);
+const ThemeActionsContext = createContext({ toggleColorMode: () => {} });
 
 export const CustomThemeProvider = ({
 	children,
 }: {
 	children: ReactNode;
 }): ReactElement => {
-	const [cookies, setCookie] = useCookies(["theme"]);
-	// It seems it doesn't work when mode is set automatically as system in browser
 	const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
-	const [mode, setMode] = useState<"light" | "dark">(
-		cookies["theme"] !== undefined
-			? cookies["theme"]
-			: prefersDarkMode
-			? "dark"
-			: "light"
-	);
+	const [mode, setMode] = useState<"light" | "dark" | undefined>(undefined);
 
-	const [theme, setTheme] = useState(mode === "light" ? lightTheme : darkTheme);
-
-	const themeActions = useMemo<ThemeActions>(
+	const colorMode = useMemo(
 		() => ({
-			toggleThemeActions: (): void => {
-				return setMode((prevMode) => {
-					console.log("toogle", prevMode);
-					setCookie("theme", prevMode === "light" ? "dark" : "light", {
-						expires: new Date(2030, 1, 1),
-						path: "/",
-					});
-
-					setTheme(prevMode === "light" ? darkTheme : lightTheme);
+			toggleColorMode: (): void => {
+				setMode((prevMode) => {
+					localStorage.setItem(
+						"theme",
+						prevMode === "light" ? "dark" : "light"
+					);
 
 					return prevMode === "light" ? "dark" : "light";
 				});
 			},
 		}),
-		[setCookie]
+		[]
+	);
+
+	useEffect(() => {
+		if (prefersDarkMode || localStorage.getItem("theme") === "dark") {
+			localStorage.setItem("theme", "dark");
+			setMode("dark");
+		} else {
+			localStorage.setItem("theme", "light");
+			setMode("light");
+		}
+	}, []);
+
+	const theme = useMemo(
+		() =>
+			createTheme({
+				palette: {
+					mode,
+				},
+			}),
+		[mode]
 	);
 
 	return (
-		<ThemeActionsContext.Provider value={themeActions}>
+		<ThemeActionsContext.Provider value={colorMode}>
 			<ThemeProvider theme={theme}>{children}</ThemeProvider>
 		</ThemeActionsContext.Provider>
 	);
