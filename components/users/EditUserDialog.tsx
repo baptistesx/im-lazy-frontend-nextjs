@@ -20,7 +20,7 @@ import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-type Role = "admin" | "premium" | "classic";
+export type Role = "admin" | "premium" | "classic";
 
 export type User = {
 	id: string;
@@ -205,10 +205,10 @@ const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
 						fullWidth
 						select
 						label={t.common.role}
+						inputProps={{ readOnly: currentUser?.id === auth?.value.user?.id }}
 						{...register("role")}
 						sx={{ mt: 1 }}
 						defaultValue={currentUser?.role}
-						disabled={currentUser?.id === auth?.value.user?.id}
 						error={errors.role != null}
 						helperText={errors.role?.message}
 					>
