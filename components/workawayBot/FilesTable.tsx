@@ -39,26 +39,26 @@ import {
 	useState,
 } from "react";
 
-interface FileInfo {
+type FileInfo = {
 	id: number;
 	name: string;
 	createdAt: Date;
 	updatedAt: Date;
-}
+};
 
-function createData(
+const createData = (
 	id: number,
 	name: string,
 	createdAt: Date,
 	updatedAt: Date
-): FileInfo {
+): FileInfo => {
 	return {
 		id,
 		name,
 		createdAt,
 		updatedAt,
 	};
-}
+};
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T): number {
 	if (b[orderBy] < a[orderBy]) {
@@ -83,14 +83,14 @@ function getComparator<Key extends keyof FileInfo>(
 	}
 }
 
-interface HeadCell {
+type HeadCell = {
 	disablePadding: boolean;
 	id: keyof FileInfo;
 	label: string;
 	numeric: boolean;
-}
+};
 
-interface EnhancedTableProps {
+type FilesTableProps = {
 	numSelected: number;
 	onRequestSort: (event: MouseEvent<unknown>, property: keyof FileInfo) => void;
 	onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -98,9 +98,9 @@ interface EnhancedTableProps {
 	orderBy: string;
 	rowCount: number;
 	headCells: readonly HeadCell[];
-}
+};
 
-function EnhancedTableHead(props: EnhancedTableProps): ReactElement {
+function FilesTableHead(props: FilesTableProps): ReactElement {
 	const {
 		onSelectAllClick,
 		order,
@@ -155,16 +155,14 @@ function EnhancedTableHead(props: EnhancedTableProps): ReactElement {
 	);
 }
 
-interface EnhancedTableToolbarProps {
+type FilesTableToolbarProps = {
 	numSelected: number;
 	handleDeleteFiles: () => void;
 	handleDownloadFiles: () => void;
 	handleRefresh: () => void;
-}
+};
 
-const EnhancedTableToolbar = (
-	props: EnhancedTableToolbarProps
-): ReactElement => {
+const FilesTableToolbar = (props: FilesTableToolbarProps): ReactElement => {
 	const { numSelected, handleDeleteFiles, handleDownloadFiles, handleRefresh } =
 		props;
 	const router = useRouter();
@@ -229,7 +227,7 @@ const EnhancedTableToolbar = (
 	);
 };
 
-export default function EnhancedTable(): ReactElement {
+export default function FilesTable(): ReactElement {
 	const router = useRouter();
 	const { locale } = router;
 	const t = locale === "en" ? en : fr;
@@ -419,7 +417,7 @@ export default function EnhancedTable(): ReactElement {
 	return (
 		<Box sx={{ p: 1, minWidth: "320px", flexGrow: 1 }}>
 			<Paper sx={{ width: "100%", mb: 2 }}>
-				<EnhancedTableToolbar
+				<FilesTableToolbar
 					numSelected={selected.length}
 					handleDeleteFiles={handleDeleteFiles}
 					handleDownloadFiles={handleDownloadFiles}
@@ -427,7 +425,7 @@ export default function EnhancedTable(): ReactElement {
 				/>
 				<TableContainer>
 					<Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-						<EnhancedTableHead
+						<FilesTableHead
 							numSelected={selected.length}
 							order={order}
 							orderBy={orderBy}

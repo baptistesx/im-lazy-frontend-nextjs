@@ -1,6 +1,6 @@
 import PremiumRoute from "@components/routes/PremiumRoute";
 import BotLogs from "@components/workawayBot/BotLogs";
-import EnhancedTable from "@components/workawayBot/EnhancedTable";
+import FilesTable from "@components/workawayBot/FilesTable";
 import InfoForm from "@components/workawayBot/InfoForm";
 import { Box } from "@mui/material";
 import { useRouter } from "next/router";
@@ -26,7 +26,7 @@ const WorkawayBot = (): ReactElement => {
 
 				<BotLogs />
 
-				<EnhancedTable />
+				<FilesTable />
 			</Box>
 		</PremiumRoute>
 	);
