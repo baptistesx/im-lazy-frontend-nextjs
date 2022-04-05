@@ -9,11 +9,13 @@ import GoogleLogin, {
 } from "react-google-login";
 import { useAuthActions } from "../../providers/AuthActionsProvider";
 
+type GoogleLoginButtonProps = {
+	setIsLoading: Dispatch<SetStateAction<boolean>>;
+};
+
 const GoogleLoginButton = ({
 	setIsLoading,
-}: {
-	setIsLoading: Dispatch<SetStateAction<boolean>>;
-}): ReactElement => {
+}: GoogleLoginButtonProps): ReactElement => {
 	const router = useRouter();
 	const { locale } = router;
 	const t = locale === "en" ? en : fr;

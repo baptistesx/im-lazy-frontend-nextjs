@@ -1,8 +1,22 @@
-import {
-	FormBotParams,
-	WorkawayFile,
-} from "@components/workawayBot/workaway.d";
+import { FormBotParams } from "@components/workawayBot/InfoForm";
 import axios, { AxiosResponse, Method } from "axios";
+
+type MemberProfile = {
+	name: string;
+	age: number;
+	profileHref: string;
+	from: string;
+	idForMessage: string;
+	messageSent: boolean;
+};
+
+export type WorkawayFile = {
+	id: number;
+	name: string;
+	createdAt: Date;
+	updatedAt: Date;
+	content?: { members: MemberProfile[] } | FormBotParams;
+};
 
 type RequestBody = {
 	city?: string;

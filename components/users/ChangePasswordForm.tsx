@@ -21,7 +21,7 @@ import { ReactElement, useState } from "react";
 import { useForm } from "react-hook-form";
 import GetLicenceButton from "./GetLicenceButton";
 
-export type ChangePasswordFormData = {
+type ChangePasswordFormData = {
 	currentPassword: string;
 	newPassword: string;
 };

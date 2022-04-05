@@ -3,14 +3,9 @@ import { useAuth } from "@providers/AuthProvider";
 import { useRouter } from "next/router";
 import { ReactElement, useEffect } from "react";
 import SignedInLayout from "../layout/SignedInLayout";
+import { RouteProps } from "./AdminRoute";
 
-const SignedInRoute = ({
-	children,
-	title,
-}: {
-	children: ReactElement[] | ReactElement;
-	title: string;
-}): ReactElement => {
+const SignedInRoute = ({ children, title }: RouteProps): ReactElement => {
 	const auth = useAuth();
 
 	const router = useRouter();

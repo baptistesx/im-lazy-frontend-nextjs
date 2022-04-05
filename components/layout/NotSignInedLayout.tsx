@@ -4,15 +4,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { ReactElement, ReactNode } from "react";
 
+export type LayoutProps = {
+	children: ReactNode;
+	title: string;
+	isOffline?: boolean;
+};
+
 const NotSignedInLayout = ({
 	children,
 	title,
 	isOffline,
-}: {
-	children?: ReactNode;
-	title?: string;
-	isOffline?: boolean;
-}): ReactElement => {
+}: LayoutProps): ReactElement => {
 	const theme = useTheme();
 
 	return (

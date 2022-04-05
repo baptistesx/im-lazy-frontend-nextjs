@@ -23,13 +23,15 @@ export type DrawerItem = {
 	children?: DrawerItem[];
 };
 
+type DrawerItemProps = {
+	element: DrawerItem;
+	paddingLeft?: number;
+};
+
 const ParentDrawerItem = ({
 	element,
 	paddingLeft,
-}: {
-	element: DrawerItem;
-	paddingLeft?: number;
-}): ReactElement => {
+}: DrawerItemProps): ReactElement => {
 	const router = useRouter();
 
 	const isAChildTheCurrentRoute = (element: DrawerItem): boolean => {
@@ -107,10 +109,7 @@ const ParentDrawerItem = ({
 const SimpleDrawerItem = ({
 	element,
 	paddingLeft,
-}: {
-	element: DrawerItem;
-	paddingLeft?: number;
-}): ReactElement => {
+}: DrawerItemProps): ReactElement => {
 	const router = useRouter();
 
 	return (
@@ -128,13 +127,15 @@ const SimpleDrawerItem = ({
 	);
 };
 
+type CustomDrawerProps = {
+	handleDrawerToggle: () => void;
+	mobileOpen: boolean;
+};
+
 const CustomDrawer = ({
 	handleDrawerToggle,
 	mobileOpen,
-}: {
-	handleDrawerToggle: () => void;
-	mobileOpen: boolean;
-}): ReactElement => {
+}: CustomDrawerProps): ReactElement => {
 	const auth = useAuth();
 
 	const router = useRouter();

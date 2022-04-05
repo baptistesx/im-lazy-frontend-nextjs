@@ -13,7 +13,14 @@ import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import * as React from "react";
 import { ReactElement, useEffect, useRef, useState } from "react";
-import { CitiesFormDialogProps } from "./workaway.d";
+
+type CitiesFormDialogProps = {
+	keepMounted: boolean;
+	open: boolean;
+	onClose: (city: string | undefined) => Promise<void>;
+	value: string | undefined;
+	cities: string[] | undefined;
+};
 
 const CitiesFormDialog = (props: CitiesFormDialogProps): ReactElement => {
 	const router = useRouter();

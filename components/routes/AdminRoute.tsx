@@ -4,13 +4,12 @@ import { useRouter } from "next/router";
 import { ReactElement, ReactNode, useEffect } from "react";
 import SignedInLayout from "../layout/SignedInLayout";
 
-const AdminRoute = ({
-	children,
-	title,
-}: {
+export type RouteProps = {
 	children: ReactNode;
 	title: string;
-}): ReactElement => {
+};
+
+const AdminRoute = ({ children, title }: RouteProps): ReactElement => {
 	const auth = useAuth();
 
 	const router = useRouter();

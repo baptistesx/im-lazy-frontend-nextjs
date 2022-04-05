@@ -22,7 +22,22 @@ import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { detectionRadiuses, FormBotParams } from "./workaway.d";
+
+const detectionRadiuses = [5, 10, 20, 50, 100, 250, 500];
+
+export type FormBotParams = {
+	englishMessage: string;
+	frenchMessage: string;
+	messageSubject: string;
+	maximumAge: number;
+	minimumAge: number;
+	city: string;
+	password: string;
+	email: string;
+	headless: boolean;
+	developmentMode: boolean;
+	detectionRadius: number;
+};
 
 type InfoFormProps = {
 	isStarting: boolean;
@@ -148,6 +163,7 @@ const InfoForm = (props: InfoFormProps): ReactElement => {
 							sx={{ m: 1 }}
 							value
 						/>
+
 						<FormControlLabel
 							control={<Checkbox />}
 							label="Headless"
@@ -257,6 +273,7 @@ const InfoForm = (props: InfoFormProps): ReactElement => {
 					error={errors.messageSubject != null}
 					helperText={errors.messageSubject?.message}
 				/>
+
 				<TextField
 					fullWidth
 					id="outlined-required"

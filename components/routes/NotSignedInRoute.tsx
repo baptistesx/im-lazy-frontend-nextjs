@@ -1,16 +1,11 @@
 import { CircularProgress } from "@mui/material";
 import { useAuth } from "@providers/AuthProvider";
 import { useRouter } from "next/router";
-import { ReactElement, ReactNode, useEffect } from "react";
+import { ReactElement, useEffect } from "react";
 import NotSignedInLayout from "../layout/NotSignInedLayout";
+import { RouteProps } from "./AdminRoute";
 
-const NotSignedInRoute = ({
-	children,
-	title,
-}: {
-	children: ReactNode;
-	title: string;
-}): ReactElement => {
+const NotSignedInRoute = ({ children, title }: RouteProps): ReactElement => {
 	const auth = useAuth();
 
 	const router = useRouter();
@@ -21,13 +16,15 @@ const NotSignedInRoute = ({
 		}
 	}, [auth, router]);
 
-	return auth?.value.status === "loading" ||
-		(router.isReady && auth?.value.status === "connected") ? (
-		<NotSignedInLayout>
-			<CircularProgress />
+	return (
+		<NotSignedInLayout title={title}>
+			{auth?.value.status === "loading" ||
+			(router.isReady && auth?.value.status === "connected") ? (
+				<CircularProgress />
+			) : (
+				children
+			)}
 		</NotSignedInLayout>
-	) : (
-		<NotSignedInLayout title={title}>{children}</NotSignedInLayout>
 	);
 };
 

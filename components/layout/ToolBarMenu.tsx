@@ -14,6 +14,7 @@ import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import * as React from "react";
 import { MouseEvent, ReactElement } from "react";
+
 const ToolBarMenu = (): ReactElement => {
 	const router = useRouter();
 	const { locale } = router;

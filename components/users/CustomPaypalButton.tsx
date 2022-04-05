@@ -98,6 +98,7 @@ const CustomButton = (): ReactElement => {
 	return (
 		<>
 			{isPending ? <h2>{t.getLicence["loading-button"]}</h2> : null}
+
 			<PayPalButtons {...paypalbuttonTransactionProps} />
 		</>
 	);

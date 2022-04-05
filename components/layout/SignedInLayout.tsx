@@ -5,18 +5,13 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { useAuth } from "@providers/AuthProvider";
 import Image from "next/image";
 import Link from "next/link";
-import { ReactElement, ReactNode, useState } from "react";
+import { ReactElement, useState } from "react";
 import CustomDrawer, { DRAWER_WIDTH } from "./CustomDrawer";
+import { LayoutProps } from "./NotSignInedLayout";
 import ToolBarMenu from "./ToolBarMenu";
 import ToolBarUserInfo from "./ToolBarUserInfo";
 
-const SignedInLayout = ({
-	children,
-	title,
-}: {
-	children: ReactNode;
-	title: string;
-}): ReactElement => {
+const SignedInLayout = ({ children, title }: LayoutProps): ReactElement => {
 	const auth = useAuth();
 
 	const [mobileOpen, setMobileOpen] = useState(false);
@@ -93,6 +88,7 @@ const SignedInLayout = ({
 				}}
 			>
 				<Toolbar />
+
 				<Typography variant="h1" sx={{ m: 1 }}>
 					{title}
 				</Typography>

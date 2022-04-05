@@ -2,16 +2,11 @@ import { CircularProgress } from "@mui/material";
 import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useAuth } from "@providers/AuthProvider";
 import { useRouter } from "next/router";
-import { ReactElement, ReactNode, useEffect } from "react";
+import { ReactElement, useEffect } from "react";
 import SignedInLayout from "../layout/SignedInLayout";
+import { RouteProps } from "./AdminRoute";
 
-const PremiumRoute = ({
-	children,
-	title,
-}: {
-	children: ReactNode;
-	title: string;
-}): ReactElement => {
+const PremiumRoute = ({ children, title }: RouteProps): ReactElement => {
 	const auth = useAuth();
 	const authActions = useAuthActions();
 
