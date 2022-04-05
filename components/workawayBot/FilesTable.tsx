@@ -373,7 +373,6 @@ export default function FilesTable(): ReactElement {
 	const handleDownloadFiles = async (): Promise<void> => {
 		selected.forEach(async (fileId) => {
 			await downloadFileById(fileId, (file) => {
-				console.log("download ", fileId);
 				// Create a blob with the data we want to download as a file
 				const blob = new Blob([JSON.parse(JSON.stringify(file.content))], {
 					type: "text/json",
@@ -394,7 +393,6 @@ export default function FilesTable(): ReactElement {
 				// Clean up and remove the link
 				a.remove();
 			}).catch((err) => {
-				console.log(err);
 				if (err?.response?.status === 401) {
 					enqueueSnackbar(t.auth["sign-in-again"], {
 						variant: "error",

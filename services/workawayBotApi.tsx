@@ -92,7 +92,6 @@ export const downloadFileById = async (
 		method: "get",
 	});
 	if (res.data.file) {
-		console.log("calling cb");
 		cb(res.data.file);
 	}
 };

@@ -87,7 +87,7 @@ const BotLogs = (props: BotLogsProps): ReactElement => {
 				})
 			);
 		}
-		console.log(socket);
+
 		if (socket !== undefined && !isSocketInitialized) {
 			setIsSocketInitialized(true);
 
