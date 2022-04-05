@@ -1,5 +1,7 @@
 {
 	"available-files": "Fichiers disponibles",
+	"bad-workaway-ids": "Identifiants workaway incorrects.",
+	"bot-stopped": "Bot arrêté.",
 	"city": "Ville",
 	"clear-logs": "Vider la console",
 	"detection-radius": "Rayon de détection",

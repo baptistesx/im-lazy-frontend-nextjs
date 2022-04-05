@@ -24,16 +24,30 @@ import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { detectionRadiuses, FormBotParams } from "./workaway.d";
 
-const InfoForm = (): ReactElement => {
+type InfoFormProps = {
+	isStarting: boolean;
+	setIsStarting: (value: boolean) => void;
+	isStopping: boolean;
+	setIsStopping: (value: boolean) => void;
+	isRunning: boolean;
+	setIsRunning: (value: boolean) => void;
+};
+
+const InfoForm = (props: InfoFormProps): ReactElement => {
+	const {
+		isStarting,
+		setIsStarting,
+		isStopping,
+		setIsStopping,
+		isRunning,
+		setIsRunning,
+	} = props;
+
 	const router = useRouter();
 	const { locale } = router;
 	const t = locale === "en" ? en : fr;
 
 	const authActions = useAuthActions();
-
-	const [isStarting, setIsStarting] = useState<boolean>(false);
-	const [isStopping, setIsStopping] = useState<boolean>(false);
-	const [isRunning, setIsRunning] = useState<boolean>(false);
 
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -76,7 +90,7 @@ const InfoForm = (): ReactElement => {
 		).catch((err) => {
 			setIsStarting(false);
 
-			if (err.response.status === 401) {
+			if (err?.response?.status === 401) {
 				enqueueSnackbar(t.auth["sign-in-again"], {
 					variant: "error",
 				});
@@ -99,7 +113,7 @@ const InfoForm = (): ReactElement => {
 
 			setIsStopping(false);
 		}).catch((err) => {
-			if (err.response.status === 401) {
+			if (err?.response?.status === 401) {
 				enqueueSnackbar(t.auth["sign-in-again"], {
 					variant: "error",
 				});

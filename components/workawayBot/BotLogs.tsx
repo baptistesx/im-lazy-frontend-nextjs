@@ -1,6 +1,7 @@
 import { LoadingButton } from "@mui/lab";
 import { Box, Card, Typography } from "@mui/material";
 import { useAuthActions } from "@providers/AuthActionsProvider";
+import { useAuth } from "@providers/AuthProvider";
 import { clearLogs, setCity } from "@services/workawayBotApi";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
@@ -12,12 +13,19 @@ import CitiesFormDialog from "./CitiesFormDialog";
 
 let botLogsMessageSentIsFirst = true;
 
-const BotLogs = (): ReactElement => {
+type BotLogsProps = {
+	setIsRunning: (value: boolean) => void;
+};
+
+const BotLogs = (props: BotLogsProps): ReactElement => {
+	const { setIsRunning } = props;
+
 	const router = useRouter();
 	const { locale } = router;
 	const t = locale === "en" ? en : fr;
 
 	const authActions = useAuthActions();
+	const auth = useAuth();
 
 	const [socket, setSocket] = useState<Socket | undefined>(undefined);
 	const [isSocketInitialized, setIsSocketInitialized] =
@@ -50,7 +58,7 @@ const BotLogs = (): ReactElement => {
 			setFullCitySelected(city);
 
 			await setCity(city).catch((err) => {
-				if (err.response.status === 401) {
+				if (err?.response?.status === 401) {
 					enqueueSnackbar(t.auth["sign-in-again"], {
 						variant: "error",
 					});
@@ -73,9 +81,13 @@ const BotLogs = (): ReactElement => {
 
 	useEffect(() => {
 		if (socket === undefined) {
-			setSocket(socketIOClient(process.env.NEXT_PUBLIC_ENDPOINT));
+			setSocket(
+				socketIOClient(process.env.NEXT_PUBLIC_ENDPOINT, {
+					query: { userId: auth?.value?.user?.id },
+				})
+			);
 		}
-
+		console.log(socket);
 		if (socket !== undefined && !isSocketInitialized) {
 			setIsSocketInitialized(true);
 
@@ -117,6 +129,22 @@ const BotLogs = (): ReactElement => {
 			socket?.on("citiesList", async (cities: string[]) =>
 				handleOpenCitiesDialog(cities)
 			);
+
+			socket?.on("errorLogin", async () => {
+				enqueueSnackbar(t.workawayBot["bad-workaway-ids"], {
+					variant: "error",
+				});
+
+				setIsRunning(false);
+			});
+
+			socket?.on("botStopped", async () => {
+				enqueueSnackbar(t.workawayBot["bot-stopped"], {
+					variant: "info",
+				});
+
+				setIsRunning(false);
+			});
 		}
 	}, [socket, isSocketInitialized]);
 
@@ -132,7 +160,7 @@ const BotLogs = (): ReactElement => {
 		}).catch((err) => {
 			setIsClearingLogs(false);
 
-			if (err.response.status === 401) {
+			if (err?.response?.status === 401) {
 				enqueueSnackbar(t.auth["sign-in-again"], {
 					variant: "error",
 				});

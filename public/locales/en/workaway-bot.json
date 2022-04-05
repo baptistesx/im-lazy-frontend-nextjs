@@ -1,5 +1,7 @@
 {
 	"available-files": "Available files",
+	"bad-workaway-ids": "Bad workaway accound ids.",
+	"bot-stopped": "Bot stopped.",
 	"city": "City",
 	"clear-logs": "Clear logs",
 	"detection-radius": "Detection radius",
