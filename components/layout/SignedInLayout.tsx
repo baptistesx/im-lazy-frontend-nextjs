@@ -89,6 +89,7 @@ const SignedInLayout = ({
 					backgroundColor: "background.default",
 					color: "text.primary",
 					flexGrow: 1,
+					width: "100%",
 				}}
 			>
 				<Toolbar />

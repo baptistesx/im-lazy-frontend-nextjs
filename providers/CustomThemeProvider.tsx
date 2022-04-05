@@ -1,4 +1,4 @@
-import { useMediaQuery } from "@mui/material";
+import { responsiveFontSizes, useMediaQuery } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
 	createContext,
@@ -53,11 +53,13 @@ export const CustomThemeProvider = ({
 
 	const theme = useMemo(
 		() =>
-			createTheme({
-				palette: {
-					mode,
-				},
-			}),
+			responsiveFontSizes(
+				createTheme({
+					palette: {
+						mode,
+					},
+				})
+			),
 		[mode]
 	);
 
