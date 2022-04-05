@@ -71,8 +71,12 @@ const NotSignedInLayout = ({
 				<Link href="/" passHref>
 					<Button sx={{ height: 150, display: { xs: "block", sm: "none" } }}>
 						<Image
-							alt="logo-light"
-							src="/logo-light.png"
+							alt="logo"
+							src={
+								theme.palette.mode === "dark"
+									? "/logo-light.png"
+									: "/logo-dark.png"
+							}
 							height={100}
 							width={200}
 						/>
