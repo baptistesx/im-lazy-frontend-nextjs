@@ -1,4 +1,4 @@
-import { User } from "@providers/user.d";
+import { User } from "@components/users/EditUserDialog";
 import axios, { AxiosResponse, Method } from "axios";
 
 type AuthBody = {
