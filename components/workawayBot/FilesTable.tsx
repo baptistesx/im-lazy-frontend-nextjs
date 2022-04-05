@@ -242,7 +242,7 @@ export default function FilesTable(): ReactElement {
 		await getFilesInfo((files) => {
 			setFiles([...files]);
 		}).catch((err) => {
-			if (err.response.status === 401) {
+			if (err?.response?.status === 401) {
 				enqueueSnackbar(t.auth["sign-in-again"], {
 					variant: "error",
 				});
@@ -355,7 +355,7 @@ export default function FilesTable(): ReactElement {
 
 				return Promise.resolve();
 			}).catch((err) => {
-				if (err.response.status === 401) {
+				if (err?.response?.status === 401) {
 					enqueueSnackbar(t.auth["sign-in-again"], {
 						variant: "error",
 					});
@@ -395,7 +395,7 @@ export default function FilesTable(): ReactElement {
 				a.remove();
 			}).catch((err) => {
 				console.log(err);
-				if (err.response.status === 401) {
+				if (err?.response?.status === 401) {
 					enqueueSnackbar(t.auth["sign-in-again"], {
 						variant: "error",
 					});

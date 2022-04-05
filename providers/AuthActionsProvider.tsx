@@ -71,7 +71,7 @@ export const AuthActionsProvider = ({
 		}).catch((err) => {
 			auth.setValue({ status: "not-connected", user: undefined });
 
-			if (err.response.status === 401) {
+			if (err?.response?.status === 401) {
 				enqueueSnackbar(t.auth["sign-in-again"], {
 					variant: "error",
 				});

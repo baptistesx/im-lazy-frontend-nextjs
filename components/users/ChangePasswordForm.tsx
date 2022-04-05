@@ -74,7 +74,7 @@ const ChangePasswordForm = (): ReactElement => {
 			).catch((err) => {
 				setIsLoading(false);
 
-				if (err.response.status === 401) {
+				if (err?.response?.status === 401) {
 					enqueueSnackbar(t.auth["sign-in-again"], {
 						variant: "error",
 					});
