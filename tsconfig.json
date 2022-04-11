@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"allowJs": true,
+		"checkJs": true,
 		"allowUnreachableCode": false,
 		"allowUnusedLabels": false,
 		"declaration": true,
@@ -14,6 +15,7 @@
 		"noEmit": true,
 		"noFallthroughCasesInSwitch": true,
 		"noImplicitReturns": true,
+		"noImplicitThis": true,
 		"pretty": true,
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
@@ -22,6 +24,16 @@
 		"target": "es2018",
 		"incremental": true,
 		"baseUrl": ".",
+		"noImplicitAny": true,
+		"useUnknownInCatchVariables": true,
+		"strictNullChecks": true,
+		"strictPropertyInitialization": true,
+		"alwaysStrict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"strictFunctionTypes": true,
+		"strictBindCallApply": true,
+		"exactOptionalPropertyTypes": true /* Interpret optional property types as written, rather than adding 'undefined'. */,
 		"paths": {
 			"@components/*": ["components/*"],
 			"@providers/*": ["providers/*"],

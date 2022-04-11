@@ -18,7 +18,6 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import Toolbar from "@mui/material/Toolbar";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { visuallyHidden } from "@mui/utils";
 import { useAuthActions } from "@providers/AuthActionsProvider";
 import { useAuth } from "@providers/AuthProvider";
 import { deleteUserById, getUsers } from "@services/userApi";
@@ -122,13 +121,6 @@ function UsersTableHead(props: UsersTableProps): ReactElement {
 								onClick={createSortHandler(headCell.id)}
 							>
 								{headCell.label}
-								{orderBy === headCell.id ? (
-									<Box component="span" sx={visuallyHidden}>
-										{order === "desc"
-											? "sorted descending"
-											: "sorted ascending"}
-									</Box>
-								) : null}
 							</TableSortLabel>
 						)}
 					</TableCell>
@@ -393,9 +385,11 @@ export default function UsersTable(): ReactElement {
 											</TableCell>
 
 											<TableCell>
-												{format(new Date(row.lastLogin), "Pp", {
-													locale: locale === "en" ? enFns : frFns,
-												})}
+												{row.lastLogin === null
+													? ""
+													: format(new Date(row.lastLogin), "Pp", {
+															locale: locale === "en" ? enFns : frFns,
+													  })}
 											</TableCell>
 											<TableCell>
 												<Tooltip title={t.users["edit-user"]}>

@@ -1,7 +1,8 @@
 {
-	"name": "im-lazy-frontend-nextjs",
-	"version": "0.1.0",
+	"name": "im-lazy-front-nextjs",
+	"version": "1.0.0",
 	"private": true,
+	"author": "baptistesx",
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",

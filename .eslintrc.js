@@ -27,6 +27,6 @@ module.exports = {
 		],
 		"@typescript-eslint/explicit-function-return-type": "error",
 		"@typescript-eslint/no-explicit-any": "error",
-		// "max-len": ["warn", { code: 80 }],
+		"no-mixed-spaces-and-tabs": ["warn", "smart-tabs"],
 	},
 };
