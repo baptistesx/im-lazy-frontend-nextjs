@@ -2,7 +2,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import {
-	Box,
 	Card,
 	CardActions,
 	CardContent,
@@ -19,7 +18,6 @@ import en from "public/locales/en/en";
 import fr from "public/locales/fr/fr";
 import { ReactElement, useState } from "react";
 import { useForm } from "react-hook-form";
-import GetLicenceButton from "./GetLicenceButton";
 
 type ChangePasswordFormData = {
 	currentPassword: string;
@@ -161,8 +159,6 @@ const ChangePasswordForm = (): ReactElement => {
 				>
 					{t.common.save}
 				</LoadingButton>
-
-				{!auth?.isPremium(auth?.value.user) ? <GetLicenceButton /> : <Box />}
 			</CardActions>
 		</Card>
 	);
