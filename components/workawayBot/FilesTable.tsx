@@ -287,7 +287,7 @@ export default function FilesTable(): ReactElement {
 	];
 
 	const handleRequestSort = (
-		event: MouseEvent<unknown>,
+		_event: MouseEvent<unknown>,
 		property: keyof FileInfo
 	): void => {
 		const isAsc = orderBy === property && order === "asc";
@@ -304,7 +304,7 @@ export default function FilesTable(): ReactElement {
 		setSelected([]);
 	};
 
-	const handleClick = (event: MouseEvent<unknown>, id: number): void => {
+	const handleClick = (_event: MouseEvent<unknown>, id: number): void => {
 		const selectedIndex = selected.indexOf(id);
 		let newSelected: readonly number[] = [];
 
@@ -324,7 +324,7 @@ export default function FilesTable(): ReactElement {
 		setSelected(newSelected);
 	};
 
-	const handleChangePage = (event: unknown, newPage: number): void => {
+	const handleChangePage = (_event: unknown, newPage: number): void => {
 		setPage(newPage);
 	};
 

@@ -23,7 +23,7 @@ export const CustomThemeProvider = ({
 }): ReactElement => {
 	const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
-	const [mode, setMode] = useState<"light" | "dark" | undefined>(undefined);
+	const [mode, setMode] = useState<"light" | "dark">("light");
 
 	const colorMode = useMemo(
 		() => ({

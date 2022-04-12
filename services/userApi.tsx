@@ -38,7 +38,7 @@ type RequestBody = {
 	email?: string;
 	newPassword?: string;
 	currentPassword?: string;
-	role?: string;
+	role?: string | undefined;
 	paymentResume?: PaymentResume;
 };
 

@@ -269,7 +269,7 @@ export default function UsersTable(): ReactElement {
 	];
 
 	const handleRequestSort = (
-		event: MouseEvent<unknown>,
+		_event: MouseEvent<unknown>,
 		property: keyof User
 	): void => {
 		const isAsc = orderBy === property && order === "asc";
@@ -277,7 +277,7 @@ export default function UsersTable(): ReactElement {
 		setOrderBy(property);
 	};
 
-	const handleChangePage = (event: unknown, newPage: number): void => {
+	const handleChangePage = (_event: unknown, newPage: number): void => {
 		setPage(newPage);
 	};
 
