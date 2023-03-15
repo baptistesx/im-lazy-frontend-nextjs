@@ -1,176 +1,181 @@
-import { Fetcher } from "swr";
-import { User } from "../providers/AuthProvider";
-import api from "./api";
+import { User } from "@components/users/EditUserDialog";
+import { Address } from "@paypal/paypal-js";
+import axios, { AxiosResponse, Method } from "axios";
 
-export const signUpWithEmailAndPassword = async (
-  name: string,
-  email: string,
-  password: string,
-  cb: Function
-) => {
-  const user = await api
-    .axiosApiCall({
-      url: "signUp",
-      method: "post",
-      body: {
-        name,
-        email,
-        password,
-      },
-    })
-    .then((res) => res.data.user);
-
-  cb(user);
+export type PaymentResume = {
+	createTime: string | undefined;
+	updateTime: string | undefined;
+	payer: {
+		email: string | undefined;
+		name: string | undefined;
+		surname: string | undefined;
+		id: string | undefined;
+		address: Address | undefined;
+	};
+	amount: string | undefined;
+	currency: string | undefined;
+	status:
+		| "COMPLETED"
+		| "SAVED"
+		| "APPROVED"
+		| "VOIDED"
+		| "PAYER_ACTION_REQUIRED"
+		| undefined;
+	merchandEmail: string | undefined;
+	merchandId: string | undefined;
+	billingToken?: string | null | undefined;
+	facilitatorAccessToken: string;
+	orderID: string;
+	payerID?: string | null | undefined;
+	paymentID?: string | null | undefined;
+	subscriptionID?: string | null | undefined;
+	authCode?: string | null | undefined;
 };
 
-export const signInWithEmailAndPassword = async (
-  email: string,
-  password: string,
-  cb: Function
-) => {
-  const user = await api
-    .axiosApiCall({
-      url: "signInWithEmailAndPassword",
-      method: "post",
-      body: {
-        email,
-        password,
-      },
-    })
-    .then((res) => res.data.user);
-
-  cb(user);
+type RequestBody = {
+	id?: string;
+	name?: string;
+	email?: string;
+	newPassword?: string;
+	currentPassword?: string;
+	role?: string | undefined;
+	paymentResume?: PaymentResume;
 };
 
-export const signInWithGoogle = async (access_token: string, cb: Function) => {
-  const user = await api
-    .axiosApiCall({
-      url: "signInWithGoogle",
-      method: "post",
-      body: {
-        access_token,
-      },
-    })
-    .then((res) => res.data.user);
-
-  cb(user);
+type ApiResponse = {
+	users?: User[];
 };
 
-export const getUser = async (cb: Function) => {
-  await api
-    .axiosApiCall({
-      url: "user",
-      method: "get",
-    })
-    .then((res) => {
-      cb(res.data);
-    });
+const userApi = {
+	// All api requests are made thanks to this function
+	async axiosApiCall({
+		url,
+		method,
+		body = {},
+	}: {
+		url: string;
+		method: Method;
+		body?: RequestBody;
+	}): Promise<AxiosResponse<ApiResponse>> {
+		return axios({
+			method,
+			url: `${process.env.NEXT_PUBLIC_ENDPOINT}/user/${url}`,
+			data: body,
+			headers: { "Content-Type": "application/json" },
+			withCredentials: true,
+		});
+	},
 };
 
-export const getUserSWR: Fetcher<User> = async () => {
-  return await api
-    .axiosApiCall({ url: "user", method: "get" })
-    .then((res) => res.data);
+export const resetPassword = async (
+	email: string,
+	cb: () => void
+): Promise<void> => {
+	await userApi.axiosApiCall({
+		url: "reset-password",
+		method: "post",
+		body: {
+			email,
+		},
+	});
+
+	cb();
 };
 
-export const signOut = async (cb: Function) => {
-  await api.axiosApiCall({ url: "signOut", method: "post" });
-  console.log("well logged out");
-  cb();
+export const getUsers = async (cb: (users: User[]) => void): Promise<void> => {
+	const res = await userApi.axiosApiCall({ url: "users", method: "get" });
+
+	if (res.data.users !== undefined) {
+		cb(res.data.users);
+	}
 };
 
-export const resetPassword = async (email: string, cb: Function) => {
-  await api.axiosApiCall({
-    url: "resetPassword",
-    method: "post",
-    body: {
-      email,
-    },
-  });
+export const deleteUserById = async (
+	id: string,
+	cb: () => void
+): Promise<void> => {
+	await userApi.axiosApiCall({ url: `${id}`, method: "delete" });
 
-  cb();
+	cb();
 };
 
-export const getUsers = async (cb: Function) => {
-  const users = await api
-    .axiosApiCall({ url: "users", method: "get" })
-    .then((res) => res.data.users)
-    .catch((err) => {});
+export const updateUserById = async (
+	data: { id: string; email: string; role?: string; name: string },
+	cb: () => void
+): Promise<void> => {
+	await userApi.axiosApiCall({
+		url: ``,
+		method: "put",
+		body: {
+			id: data.id,
+			email: data.email,
+			name: data.name,
+			role: data.role,
+		},
+	});
 
-  cb(users);
+	cb();
 };
 
-export const deleteUserById = async (id: string, cb: Function) => {
-  await api.axiosApiCall({ url: `user/${id}`, method: "delete" });
+export const updateUserPasswordById = async (
+	data: { id: string; currentPassword: string; newPassword: string },
+	cb: () => void
+): Promise<void> => {
+	await userApi.axiosApiCall({
+		url: `${data.id}/password`,
+		method: "put",
+		body: {
+			newPassword: data.newPassword,
+			currentPassword: data.currentPassword,
+		},
+	});
 
-  cb();
+	cb();
 };
 
-export const updateUserById = async (data: any, cb: Function) => {
-  await api.axiosApiCall({
-    url: `user`,
-    method: "put",
-    body: {
-      id: data.id,
-      email: data.email,
-      name: data.name,
-      role: data.role,
-    },
-  });
+export const createUser = async (
+	data: { email: string; role: string; name: string },
+	cb: () => void
+): Promise<void> => {
+	await userApi.axiosApiCall({
+		url: ``,
+		method: "post",
+		body: {
+			email: data.email,
+			role: data.role,
+			name: data.name,
+		},
+	});
 
-  cb();
-};
-
-export const updateUserPasswordById = async (data: any, cb: Function) => {
-  await api.axiosApiCall({
-    url: `user/${data.id}/password`,
-    method: "put",
-    body: {
-      newPassword: data.newPassword,
-      currentPassword: data.currentPassword,
-    },
-  });
-
-  cb();
-};
-
-export const createUser = async (data: any, cb: Function) => {
-  await api.axiosApiCall({
-    url: `user`,
-    method: "post",
-    body: {
-      email: data.email,
-      role: data.role,
-      name: data.name,
-    },
-  });
-
-  cb();
+	cb();
 };
 
 export const sendVerificationEmail = async (
-  email: string | undefined,
-  cb: Function
-) => {
-  await api.axiosApiCall({
-    url: `user/verificationEmail`,
-    method: "post",
-    body: {
-      email,
-    },
-  });
+	email: string,
+	cb: () => void
+): Promise<void> => {
+	await userApi.axiosApiCall({
+		url: `send-verification-email`,
+		method: "post",
+		body: {
+			email,
+		},
+	});
 
-  cb();
+	cb();
 };
 
-export const savePayment = async (paymentResume: any, cb: Function) => {
-  await api.axiosApiCall({
-    url: `user/savePayment`,
-    method: "post",
-    body: {
-      paymentResume,
-    },
-  });
+export const savePayment = async (
+	paymentResume: PaymentResume,
+	cb: () => void
+): Promise<void> => {
+	await userApi.axiosApiCall({
+		url: `save-payment`,
+		method: "post",
+		body: {
+			paymentResume,
+		},
+	});
 
-  cb();
+	cb();
 };

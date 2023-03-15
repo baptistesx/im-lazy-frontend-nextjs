@@ -1,32 +1,36 @@
+import SignedInRoute from "@components/routes/SignedInRoute";
+import CustomPaypalButton from "@components/users/CustomPaypalButton";
 import { Typography } from "@mui/material";
-import SignedInRoute from "../components/SignedInRoute";
-import CustomPaypalButton from "../components/users/CustomPaypalButton";
-import { useAuth } from "../providers/AuthProvider";
-import { PAYPAL_CLIENT_ID } from "../utils/constants";
-import { isPremium } from "../utils/functions";
+import { useAuth } from "@providers/AuthProvider";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
+import { ReactElement } from "react";
 
-function GetLicence() {
-  const auth = useAuth();
-  console.log(PAYPAL_CLIENT_ID);
-  return (
-    <SignedInRoute>
-      <Typography variant="h1">Get the Premium licence</Typography>
+const GetLicence = (): ReactElement => {
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
-      {isPremium(auth?.user) ? (
-        <Typography variant="body1">
-          You are already a premium member
-        </Typography>
-      ) : (
-        <>
-          <Typography variant="body1">
-            Turn your account Premium for only 5€/month !
-          </Typography>
+	const auth = useAuth();
 
-          <CustomPaypalButton />
-        </>
-      )}
-    </SignedInRoute>
-  );
-}
+	return (
+		<SignedInRoute title={t.getLicence.title}>
+			{auth?.isPremium(auth?.value.user) ? (
+				<Typography variant="body1">
+					{t.getLicence["already-premium"]}
+				</Typography>
+			) : (
+				<>
+					<Typography variant="body1">
+						{t.getLicence["get-premium-account"]}
+					</Typography>
+
+					<CustomPaypalButton />
+				</>
+			)}
+		</SignedInRoute>
+	);
+};
 
 export default GetLicence;

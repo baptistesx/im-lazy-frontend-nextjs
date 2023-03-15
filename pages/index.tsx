@@ -1,39 +1,44 @@
-import { Typography, Box, Link, Button } from "@mui/material";
-import NotSignedInRoute from "../components/NotSignedInRoute";
+import NotSignedInRoute from "@components/routes/NotSignedInRoute";
+import { Box, Button, Typography } from "@mui/material";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
+import { ReactElement } from "react";
 
-function Home() {
-  return (
-    <NotSignedInRoute title="Home">
-      <Typography variant="body1" sx={{ color: "white", textAlign: "center" }}>
-        Welcome on ImLazy.dev! You'll find here different ressources to save
-        time in your life...
-      </Typography>
+const Home = (): ReactElement => {
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
-      <Box
-        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-      >
-        <Link href="/auth/sign-in">
-          <Button
-            variant="outlined"
-            sx={{ color: "white", borderColor: "white", m: 1 }}
-          >
-            Sign In
-          </Button>
-        </Link>
+	return (
+		<NotSignedInRoute title={t.index.title}>
+			<Typography
+				variant="body1"
+				sx={{ color: "text.primary", textAlign: "center" }}
+			>
+				{t.index["welcome-text"]}
+			</Typography>
 
-        <Typography sx={{ color: "white" }}>|</Typography>
+			<Box
+				sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+			>
+				<Link href="/auth/sign-in" passHref>
+					<Button variant="outlined" sx={{ m: 1 }}>
+						{t.auth["sign-in"]}
+					</Button>
+				</Link>
 
-        <Link href="/auth/sign-up">
-          <Button
-            variant="outlined"
-            sx={{ color: "white", borderColor: "white", m: 1 }}
-          >
-            Sign Up
-          </Button>
-        </Link>
-      </Box>
-    </NotSignedInRoute>
-  );
-}
+				<Typography>|</Typography>
+
+				<Link href="/auth/sign-up" passHref>
+					<Button variant="outlined" sx={{ m: 1 }}>
+						{t.auth["sign-up"]}
+					</Button>
+				</Link>
+			</Box>
+		</NotSignedInRoute>
+	);
+};
 
 export default Home;

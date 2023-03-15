@@ -1,109 +1,167 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import { Box, Card, CardActions, CardContent, TextField } from "@mui/material";
-import { useState } from "react";
+import {
+	Card,
+	CardActions,
+	CardContent,
+	IconButton,
+	TextField,
+} from "@mui/material";
+import { useAuthActions } from "@providers/AuthActionsProvider";
+import { useAuth } from "@providers/AuthProvider";
+import updatePasswordFormSchema from "@schemas/updatePasswordFormSchema";
+import { updateUserPasswordById } from "@services/userApi";
+import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
+import { ReactElement, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth } from "../../providers/AuthProvider";
-import { useSnackbars } from "../../providers/SnackbarProvider";
-import updatePasswordFormSchema from "../../schemas/updatePasswordFormSchema";
-import { updateUserPasswordById } from "../../services/userApi";
-import { isPremium } from "../../utils/functions";
-import GetLicenceButton from "./GetLicenceButton";
 
 type ChangePasswordFormData = {
-  currentPassword: string;
-  newPassword: string;
+	currentPassword: string;
+	newPassword: string;
 };
 
-const ChangePasswordForm = () => {
-  const auth = useAuth();
+const ChangePasswordForm = (): ReactElement => {
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
-  const [isLoading, setIsLoading] = useState(false);
+	const auth = useAuth();
+	const authActions = useAuthActions();
 
-  const snackbarsService = useSnackbars();
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { isDirty, errors },
-    reset,
-  } = useForm<ChangePasswordFormData>({
-    resolver: yupResolver(updatePasswordFormSchema),
-  });
+	const [showPassword, setShowPassword] = useState<boolean>(false);
+	const [showPasswordNew, setShowPasswordNew] = useState<boolean>(false);
 
-  const handleSavePassword = async (data: ChangePasswordFormData) => {
-    setIsLoading(true);
+	const { enqueueSnackbar } = useSnackbar();
 
-    updateUserPasswordById(
-      {
-        id: auth?.user?.id,
-        currentPassword: data.currentPassword,
-        newPassword: data.newPassword,
-      },
-      () => {
-        setIsLoading(false);
+	const {
+		register,
+		handleSubmit,
+		formState: { isDirty, errors },
+		reset,
+	} = useForm<ChangePasswordFormData>({
+		resolver: yupResolver(updatePasswordFormSchema),
+	});
 
-        snackbarsService?.addAlert({
-          message: "Password well updated",
-          severity: "success",
-        });
+	const handleSavePassword = async (
+		data: ChangePasswordFormData
+	): Promise<void> => {
+		if (auth?.value.user !== undefined) {
+			setIsLoading(true);
 
-        reset();
-      }
-    ).catch((err: Error) => {
-      setIsLoading(false);
+			updateUserPasswordById(
+				{
+					id: auth?.value.user?.id,
+					currentPassword: data.currentPassword,
+					newPassword: data.newPassword,
+				},
+				() => {
+					setIsLoading(false);
 
-      snackbarsService?.addAlert({
-        message: "Error while updating password, check your current password.",
-        severity: "error",
-      });
-      reset(data);
-    });
-  };
+					enqueueSnackbar(t.profile["password-well-updated"], {
+						variant: "success",
+					});
 
-  return (
-    <Card
-      component="form"
-      variant="outlined"
-      onSubmit={handleSubmit(handleSavePassword)}
-    >
-      <CardContent>
-        <TextField
-          fullWidth
-          placeholder="Current password"
-          {...register("currentPassword")}
-          sx={{ mb: 1 }}
-          error={errors.currentPassword != null}
-          helperText={errors.currentPassword?.message}
-        />
+					reset();
+				}
+			).catch((err) => {
+				setIsLoading(false);
 
-        <TextField
-          fullWidth
-          placeholder="New password"
-          {...register("newPassword")}
-          sx={{ mb: 1 }}
-          error={errors.newPassword != null}
-          helperText={errors.newPassword?.message}
-        />
-      </CardContent>
+				if (err?.response?.status === 401) {
+					enqueueSnackbar(t.auth["sign-in-again"], {
+						variant: "error",
+					});
 
-      <CardActions>
-        <LoadingButton
-          type="submit"
-          variant="contained"
-          disabled={!isDirty}
-          loading={isLoading}
-          sx={{
-            m: 1,
-          }}
-        >
-          Save
-        </LoadingButton>
+					authActions.logout();
+				} else {
+					enqueueSnackbar(t.profile["error-updating-password"], {
+						variant: "error",
+					});
+				}
 
-        {!isPremium(auth?.user) ? <GetLicenceButton /> : <Box />}
-      </CardActions>
-    </Card>
-  );
+				reset(data);
+			});
+		}
+	};
+
+	const handleClickShowPassword = (): void => {
+		setShowPassword(!showPassword);
+	};
+
+	const handleClickShowPasswordNew = (): void => {
+		setShowPasswordNew(!showPasswordNew);
+	};
+
+	return (
+		<Card
+			component="form"
+			variant="outlined"
+			onSubmit={handleSubmit(handleSavePassword)}
+		>
+			<CardContent>
+				<TextField
+					fullWidth
+					type={showPassword ? "text" : "password"}
+					label={t.profile["current-password"]}
+					InputProps={{
+						endAdornment: (
+							<IconButton
+								aria-label="toggle password visibility"
+								onClick={handleClickShowPassword}
+								edge="end"
+							>
+								{showPassword ? <VisibilityOff /> : <Visibility />}
+							</IconButton>
+						),
+					}}
+					{...register("currentPassword")}
+					sx={{ mb: 1 }}
+					error={errors.currentPassword != null}
+					helperText={errors.currentPassword?.message}
+				/>
+
+				<TextField
+					fullWidth
+					type={showPasswordNew ? "text" : "password"}
+					label={t.profile["new-password"]}
+					InputProps={{
+						endAdornment: (
+							<IconButton
+								aria-label="toggle password visibility"
+								onClick={handleClickShowPasswordNew}
+								edge="end"
+							>
+								{showPasswordNew ? <VisibilityOff /> : <Visibility />}
+							</IconButton>
+						),
+					}}
+					{...register("newPassword")}
+					sx={{ mb: 1 }}
+					error={errors.newPassword != null}
+					helperText={errors.newPassword?.message}
+				/>
+			</CardContent>
+
+			<CardActions>
+				<LoadingButton
+					type="submit"
+					variant="contained"
+					disabled={!isDirty}
+					loading={isLoading}
+					sx={{
+						m: 1,
+					}}
+				>
+					{t.common.save}
+				</LoadingButton>
+			</CardActions>
+		</Card>
+	);
 };
 
 export default ChangePasswordForm;

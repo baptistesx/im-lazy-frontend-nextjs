@@ -1,228 +1,249 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  MenuItem,
-  TextField,
+	Button,
+	Dialog,
+	DialogActions,
+	MenuItem,
+	TextField,
 } from "@mui/material";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { Role, useAuth, User } from "../../providers/AuthProvider";
-import { useSnackbars } from "../../providers/SnackbarProvider";
-import editUserFormSchema from "../../schemas/editUserFormSchema";
-import { createUser, updateUserById } from "../../services/userApi";
-import { capitalizeFirstLetter } from "../../utils/functions";
+import { useAuthActions } from "@providers/AuthActionsProvider";
+import { useAuth } from "@providers/AuthProvider";
+import editUserFormSchema from "@schemas/editUserFormSchema";
+import { createUser, updateUserById } from "@services/userApi";
+import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
+import { ReactElement, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
-interface EditUserDialogFormData {
-  name: string;
-  role: Role;
-  email: string;
-  password: string;
-}
+export type Role = "admin" | "premium" | "classic";
 
-interface EditUserDialogProps {
-  keepMounted: boolean;
-  open: boolean;
-  onClose: Function;
-  user?: User | null;
-}
+export type User = {
+	id: string;
+	name: string;
+	email: string;
+	role: Role;
+	isEmailVerified: boolean;
+	lastLogin: Date;
+};
 
-function EditUserDialog(props: EditUserDialogProps) {
-  const { onClose, open, user, ...other } = props;
+type EditUserDialogFormData = {
+	name: string;
+	role: Role;
+	email: string;
+	password: string;
+};
 
-  const auth = useAuth();
+type EditUserDialogProps = {
+	keepMounted: boolean;
+	open: boolean;
+	onClose: ({ modified }: { modified: boolean }) => Promise<void>;
+	user?: User | undefined;
+};
 
-  const snackbarsService = useSnackbars();
+const EditUserDialog = (props: EditUserDialogProps): ReactElement => {
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
-  const [currentUser, setUser] = useState(user);
+	const { onClose, open, user, ...other } = props;
 
-  // const radioGroupRef = useRef(null);
+	const auth = useAuth();
+	const authActions = useAuthActions();
 
-  const [isSaving, setIsSaving] = useState(false);
+	const { enqueueSnackbar } = useSnackbar();
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    control,
-    formState: { isDirty, errors },
-    reset,
-  } = useForm<EditUserDialogFormData>({
-    resolver: yupResolver(editUserFormSchema),
-  });
+	const [currentUser, setUser] = useState<User | undefined>(user);
 
-  useEffect(() => {
-    const subscription = watch((value, { name, type }) => {});
-    return () => subscription.unsubscribe();
-  }, [watch]);
+	const [isSaving, setIsSaving] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (!open) {
-      setUser(user);
-    }
-  }, [user, open]);
+	const {
+		register,
+		handleSubmit,
+		watch,
+		formState: { isDirty, errors },
+		reset,
+	} = useForm<EditUserDialogFormData>({
+		resolver: yupResolver(editUserFormSchema),
+	});
 
-  const handleEntering = () => {
-    // if (radioGroupRef.current != null) {
-    //   radioGroupRef.current.focus();
-    // }
-  };
+	useEffect(() => {
+		const subscription = watch(() => {});
+		return () => subscription.unsubscribe();
+	}, [watch]);
 
-  const onSubmit = async (data: EditUserDialogFormData) => {
-    setIsSaving(true);
+	useEffect(() => {
+		if (!open) {
+			setUser(user);
+		}
+	}, [user, open]);
 
-    // If updating user
-    if (currentUser?.id) {
-      updateUserById(
-        {
-          id: currentUser.id,
-          email: data.email,
-          role: data.role,
-          name: data.name,
-        },
-        () => {
-          setIsSaving(false);
+	const onSubmit = async (data: EditUserDialogFormData): Promise<void> => {
+		setIsSaving(true);
 
-          onClose({ modified: true });
+		// If updating user
+		if (currentUser?.id) {
+			updateUserById(
+				{
+					id: currentUser.id,
+					email: data.email,
+					role: data.role,
+					name: data.name,
+				},
+				() => {
+					setIsSaving(false);
 
-          snackbarsService?.addAlert({
-            message: "User well updated",
-            severity: "success",
-          });
+					onClose({ modified: true });
 
-          if (currentUser?.id === auth?.user?.id) {
-            auth.fetchCurrentUser();
-          }
+					enqueueSnackbar(t.profile["user-well-updated"], {
+						variant: "success",
+					});
 
-          reset(data);
-        }
-      ).catch((err: Error) => {
-        setIsSaving(false);
+					if (currentUser?.id === auth?.value.user?.id) {
+						auth.setValue({
+							user: {
+								...auth.value.user,
+								email: data.email,
+								name: data.name,
+							},
+							status: "connected",
+						});
+					}
 
-        snackbarsService?.addAlert({
-          message: "An error occured while updating user",
-          severity: "error",
-        });
-      });
-    } else {
-      // If creating user
-      createUser(
-        {
-          email: data.email,
-          role: data.role,
-          name: data.name,
-        },
-        () => {
-          setIsSaving(false);
+					reset(data);
+				}
+			).catch((err) => {
+				setIsSaving(false);
 
-          onClose({ modified: true });
+				if (err?.response?.status === 401) {
+					enqueueSnackbar(t.auth["sign-in-again"], {
+						variant: "error",
+					});
 
-          snackbarsService?.addAlert({
-            message: "User well created",
-            severity: "success",
-          });
+					authActions.logout();
+				} else {
+					enqueueSnackbar(t.profile["error-updating-profile"], {
+						variant: "error",
+					});
+				}
+			});
+		} else {
+			// If creating user
+			createUser(
+				{
+					email: data.email,
+					role: data.role,
+					name: data.name,
+				},
+				() => {
+					setIsSaving(false);
 
-          reset(data);
-        }
-      ).catch((err: Error) => {
-        setIsSaving(false);
+					onClose({ modified: true });
 
-        snackbarsService?.addAlert({
-          message:
-            "An error occured while creating user, email might be already used.",
-          severity: "error",
-        });
-      });
-    }
-  };
+					enqueueSnackbar(t.profile["user-well-created"], {
+						variant: "success",
+					});
 
-  return (
-    <Dialog
-      TransitionProps={{ onEntering: handleEntering }}
-      open={open}
-      {...other}
-      onClose={() => {
-        onClose({ modified: false });
-      }}
-    >
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogTitle>{currentUser?.id ? "Edit" : "Create"} user</DialogTitle>
+					reset(data);
+				}
+			).catch((err) => {
+				setIsSaving(false);
 
-        <DialogContent>
-          <TextField
-            fullWidth
-            placeholder="Name"
-            {...register("name")}
-            sx={{ mb: 1 }}
-            defaultValue={capitalizeFirstLetter(currentUser?.name)}
-            error={errors.name != null}
-            helperText={errors.name?.message}
-          />
+				if (err?.response?.status === 401) {
+					enqueueSnackbar(t.auth["sign-in-again"], {
+						variant: "error",
+					});
 
-          <TextField
-            fullWidth
-            placeholder="Email"
-            {...register("email")}
-            sx={{ mb: 1 }}
-            defaultValue={currentUser?.email}
-            error={errors.email != null}
-            helperText={errors.email?.message}
-          />
+					authActions.logout();
+				} else {
+					enqueueSnackbar(t.auth["error-creating-user"], {
+						variant: "error",
+					});
+				}
+			});
+		}
+	};
 
-          {/* //TODO: add register to fit in EditUserFormSchema */}
-          <Controller
-            name="role"
-            control={control}
-            rules={{ required: "Role needed" }}
-            render={({ field: { onChange, value } }) => (
-              <TextField
-                fullWidth
-                select
-                label="Role"
-                value={value}
-                onChange={onChange}
-                defaultValue={currentUser?.role}
-                disabled={currentUser?.id === auth?.user?.id}
-              >
-                {["admin", "premium", "classic"].map((role) => (
-                  <MenuItem key={role} value={role}>
-                    {capitalizeFirstLetter(role)}
-                  </MenuItem>
-                ))}
-              </TextField>
-            )}
-          />
-        </DialogContent>
+	return (
+		<Dialog
+			open={open}
+			{...other}
+			onClose={(): Promise<void> => onClose({ modified: false })}
+		>
+			<form onSubmit={handleSubmit(onSubmit)}>
+				<DialogTitle>
+					{currentUser?.id !== undefined ? t.common.edit : t.common.create}{" "}
+					{t.common.user}
+				</DialogTitle>
 
-        <DialogActions>
-          <Button onClick={() => onClose({ modified: false })}>Cancel</Button>
+				<DialogContent>
+					<TextField
+						fullWidth
+						label={t.common.name}
+						{...register("name")}
+						sx={{ mb: 1, mt: 1, textTransform: "capitalize" }}
+						defaultValue={currentUser?.name}
+						error={errors.name != null}
+						helperText={errors.name?.message}
+					/>
 
-          <LoadingButton
-            type="submit"
-            variant="contained"
-            disabled={!isDirty}
-            loading={isSaving}
-            sx={{
-              m: 1,
-            }}
-          >
-            Save
-          </LoadingButton>
-        </DialogActions>
-      </form>
-    </Dialog>
-  );
-}
+					<TextField
+						fullWidth
+						label={t.common.email}
+						{...register("email")}
+						sx={{ mb: 1, mt: 1 }}
+						defaultValue={currentUser?.email}
+						error={errors.email != null}
+						helperText={errors.email?.message}
+					/>
+
+					<TextField
+						fullWidth
+						select
+						label={t.common.role}
+						inputProps={{ readOnly: currentUser?.id === auth?.value.user?.id }}
+						{...register("role")}
+						sx={{ mt: 1 }}
+						defaultValue={currentUser?.role}
+						error={errors.role != null}
+						helperText={errors.role?.message}
+					>
+						{["admin", "premium", "classic"].map((role) => (
+							<MenuItem
+								key={role}
+								value={role}
+								sx={{ textTransform: "capitalize" }}
+							>
+								{role}
+							</MenuItem>
+						))}
+					</TextField>
+				</DialogContent>
+
+				<DialogActions>
+					<Button onClick={(): Promise<void> => onClose({ modified: false })}>
+						{t.common.cancel}
+					</Button>
+
+					<LoadingButton
+						type="submit"
+						variant="contained"
+						disabled={!isDirty}
+						loading={isSaving}
+						sx={{
+							m: 1,
+						}}
+					>
+						{t.common.save}
+					</LoadingButton>
+				</DialogActions>
+			</form>
+		</Dialog>
+	);
+};
 
 export default EditUserDialog;
-
-EditUserDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-  user: PropTypes.object,
-};

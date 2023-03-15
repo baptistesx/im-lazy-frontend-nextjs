@@ -1,202 +1,71 @@
-import { useRouter } from "next/router";
+import { User } from "@components/users/EditUserDialog";
 import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
+	Context,
+	createContext,
+	ReactElement,
+	useContext,
+	useState,
 } from "react";
-import useSWR from "swr";
-import {
-  getUser,
-  getUserSWR,
-  signInWithEmailAndPassword,
-  signInWithGoogle,
-  signOut,
-  signUpWithEmailAndPassword,
-} from "../services/userApi";
-import { useSnackbars } from "./SnackbarProvider";
 
-export type Role = "admin" | "premium" | "classic";
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: Role;
-  isEmailVerified: boolean;
-  lastLogin: Date;
+type Connected = {
+	user: User;
+	status: "connected";
+};
+type Loading = {
+	user: User | undefined;
+	status: "loading";
+};
+type NotConnected = {
+	user: undefined;
+	status: "not-connected";
 };
 
-type AuthStatus = "loading" | "connected" | "not-connected" | "error";
-
-type AuthValue = {
-  user: User | null | undefined;
-  status: AuthStatus;
-  logout: () => void;
-  login: (email: string, password: string, cb: Function) => void;
-  register: (
-    name: string,
-    email: string,
-    password: string,
-    cb: Function
-  ) => void;
-  loginWithGoogle: (token: string, cb: Function) => void;
-  fetchCurrentUser: () => void;
+export type AuthValue = {
+	value: Connected | NotConnected | Loading;
+	setValue: (value: Connected | NotConnected | Loading) => void;
+	isAdmin: (user: User | undefined) => boolean;
+	isPremium: (user: User | undefined) => boolean;
 };
 
-const AuthContext = createContext<AuthValue | undefined>(undefined);
+const AuthContext: Context<AuthValue | undefined> = createContext<
+	AuthValue | undefined
+>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const fetcher = (url: RequestInfo) => getUserSWR();
+export const AuthProvider = ({
+	children,
+}: {
+	children: ReactElement;
+}): ReactElement => {
+	const [value, setValue] = useState<Connected | NotConnected | Loading>({
+		user: undefined,
+		status: "not-connected",
+	});
 
-  const { data: userSWR, mutate, error } = useSWR("user", fetcher);
-  const [user, setUser] = useState<User | null | undefined>(null);
-  const [status, setStatus] = useState<AuthStatus>("loading");
+	const isAdmin = (user: User | undefined): boolean => user?.role === "admin";
 
-  const snackbarsService = useSnackbars();
+	const isPremium = (user: User | undefined): boolean =>
+		user?.role === "admin" || user?.role === "premium";
 
-  const router = useRouter();
-
-  useEffect(() => {
-    setStatus("loading");
-    fetchCurrentUser();
-    setUser(userSWR);
-  }, [userSWR]);
-
-  const fetchCurrentUser = () => {
-    getUser((user: User) => {
-      setUser(user);
-      setStatus("connected");
-    }).catch((err: Error) => {
-      setStatus("not-connected");
-
-      // TODO: there is probably a better way to get NotSignedInRoutes
-      if (
-        router.route !== "/" &&
-        router.route !== "/auth/sign-in" &&
-        router.route !== "/auth/sign-up" &&
-        router.route !== "/auth/reset-password"
-      ) {
-        snackbarsService?.addAlert({
-          message: "An error occured while fetching user.",
-          severity: "error",
-        });
-      }
-    });
-  };
-
-  const logout = async () => {
-    await signOut(() => {
-      setUser(null);
-      setStatus("not-connected");
-      router.push("/");
-    }).catch((err: Error) => {
-      setStatus("not-connected");
-      snackbarsService?.addAlert({
-        message: "An error occured while signing out",
-        severity: "error",
-      });
-    });
-  };
-
-  const login = async (email: string, password: string, cb: Function) => {
-    setStatus("loading");
-
-    await signInWithEmailAndPassword(email, password, (user: User) => {
-      cb();
-      setUser(user);
-      setStatus("connected");
-      snackbarsService?.addAlert({
-        message: !user.lastLogin ? "Welcome to ImLazy app !" : "Welcome back !",
-        severity: "success",
-      });
-
-      router.push("/dashboard");
-    }).catch((err: Error) => {
-      cb();
-
-      setUser(null);
-      setStatus("not-connected");
-      //TODO: add internet connection checker and customize message error
-      snackbarsService?.addAlert({
-        message:
-          "Check your internet connection or email/password might be invalid",
-        severity: "error",
-      });
-    });
-  };
-
-  const loginWithGoogle = async (token: string, cb: Function) => {
-    setStatus("loading");
-    await signInWithGoogle(token, (user: User) => {
-      cb();
-      setUser(user);
-      setStatus("connected");
-
-      snackbarsService?.addAlert({
-        message: !user.lastLogin ? "Welcome to ImLazy app !" : "Welcome back !",
-        severity: "success",
-      });
-
-      router.replace("/dashboard");
-    }).catch((err: Error) => {
-      cb();
-      setUser(null);
-      setStatus("not-connected");
-      snackbarsService?.addAlert({
-        message: "An error occured while signing in with Google",
-        severity: "error",
-      });
-    });
-  };
-
-  const register = async (
-    name: string,
-    email: string,
-    password: string,
-    cb: Function
-  ) => {
-    setStatus("loading");
-
-    await signUpWithEmailAndPassword(name, email, password, (user: User) => {
-      cb();
-      setUser(user);
-      setStatus("connected");
-      snackbarsService?.addAlert({
-        message: "Welcome to ImLazy app !",
-        severity: "success",
-      });
-
-      router.replace("/dashboard");
-    }).catch((err: Error) => {
-      cb();
-
-      setUser(null);
-      setStatus("not-connected");
-
-      snackbarsService?.addAlert({
-        message:
-          "An error occured while signing up. This email might be used already",
-        severity: "error",
-      });
-    });
-  };
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        status,
-        logout,
-        login,
-        loginWithGoogle,
-        register,
-        fetchCurrentUser,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+	return (
+		<AuthContext.Provider
+			value={{
+				value,
+				setValue,
+				isAdmin,
+				isPremium,
+			}}
+		>
+			{children}
+		</AuthContext.Provider>
+	);
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = (): AuthValue => {
+	const context = useContext(AuthContext);
+
+	if (context === undefined) {
+		throw new Error("useAuth must be used withing a AuthProvider");
+	}
+
+	return context;
+};
