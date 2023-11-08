@@ -1,128 +1,28 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { LoadingButton } from "@mui/lab";
-import {
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  TextField,
-  Typography,
-} from "@mui/material";
-import Link from "next/link";
+import SignedInRoute from "@components/routes/SignedInRoute";
+import ChangePasswordForm from "@components/users/ChangePasswordForm";
+import ProfileForm from "@components/users/ProfileForm";
+import { Typography } from "@mui/material";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import SignedInRoute from "../components/SignedInRoute";
-import { useAuth } from "../providers/AuthProvider";
-import { useSnackbars } from "../providers/SnackbarProvider";
-import editProfileFormSchema from "../schemas/editProfileFormSchema";
-import { updateUserById } from "../services/userApi";
-import { capitalizeFirstLetter, isPremium } from "../utils/functions";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
+import { ReactElement } from "react";
 
-type ProfileSubmitFormData = {
-  email: string;
-  name: string;
+const Profile = (): ReactElement => {
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
+
+	return (
+		<SignedInRoute title={t.profile.title}>
+			<ProfileForm />
+
+			<Typography variant="h4" sx={{ mt: 1, mb: 1 }}>
+				{t.profile["change-password"]}
+			</Typography>
+
+			<ChangePasswordForm />
+		</SignedInRoute>
+	);
 };
-
-function Profile() {
-  const auth = useAuth();
-
-  const snackbarsService = useSnackbars();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { isDirty, errors },
-    reset,
-  } = useForm<ProfileSubmitFormData>({
-    resolver: yupResolver(editProfileFormSchema),
-  });
-
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSave = async (data: ProfileSubmitFormData) => {
-    setIsLoading(true);
-
-    updateUserById(
-      {
-        id: auth?.user?.id,
-        email: data.email,
-        role: auth?.user?.role, //TODO security issue => pass this param optional
-        name: data.name,
-      },
-      () => {
-        setIsLoading(false);
-
-        snackbarsService?.addAlert({
-          message: "User well updated",
-          severity: "success",
-        });
-
-        auth?.fetchCurrentUser();
-
-        reset(data);
-      }
-    );
-  };
-
-  return (
-    <SignedInRoute>
-      <Typography variant="h1">Profile</Typography>
-
-      <Card
-        component="form"
-        variant="outlined"
-        onSubmit={handleSubmit(handleSave)}
-      >
-        <CardContent>
-          <TextField
-            fullWidth
-            placeholder="Name"
-            {...register("name")}
-            sx={{ mb: 1 }}
-            defaultValue={capitalizeFirstLetter(auth?.user?.name)}
-            error={errors.name != null}
-            helperText={errors.name?.message}
-          />
-
-          <TextField
-            fullWidth
-            placeholder="Email"
-            {...register("email")}
-            sx={{ mb: 1 }}
-            defaultValue={auth?.user?.email}
-            error={errors.email != null}
-            helperText={errors.email?.message}
-          />
-          {/* //TODO: add feature to change password */}
-          {!isPremium(auth?.user) ? (
-            <Link href="/get-licence">
-              <Button variant="contained" sx={{ m: 1 }}>
-                Get Premium Account to access bots !
-              </Button>
-            </Link>
-          ) : (
-            <Box />
-          )}
-        </CardContent>
-
-        <CardActions>
-          <LoadingButton
-            type="submit"
-            variant="contained"
-            disabled={!isDirty}
-            loading={isLoading}
-            sx={{
-              m: 1,
-            }}
-          >
-            Save
-          </LoadingButton>
-        </CardActions>
-      </Card>
-    </SignedInRoute>
-  );
-}
 
 export default Profile;

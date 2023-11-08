@@ -1,17 +1,23 @@
-import { Button, Typography } from "@mui/material";
+import SignedInLayout from "@components/layout/SignedInLayout";
+import { Button } from "@mui/material";
 import Link from "next/link";
-import SignedInLayout from "../components/layout/SignedInLayout";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
+import { ReactNode } from "react";
 
-function ResetPassword() {
-  return (
-    <SignedInLayout>
-      <Typography variant="h1">Page not found (Error 404)</Typography>
+const ResetPassword = (): ReactNode => {
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
-      <Link href="/">
-        <Button variant="contained">Back to home page</Button>
-      </Link>
-    </SignedInLayout>
-  );
-}
+	return (
+		<SignedInLayout title={t[404].title}>
+			<Link href="/" passHref>
+				<Button variant="contained">{t[404]["back-button-message"]}</Button>
+			</Link>
+		</SignedInLayout>
+	);
+};
 
 export default ResetPassword;

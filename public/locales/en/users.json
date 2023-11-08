@@ -1,0 +1,14 @@
+{
+	"admin": "Admin",
+	"available-users": "Available users",
+	"create-user": "Create a user",
+	"delete-user": "Delete user",
+	"edit-user": "Edit user",
+	"email-verified": "Email verified",
+	"error-deleting-user": "An error occurred while deleting user",
+	"error-getting-users": "An error occurred while getting users",
+	"no-users": "No users",
+	"premium": "Premium",
+	"title": "Users",
+	"user-well-deleted": "User well deleted"
+}

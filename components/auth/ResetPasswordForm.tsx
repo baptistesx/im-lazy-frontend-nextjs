@@ -1,102 +1,108 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
 import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Link,
-  TextField,
+	Button,
+	Card,
+	CardActions,
+	CardContent,
+	TextField,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import resetPasswordFormSchema from "@schemas/resetPasswordFormSchema";
+import { resetPassword } from "@services/userApi";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
+import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSnackbars } from "../../providers/SnackbarProvider";
-import resetPasswordFormSchema from "../../schemas/resetPasswordFormSchema";
-import { resetPassword } from "../../services/userApi";
 
-type ResetPasswordFormData = {
-  email: string;
+export type ResetPasswordFormData = {
+	email: string;
 };
 
-const ResetPasswordForm = () => {
-  const snackbarsService = useSnackbars();
+const ResetPasswordForm = (): ReactElement => {
+	const { enqueueSnackbar } = useSnackbar();
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { isDirty, errors },
-    reset,
-  } = useForm<ResetPasswordFormData>({
-    resolver: yupResolver(resetPasswordFormSchema),
-  });
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    const subscription = watch((value, { name, type }) => {});
-    return () => subscription.unsubscribe();
-  }, [watch]);
+	const {
+		register,
+		handleSubmit,
+		watch,
+		formState: { isDirty, errors },
+		reset,
+	} = useForm<ResetPasswordFormData>({
+		resolver: yupResolver(resetPasswordFormSchema),
+	});
 
-  const onSubmit = async (data: ResetPasswordFormData) => {
-    setIsLoading(true);
+	useEffect(() => {
+		const subscription = watch(() => {});
 
-    resetPassword(data.email, () => {
-      setIsLoading(false);
+		return () => subscription.unsubscribe();
+	}, [watch]);
 
-      snackbarsService?.addAlert({
-        message: "If email is valid, a reset password email has been sent",
-        severity: "success",
-      });
+	const onSubmit = async (data: ResetPasswordFormData): Promise<void> => {
+		setIsLoading(true);
 
-      reset(data);
-    }).catch((err: Error) => {
-      setIsLoading(false);
+		resetPassword(data.email, () => {
+			setIsLoading(false);
 
-      snackbarsService?.addAlert({
-        message: "An error occured while sending a reset password email",
-        severity: "error",
-      });
-    });
-  };
+			enqueueSnackbar(t.auth["email-well-sent"], {
+				variant: "success",
+			});
 
-  return (
-    <Card component="form" onSubmit={handleSubmit(onSubmit)}>
-      <CardContent>
-        <TextField
-          fullWidth
-          placeholder="Email"
-          {...register("email")}
-          error={errors.email != null}
-          helperText={errors.email?.message}
-        />
-      </CardContent>
+			reset(data);
+		}).catch(() => {
+			setIsLoading(false);
 
-      <CardActions>
-        <LoadingButton
-          sx={{
-            m: 1,
-          }}
-          type="submit"
-          variant="contained"
-          disabled={!isDirty}
-          loading={isLoading}
-        >
-          Reset password
-        </LoadingButton>
+			enqueueSnackbar(t.auth["error-sending-email"], {
+				variant: "error",
+			});
+		});
+	};
 
-        <Link href="/auth/sign-in">
-          <Button
-            sx={{
-              m: 1,
-            }}
-          >
-            Back
-          </Button>
-        </Link>
-      </CardActions>
-    </Card>
-  );
+	return (
+		<Card component="form" onSubmit={handleSubmit(onSubmit)}>
+			<CardContent>
+				<TextField
+					fullWidth
+					label={t.common.email}
+					{...register("email")}
+					error={errors.email != null}
+					helperText={errors.email?.message}
+				/>
+			</CardContent>
+
+			<CardActions>
+				<LoadingButton
+					sx={{
+						m: 1,
+					}}
+					type="submit"
+					variant="contained"
+					disabled={!isDirty}
+					loading={isLoading}
+				>
+					{t.auth["reset-password"]}
+				</LoadingButton>
+
+				<Link href="/auth/sign-in" passHref>
+					<Button
+						sx={{
+							m: 1,
+						}}
+					>
+						{t.common.back}
+					</Button>
+				</Link>
+			</CardActions>
+		</Card>
+	);
 };
 
 export default ResetPasswordForm;

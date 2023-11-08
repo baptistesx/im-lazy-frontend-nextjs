@@ -1,49 +1,64 @@
+import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
+import { Dispatch, ReactElement, SetStateAction } from "react";
 import GoogleLogin, {
-  GoogleLoginResponse,
-  GoogleLoginResponseOffline,
+	GoogleLoginResponse,
+	GoogleLoginResponseOffline,
 } from "react-google-login";
-import { useAuth } from "../../providers/AuthProvider";
-import { useSnackbars } from "../../providers/SnackbarProvider";
-import { GOOGLE_CLIENT_ID } from "../../utils/constants";
+import { useAuthActions } from "../../providers/AuthActionsProvider";
 
-function GoogleLoginButton({ setIsLoading }: { setIsLoading: Function }) {
-  const snackbarsService = useSnackbars();
+type GoogleLoginButtonProps = {
+	setIsLoading: Dispatch<SetStateAction<boolean>>;
+};
 
-  const auth = useAuth();
+const GoogleLoginButton = ({
+	setIsLoading,
+}: GoogleLoginButtonProps): ReactElement => {
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
-  const isResponseAGoogleLoginResponse = (
-    response: GoogleLoginResponse | GoogleLoginResponseOffline
-  ): response is GoogleLoginResponse => {
-    return (response as GoogleLoginResponse).accessToken !== null;
-  };
+	const { enqueueSnackbar } = useSnackbar();
 
-  const onGetOauthGoogleTokenSuccess = async (
-    response: GoogleLoginResponse | GoogleLoginResponseOffline
-  ) => {
-    setIsLoading(true);
+	const authActions = useAuthActions();
 
-    if (isResponseAGoogleLoginResponse(response)) {
-      auth?.loginWithGoogle(response.accessToken, () => {
-        setIsLoading(false);
-      });
-    }
-  };
+	const isResponseAGoogleLoginResponse = (
+		response: GoogleLoginResponse | GoogleLoginResponseOffline
+	): response is GoogleLoginResponse =>
+		(response as GoogleLoginResponse).accessToken !== null;
 
-  const onGetOauthGoogleTokenFail = async (error: any) => {
-    snackbarsService?.addAlert({
-      message: error?.details,
-      severity: "error",
-    });
-  };
+	const onGetOauthGoogleTokenSuccess = async (
+		response: GoogleLoginResponse | GoogleLoginResponseOffline
+	): Promise<void> => {
+		setIsLoading(true);
 
-  return (
-    <GoogleLogin
-      clientId={`${GOOGLE_CLIENT_ID}`}
-      buttonText="Sign in with Google"
-      onSuccess={onGetOauthGoogleTokenSuccess}
-      onFailure={onGetOauthGoogleTokenFail}
-    />
-  );
-}
+		if (isResponseAGoogleLoginResponse(response)) {
+			authActions?.loginWithGoogle(response.accessToken, () => {
+				setIsLoading(false);
+			});
+		} else {
+			setIsLoading(false);
+
+			enqueueSnackbar(t.auth["error-sign-in-google"], { variant: "error" });
+		}
+	};
+
+	const onGetOauthGoogleTokenFail = async (): Promise<void> => {
+		enqueueSnackbar(t.auth["error-sign-in-google"], {
+			variant: "error",
+		});
+	};
+
+	return (
+		<GoogleLogin
+			clientId={`${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}`}
+			buttonText={t.auth["sign-in-with-google"]}
+			onSuccess={onGetOauthGoogleTokenSuccess}
+			onFailure={onGetOauthGoogleTokenFail}
+		/>
+	);
+};
 
 export default GoogleLoginButton;

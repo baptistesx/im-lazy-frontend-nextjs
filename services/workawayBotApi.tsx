@@ -1,51 +1,128 @@
-import api from "./api";
+import { FormBotParams } from "@components/workawayBot/InfoForm";
+import axios, { AxiosResponse, Method } from "axios";
 
-export const setCity = async (city: string) => {
-  await api.axiosApiCall({
-    url: "setCity",
-    method: "post",
-    body: {
-      city,
-    },
-  });
+type MemberProfile = {
+	name: string;
+	age: number;
+	profileHref: string;
+	from: string;
+	idForMessage: string;
+	messageSent: boolean;
 };
 
-export const clearLogs = async (cb: Function) => {
-  await api.axiosApiCall({ url: "clearLogs", method: "get" }).then((res) => {
-    cb(res);
-  });
+export type WorkawayFile = {
+	id: number;
+	name: string;
+	createdAt: Date;
+	updatedAt: Date;
+	content?: { members: MemberProfile[] } | FormBotParams;
 };
 
-export const getFilesName = async (cb: Function) => {
-  await api.axiosApiCall({ url: "filesName", method: "get" }).then((res) => {
-    cb(res.data);
-  });
+type RequestBody = {
+	city?: string;
+	params?: FormBotParams;
 };
 
-export const downloadFileByName = async (name: string, cb: Function) => {
-  await api.axiosApiCall({ url: `file/${name}`, method: "get" }).then((res) => {
-    cb(res.data);
-  });
+type ApiResponse = {
+	files?: WorkawayFile[];
+	file?: WorkawayFile;
 };
 
-export const deleteFileByName = async (name: string, cb: Function) => {
-  await api
-    .axiosApiCall({ url: `file/${name}`, method: "delete" })
-    .then((res) => {
-      cb(res.data);
-    });
+const workawayBotApi = {
+	// All api requests are made thanks to this function
+	async axiosApiCall({
+		url,
+		method,
+		body = {},
+	}: {
+		url: string;
+		method: Method;
+		body?: RequestBody;
+	}): Promise<AxiosResponse<ApiResponse>> {
+		return axios({
+			method,
+			url: `${process.env.NEXT_PUBLIC_ENDPOINT}/workaway-bot/${url}`,
+			data: body,
+			headers: { "Content-Type": "application/json" },
+			withCredentials: true,
+		});
+	},
 };
 
-export const startBot = async (data: any, cb: Function) => {
-  await api
-    .axiosApiCall({ url: "startBot", method: "post", body: { ...data } })
-    .then((res) => {
-      cb(res);
-    });
+export const setCity = async (city: string): Promise<void> => {
+	await workawayBotApi.axiosApiCall({
+		url: "set-city",
+		method: "post",
+		body: {
+			city,
+		},
+	});
 };
 
-export const stopBot = async (cb: Function) => {
-  await api.axiosApiCall({ url: "stopBot", method: "get" }).then((res) => {
-    cb(res);
-  });
+export const clearLogs = async (
+	cb: (status: number) => void
+): Promise<void> => {
+	const res = await workawayBotApi.axiosApiCall({
+		url: "clear-logs",
+		method: "get",
+	});
+
+	cb(res.status);
+};
+
+export const getFilesInfo = async (
+	cb: (data: WorkawayFile[]) => void
+): Promise<void> => {
+	const res = await workawayBotApi.axiosApiCall({
+		url: "files-info",
+		method: "get",
+	});
+
+	if (res.data.files !== undefined) {
+		cb(res.data.files);
+	}
+};
+
+export const downloadFileById = async (
+	id: number,
+	cb: (data: WorkawayFile) => void
+): Promise<void> => {
+	const res = await workawayBotApi.axiosApiCall({
+		url: `file/${id}`,
+		method: "get",
+	});
+	if (res.data.file) {
+		cb(res.data.file);
+	}
+};
+
+export const deleteFileById = async (
+	id: number,
+	cb: () => Promise<void>
+): Promise<void> => {
+	await workawayBotApi.axiosApiCall({ url: `file/${id}`, method: "delete" });
+
+	cb();
+};
+
+export const startBot = async (
+	data: FormBotParams,
+	cb: (status: number) => void
+): Promise<void> => {
+	const res = await workawayBotApi.axiosApiCall({
+		url: "start-bot",
+		method: "post",
+		body: { ...data },
+	});
+
+	cb(res.status);
+};
+
+export const stopBot = async (cb: (status: number) => void): Promise<void> => {
+	const res = await workawayBotApi.axiosApiCall({
+		url: "stop-bot",
+		method: "get",
+	});
+
+	cb(res.status);
 };

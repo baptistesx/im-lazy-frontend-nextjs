@@ -1,168 +1,230 @@
 import { LoadingButton } from "@mui/lab";
 import { Box, Card, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useAuthActions } from "@providers/AuthActionsProvider";
+import { useAuth } from "@providers/AuthProvider";
+import { clearLogs, setCity } from "@services/workawayBotApi";
+import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
+import { ReactElement, useEffect, useState } from "react";
 import socketIOClient, { Socket } from "socket.io-client";
-import { useSnackbars } from "../../providers/SnackbarProvider";
-import { clearLogs, setCity } from "../../services/workawayBotApi";
-import { ENDPOINT } from "../../utils/constants";
 import CitiesFormDialog from "./CitiesFormDialog";
 
 let botLogsMessageSentIsFirst = true;
 
-const BotLogs = () => {
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const [isSocketInitialized, setIsSocketInitialized] =
-    useState<boolean>(false);
+type BotLogsProps = {
+	setIsRunning: (value: boolean) => void;
+};
 
-  const snackbarsService = useSnackbars();
+const BotLogs = (props: BotLogsProps): ReactElement => {
+	const { setIsRunning } = props;
 
-  const [botLogs, setBotLogs] = useState<string[]>([]);
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
-  const [isClearingLogs, setIsClearingLogs] = useState<boolean>(false);
+	const authActions = useAuthActions();
+	const auth = useAuth();
 
-  const [isCitiesDialogOpen, setIsCitiesDialogOpen] = useState<boolean>(false);
+	const [socket, setSocket] = useState<Socket | undefined>(undefined);
+	const [isSocketInitialized, setIsSocketInitialized] =
+		useState<boolean>(false);
 
-  const [fullCitySelected, setFullCitySelected] = useState<string>("");
+	const { enqueueSnackbar } = useSnackbar();
 
-  const [cities, setCities] = useState<string[]>([]);
+	const [botLogs, setBotLogs] = useState<string[] | undefined>(undefined);
 
-  const handleOpenCitiesDialog = (citiesArray: string[]) => {
-    setCities(citiesArray);
+	const [isClearingLogs, setIsClearingLogs] = useState<boolean>(false);
 
-    setIsCitiesDialogOpen(true);
-  };
+	const [isCitiesDialogOpen, setIsCitiesDialogOpen] = useState<boolean>(false);
 
-  const handleCloseCitiesDialog = async (city: string) => {
-    setIsCitiesDialogOpen(false);
+	const [fullCitySelected, setFullCitySelected] = useState<string | undefined>(
+		undefined
+	);
 
-    if (city) {
-      setFullCitySelected(city);
+	const [cities, setCities] = useState<string[] | undefined>(undefined);
 
-      await setCity(city).catch((err: Error) => {
-        snackbarsService?.addAlert({
-          message:
-            "An error occured while setting the city/country name, are you a premium member?",
-          severity: "error",
-        });
-      });
-    }
-  };
+	const handleOpenCitiesDialog = (citiesArray: string[]): void => {
+		setCities(citiesArray);
 
-  useEffect(() => {
-    if (socket === null) {
-      setSocket(socketIOClient(ENDPOINT as any));
-    }
+		setIsCitiesDialogOpen(true);
+	};
 
-    if (socket !== null && !isSocketInitialized) {
-      setIsSocketInitialized(true);
+	const handleCloseCitiesDialog = async (
+		city: string | undefined
+	): Promise<void> => {
+		if (city) {
+			setFullCitySelected(city);
 
-      socket.on("connection", (log: string) => {
-        setBotLogs((logs: string[]) => [...logs, log]);
+			await setCity(city).catch((err) => {
+				if (err?.response?.status === 401) {
+					enqueueSnackbar(t.auth["sign-in-again"], {
+						variant: "error",
+					});
 
-        scrollLogsDown();
-      });
+					authActions.logout();
+				} else {
+					enqueueSnackbar(t.workawayBot["error-setting-city"], {
+						variant: "error",
+					});
+				}
+			});
 
-      socket.on("botLogs", (log: string) => {
-        if (log.constructor === Array) {
-          setBotLogs((logs) => [logs[0], ...log]);
-        } else {
-          setBotLogs((logs) => [...logs, log]);
-        }
+			setIsCitiesDialogOpen(false);
+		} else {
+			enqueueSnackbar(t.workawayBot["no-city-selected"], {
+				variant: "error",
+			});
+		}
+	};
 
-        scrollLogsDown();
-      });
+	useEffect(() => {
+		if (socket === undefined) {
+			setSocket(
+				socketIOClient(process.env.NEXT_PUBLIC_ENDPOINT, {
+					query: { userId: auth?.value?.user?.id },
+				})
+			);
+		}
 
-      socket.on("botLogsMessageSent", (log: string) => {
-        if (botLogsMessageSentIsFirst) {
-          setBotLogs((logs) => [...logs, log]);
-          botLogsMessageSentIsFirst = false;
-        } else {
-          setBotLogs((logs) => [...logs.slice(0, -1), log]);
-        }
+		if (socket !== undefined && !isSocketInitialized) {
+			setIsSocketInitialized(true);
 
-        scrollLogsDown();
-      });
+			socket?.on("connection", (log: string) => {
+				setBotLogs((logs: string[] | undefined) =>
+					logs === undefined ? [log] : [...logs, log]
+				);
 
-      socket.on("citiesList", async (cities: string[]) =>
-        handleOpenCitiesDialog(cities)
-      );
-    }
-  }, [socket, botLogsMessageSentIsFirst, isSocketInitialized]);
+				scrollLogsDown();
+			});
 
-  const handleClickClearConsole = async () => {
-    setIsClearingLogs(true);
+			socket?.on("botLogs", (log: string) => {
+				if (log.constructor === Array) {
+					setBotLogs((logs) =>
+						logs === undefined ? [...log] : [logs[0], ...log]
+					);
+				} else {
+					setBotLogs((logs) =>
+						logs === undefined ? [...log] : [...logs, log]
+					);
+				}
 
-    clearLogs((res: { status: number }) => {
-      if (res.status === 200) {
-        setBotLogs((logs) => []);
-      }
+				scrollLogsDown();
+			});
 
-      setIsClearingLogs(false);
-    }).catch((err: Error) => {
-      setIsClearingLogs(false);
+			socket?.on("botLogsMessageSent", (log: string) => {
+				if (botLogsMessageSentIsFirst) {
+					setBotLogs((logs) => (logs === undefined ? [log] : [...logs, log]));
+					botLogsMessageSentIsFirst = false;
+				} else {
+					setBotLogs((logs) =>
+						logs === undefined ? [log] : [...logs.slice(0, -1), log]
+					);
+				}
 
-      snackbarsService?.addAlert({
-        message:
-          "An error occured while clearing logs, are you a premium member?",
-        severity: "error",
-      });
-    });
-  };
+				scrollLogsDown();
+			});
 
-  const scrollLogsDown = () => {
-    var elem: any = document.querySelector("#logs");
+			socket?.on("citiesList", async (cities: string[]) =>
+				handleOpenCitiesDialog(cities)
+			);
 
-    if (elem) {
-      elem.scrollTop = elem?.scrollHeight;
-    }
-  };
+			socket?.on("errorLogin", async () => {
+				enqueueSnackbar(t.workawayBot["bad-workaway-ids"], {
+					variant: "error",
+				});
 
-  return (
-    <Card
-      id="logs"
-      sx={{
-        width: "45%",
-        minWidth: 320,
-        minHeight: 400,
-        maxHeight: "80vh",
-        m: 1,
-        p: 1,
-        bgcolor: "#353b48",
-        color: "#ffffff",
-        display: "flex",
-        flexGrow: 1,
-        justifyContent: "space-between",
-        flexDirection: "column",
-        overflow: "auto",
-      }}
-    >
-      <Box>
-        {botLogs.map((log, index) => (
-          <Typography key={log + index}>{log}</Typography>
-        ))}
-      </Box>
+				setIsRunning(false);
+			});
 
-      <LoadingButton
-        variant="contained"
-        loading={isClearingLogs}
-        sx={{
-          m: 1,
-        }}
-        disabled={false}
-        onClick={handleClickClearConsole}
-      >
-        Clear logs
-      </LoadingButton>
+			socket?.on("botStopped", async () => {
+				enqueueSnackbar(t.workawayBot["bot-stopped"], {
+					variant: "info",
+				});
 
-      <CitiesFormDialog
-        keepMounted
-        open={isCitiesDialogOpen}
-        onClose={handleCloseCitiesDialog}
-        value={fullCitySelected}
-        cities={cities}
-      />
-    </Card>
-  );
+				setIsRunning(false);
+			});
+		}
+	}, [socket, isSocketInitialized]);
+
+	const handleClickClearConsole = async (): Promise<void> => {
+		setIsClearingLogs(true);
+
+		await clearLogs((status: number) => {
+			if (status === 200) {
+				setBotLogs(() => []);
+			}
+
+			setIsClearingLogs(false);
+		}).catch((err) => {
+			setIsClearingLogs(false);
+
+			if (err?.response?.status === 401) {
+				enqueueSnackbar(t.auth["sign-in-again"], {
+					variant: "error",
+				});
+
+				authActions.logout();
+			} else {
+				enqueueSnackbar(t.workawayBot["error-clearing-logs"], {
+					variant: "error",
+				});
+			}
+		});
+	};
+
+	const scrollLogsDown = (): void => {
+		var elem = document.querySelector("#logs");
+
+		if (elem) {
+			elem.scrollTop = elem?.scrollHeight;
+		}
+	};
+
+	return (
+		<Card
+			id="logs"
+			sx={{
+				width: { xs: "100%", md: "45%" },
+				minHeight: 400,
+				maxHeight: "80vh",
+				p: 1,
+				bgcolor: "#353b48",
+				color: "#ffffff",
+				display: "flex",
+				justifyContent: "space-between",
+				flexDirection: "column",
+				overflow: "auto",
+			}}
+		>
+			<Box>
+				{botLogs?.map((log, index) => (
+					<Typography key={log + index}>{log}</Typography>
+				))}
+			</Box>
+
+			<LoadingButton
+				variant="contained"
+				loading={isClearingLogs}
+				sx={{
+					m: 1,
+				}}
+				disabled={false}
+				onClick={handleClickClearConsole}
+			>
+				{t.workawayBot["clear-logs"]}
+			</LoadingButton>
+
+			<CitiesFormDialog
+				keepMounted
+				open={isCitiesDialogOpen}
+				onClose={handleCloseCitiesDialog}
+				value={fullCitySelected}
+				cities={cities}
+			/>
+		</Card>
+	);
 };
 
 export default BotLogs;

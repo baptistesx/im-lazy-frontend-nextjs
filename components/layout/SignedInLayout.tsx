@@ -1,105 +1,101 @@
-import { useTheme } from "@emotion/react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton } from "@mui/material";
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material/";
 import CssBaseline from "@mui/material/CssBaseline";
-import { Theme } from "@mui/material/styles";
+import { useAuth } from "@providers/AuthProvider";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
-import { useAuth } from "../../providers/AuthProvider";
-import { DRAWER_WIDTH } from "../../utils/constants";
-import CustomDrawer from "./CustomDrawer";
+import { ReactElement, useState } from "react";
+import CustomDrawer, { DRAWER_WIDTH } from "./CustomDrawer";
+import { LayoutProps } from "./NotSignInedLayout";
+import ToolBarMenu from "./ToolBarMenu";
 import ToolBarUserInfo from "./ToolBarUserInfo";
 
-const SignedInLayout = ({ children }: { children: React.ReactNode }) => {
-  const theme: Theme = useTheme();
+const SignedInLayout = ({ children, title }: LayoutProps): ReactElement => {
+	const auth = useAuth();
 
-  const auth = useAuth();
+	const [mobileOpen, setMobileOpen] = useState(false);
 
-  const onLogoutClick = async () => auth?.logout();
+	const handleDrawerToggle = (): void => setMobileOpen(!mobileOpen);
 
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+	return (
+		<Box sx={{ display: "flex", height: "100%" }}>
+			<CssBaseline />
 
-  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+			<AppBar
+				position="fixed"
+				sx={{
+					zIndex: (theme) => theme.zIndex.drawer + 1,
+					// width: { sm: `calc(100% - ${drawerWidth}px)` },
+					ml: { sm: `${DRAWER_WIDTH}px` },
+				}}
+			>
+				<Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+					<IconButton
+						color="inherit"
+						aria-label="open drawer"
+						edge="start"
+						onClick={handleDrawerToggle}
+						sx={{
+							mr: 2,
+							display:
+								auth?.value.user !== null && auth?.value.user !== undefined
+									? { sm: "none" }
+									: { xs: "none" },
+						}}
+					>
+						<MenuIcon />
+					</IconButton>
 
-  return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
+					<Link
+						href={auth?.value.status === "connected" ? "/dashboard" : "/"}
+						passHref
+					>
+						<Button>
+							<Image alt="logo" src="/logo-light.png" height={50} width={100} />
+						</Button>
+					</Link>
 
-      <AppBar
-        position="fixed"
-        sx={{
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-          // width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${DRAWER_WIDTH}px` },
-          backgroundColor: theme.palette.primary.main,
-        }}
-      >
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{
-              mr: 2,
-              display: auth?.user ? { sm: "none" } : { xs: "none" },
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
+					{auth?.value.status === "connected" ? (
+						<Box sx={{ display: "flex", alignItems: "center" }}>
+							<ToolBarUserInfo />
 
-          <Link href={auth?.status === "connected" ? "/dashboard" : "/"}>
-            <Button>
-              <Image src="/logo-light.png" height={50} width={100} />
-            </Button>
-          </Link>
+							<ToolBarMenu />
+						</Box>
+					) : (
+						<Box />
+					)}
+				</Toolbar>
+			</AppBar>
 
-          {auth?.status === "connected" ? (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <ToolBarUserInfo />
+			{auth?.value.status === "connected" ? (
+				<CustomDrawer
+					handleDrawerToggle={(): void => handleDrawerToggle()}
+					mobileOpen={mobileOpen}
+				/>
+			) : (
+				<Box />
+			)}
 
-              <Button sx={{ color: "white" }} onClick={onLogoutClick}>
-                Logout
-              </Button>
-            </Box>
-          ) : (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Link href="/auth/sign-in">
-                <Button sx={{ color: "white" }}>Sign In</Button>
-              </Link>
+			<Box
+				component="main"
+				sx={{
+					p: 3,
+					backgroundColor: "background.default",
+					color: "text.primary",
+					flexGrow: 1,
+					width: "100%",
+				}}
+			>
+				<Toolbar />
 
-              <Typography>|</Typography>
-
-              <Link href="/auth/sign-up">
-                <Button sx={{ color: "white" }}>Sign Up</Button>
-              </Link>
-            </Box>
-          )}
-        </Toolbar>
-      </AppBar>
-
-      {auth?.status === "connected" ? (
-        <CustomDrawer
-          handleDrawerToggle={() => handleDrawerToggle()}
-          mobileOpen={mobileOpen}
-        />
-      ) : (
-        <Box />
-      )}
-
-      <Box
-        component="main"
-        sx={{
-          p: 3,
-        }}
-      >
-        <Toolbar />
-        {children}
-      </Box>
-    </Box>
-  );
+				<Typography variant="h1" sx={{ m: 1 }}>
+					{title}
+				</Typography>
+				{children}
+			</Box>
+		</Box>
+	);
 };
 
 export default SignedInLayout;

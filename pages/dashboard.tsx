@@ -1,42 +1,85 @@
+import SignedInRoute from "@components/routes/SignedInRoute";
+import GetLicenceButton from "@components/users/GetLicenceButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import { Box, Button, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
+import { Alert, Box, Button } from "@mui/material";
+import { useAuth } from "@providers/AuthProvider";
+import { sendVerificationEmail } from "@services/userApi";
 import Link from "next/link";
-import SignedInRoute from "../components/SignedInRoute";
-import { useAuth } from "../providers/AuthProvider";
-import { isPremium } from '../utils/functions';
+import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
+import { ReactElement, useState } from "react";
 
-function Dashboard() {
-  const auth = useAuth();
+const Dashboard = (): ReactElement => {
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
-  return (
-    <SignedInRoute>
-      <Typography variant="h1">Dashboard</Typography>
+	const auth = useAuth();
 
-      {isPremium(auth?.user) ? (
-        <Link href="/workaway-bot">
-          <Button variant="contained" sx={{ m: 1 }}>
-            Workaway messaging
-            <ArrowForwardIcon />
-          </Button>
-        </Link>
-      ) : (
-        <Link href="/get-licence">
-          <Button variant="contained" sx={{ m: 1 }}>
-            Get Premium Account to access bots !
-            <ArrowForwardIcon />
-          </Button>
-        </Link>
-      )}
+	const { enqueueSnackbar } = useSnackbar();
 
-      {!auth?.user?.isEmailVerified ? (
-        <Typography>
-          Remember to check the confirmation email we sent you.
-        </Typography>
-      ) : (
-        <Box />
-      )}
-    </SignedInRoute>
-  );
-}
+	const [loading, setLoading] = useState<boolean>(false);
+
+	const handleSendVerificationEmailAgain = async (): Promise<void> => {
+		if (auth?.value.user?.email === undefined) {
+			enqueueSnackbar(t.dashboard["email-not-valid"], {
+				variant: "error",
+			});
+		} else {
+			setLoading(true);
+
+			sendVerificationEmail(auth.value.user.email, () => {
+				setLoading(false);
+
+				enqueueSnackbar(t.dashboard["email-well-sent"], {
+					variant: "success",
+				});
+			});
+		}
+	};
+
+	return (
+		<SignedInRoute title={t.dashboard.title}>
+			{auth?.isPremium(auth?.value.user) ? (
+				<Link href="/workaway-bot" passHref>
+					<Button variant="contained" sx={{ m: 1 }}>
+						{t.dashboard["bot-name"]}
+						<ArrowForwardIcon />
+					</Button>
+				</Link>
+			) : (
+				<GetLicenceButton />
+			)}
+
+			{!auth?.value.user?.isEmailVerified ? (
+				<Alert
+					severity="error"
+					action={
+						<LoadingButton
+							variant="outlined"
+							loading={loading}
+							onClick={handleSendVerificationEmailAgain}
+						>
+							{t.dashboard["send-again"]}
+						</LoadingButton>
+					}
+					sx={{
+						// width: "50%",
+						display: "flex",
+						justifyContent: "space-between",
+						alignContent: "center",
+					}}
+				>
+					{t.dashboard["remember-email-confirmation"]}
+				</Alert>
+			) : (
+				<Box />
+			)}
+		</SignedInRoute>
+	);
+};
 
 export default Dashboard;

@@ -1,0 +1,12 @@
+{
+	"change-password": "Change Password",
+	"current-password": "Current password",
+	"error-updating-password": "Error while updating password, check your current password.",
+	"error-updating-profile": "Error while updating profile.",
+	"new-password": "New password",
+	"password-well-updated": "Password well updated",
+	"role-needed": "Role needed",
+	"title": "Profile",
+	"user-well-created": " User well created",
+	"user-well-updated": "User well updated"
+}

@@ -1,147 +1,179 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Divider,
-  TextField,
+	Button,
+	Card,
+	CardActions,
+	CardContent,
+	Divider,
+	IconButton,
+	TextField,
 } from "@mui/material";
+import { useAuthActions } from "@providers/AuthActionsProvider";
+import signUpFormSchema from "@schemas/signUpFormSchema";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
+import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth } from "../../providers/AuthProvider";
-import signUpFormSchema from "../../schemas/signUpFormSchema";
 import GoogleLoginButton from "./GoogleLoginButton";
 
-//TODO: on google signin, ask to choose an account and don't directly connect to the last used (remove token?)
-
-type SignUpSubmitFormData = {
-  name: string;
-  email: string;
-  password: string;
-  passwordConfirmation: string;
+export type SignUpSubmitFormData = {
+	name: string;
+	email: string;
+	password: string;
+	passwordConfirmation: string;
 };
 
-const SignUpForm = () => {
-  const auth = useAuth();
+const SignUpForm = (): ReactElement => {
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
-  const [isSigningUp, setIsSigningUp] = useState(false);
+	const authActions = useAuthActions();
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { isDirty, errors },
-    reset,
-  } = useForm<SignUpSubmitFormData>({
-    resolver: yupResolver(signUpFormSchema),
-  });
+	const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
 
-  useEffect(() => {
-    const subscription = watch((value, { name, type }) => {});
-    return () => subscription.unsubscribe();
-  }, [watch]);
+	const [showPassword, setShowPassword] = useState<boolean>(false);
+	const [showPasswordConfirmation, setShowPasswordConfirmation] =
+		useState<boolean>(false);
 
-  const onSubmit = (data: SignUpSubmitFormData) => {
-    setIsSigningUp(true);
+	const {
+		register,
+		handleSubmit,
+		watch,
+		formState: { isDirty, errors },
+		reset,
+	} = useForm<SignUpSubmitFormData>({
+		resolver: yupResolver(signUpFormSchema),
+	});
 
-    auth?.register(data.name, data.email, data.password, () => {
-      setIsSigningUp(false);
+	useEffect(() => {
+		const subscription = watch(() => {});
 
-      reset(data);
-    });
-  };
+		return () => subscription.unsubscribe();
+	}, [watch]);
 
-  return (
-    <Card
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-      sx={{ minWidth: 320, maxWidth: 500 }}
-    >
-      <CardContent>
-        <TextField
-          fullWidth
-          placeholder="Name"
-          sx={{ mb: 2 }}
-          {...register("name")}
-          error={errors.name != null}
-          helperText={errors.name?.message}
-        />
+	const onSubmit = (data: SignUpSubmitFormData): void => {
+		setIsSigningUp(true);
 
-        <TextField
-          fullWidth
-          placeholder="Email"
-          sx={{ mb: 2 }}
-          {...register("email")}
-          error={errors.email != null}
-          helperText={errors.email?.message}
-        />
+		authActions?.register(data.name, data.email, data.password, () => {
+			setIsSigningUp(false);
 
-        <TextField
-          fullWidth
-          type={"password"}
-          placeholder="Password"
-          sx={{ mb: 2 }}
-          {...register("password")}
-          error={errors.password != null}
-          helperText={errors.password?.message}
-        />
+			reset(data);
+		});
+	};
 
-        <TextField
-          fullWidth
-          type={"password"}
-          placeholder="Confirm password"
-          {...register("passwordConfirmation")}
-          error={errors.passwordConfirmation != null}
-          helperText={errors.passwordConfirmation?.message}
-        />
-      </CardContent>
+	const handleClickShowPassword = (): void => {
+		setShowPassword(!showPassword);
+	};
 
-      <CardActions>
-        <LoadingButton
-          type="submit"
-          variant="contained"
-          disabled={!isDirty}
-          loading={isSigningUp}
-          sx={{
-            m: 1,
-          }}
-        >
-          Sign up
-        </LoadingButton>
+	const handleClickShowPasswordConfirmation = (): void => {
+		setShowPasswordConfirmation(!showPasswordConfirmation);
+	};
 
-        <Link href="/auth/sign-in">
-          <Button
-            sx={{
-              m: 1,
-            }}
-          >
-            I already have an account
-          </Button>
-        </Link>
-      </CardActions>
+	return (
+		<Card
+			component="form"
+			onSubmit={handleSubmit(onSubmit)}
+			sx={{ minWidth: 320, maxWidth: 500 }}
+		>
+			<CardContent>
+				<TextField
+					fullWidth
+					label={t.common.name}
+					sx={{ mb: 2 }}
+					{...register("name")}
+					error={errors.name != null}
+					helperText={errors.name?.message}
+				/>
 
-      <Divider>or</Divider>
+				<TextField
+					fullWidth
+					label={t.common.email}
+					sx={{ mb: 2 }}
+					{...register("email")}
+					error={errors.email != null}
+					helperText={errors.email?.message}
+				/>
 
-      <CardActions
-        sx={{ display: "flex", justifyContent: "center", mt: 1, mb: 1 }}
-      >
-        <Link href="/auth/sign-in">
-          <Button
-            sx={{
-              m: 1,
-            }}
-          >
-            Sign In
-          </Button>
-        </Link>
+				<TextField
+					fullWidth
+					type={showPassword ? "text" : "password"}
+					label={t.common.password}
+					InputProps={{
+						endAdornment: (
+							<IconButton
+								aria-label="toggle password visibility"
+								onClick={handleClickShowPassword}
+								edge="end"
+							>
+								{showPassword ? <VisibilityOff /> : <Visibility />}
+							</IconButton>
+						),
+					}}
+					sx={{ mb: 2 }}
+					{...register("password")}
+					error={errors.password != null}
+					helperText={errors.password?.message}
+				/>
 
-        <GoogleLoginButton setIsLoading={setIsSigningUp} />
-      </CardActions>
-    </Card>
-  );
+				<TextField
+					fullWidth
+					type={showPasswordConfirmation ? "text" : "password"}
+					label={t.auth["confirm-password"]}
+					InputProps={{
+						endAdornment: (
+							<IconButton
+								aria-label="toggle password visibility"
+								onClick={handleClickShowPasswordConfirmation}
+								edge="end"
+							>
+								{showPasswordConfirmation ? <VisibilityOff /> : <Visibility />}
+							</IconButton>
+						),
+					}}
+					{...register("passwordConfirmation")}
+					error={errors.passwordConfirmation != null}
+					helperText={errors.passwordConfirmation?.message}
+				/>
+			</CardContent>
+
+			<CardActions>
+				<LoadingButton
+					type="submit"
+					variant="contained"
+					disabled={!isDirty}
+					loading={isSigningUp}
+					sx={{
+						m: 1,
+					}}
+				>
+					{t.auth["sign-up"]}
+				</LoadingButton>
+
+				<Link href="/auth/sign-in" passHref>
+					<Button
+						sx={{
+							m: 1,
+						}}
+					>
+						{t.auth["already-have-account"]}
+					</Button>
+				</Link>
+			</CardActions>
+
+			<Divider>or</Divider>
+
+			<CardActions
+				sx={{ display: "flex", justifyContent: "center", mt: 1, mb: 1 }}
+			>
+				<GoogleLoginButton setIsLoading={setIsSigningUp} />
+			</CardActions>
+		</Card>
+	);
 };
 
 export default SignUpForm;

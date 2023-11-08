@@ -1,123 +1,151 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Divider,
-  TextField,
+	Button,
+	Card,
+	CardActions,
+	CardContent,
+	Divider,
+	IconButton,
+	TextField,
 } from "@mui/material";
+import signInFormSchema from "@schemas/signInFormSchema";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import en from "public/locales/en/en";
+import fr from "public/locales/fr/fr";
+import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth } from "../../providers/AuthProvider";
-import signInFormSchema from "../../schemas/signInFormSchema";
+import { useAuthActions } from "../../providers/AuthActionsProvider";
 import GoogleLoginButton from "./GoogleLoginButton";
 
-type SignInFormData = {
-  email: string;
-  password: string;
+export type SignInFormData = {
+	email: string;
+	password: string;
 };
 
-function SignInForm() {
-  const auth = useAuth();
+const SignInForm = (): ReactElement => {
+	const router = useRouter();
+	const { locale } = router;
+	const t = locale === "en" ? en : fr;
 
-  const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
+	const authActions = useAuthActions();
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { isDirty, errors },
-    reset,
-  } = useForm<SignInFormData>({
-    resolver: yupResolver(signInFormSchema),
-  });
+	const [isSigningIn, setIsSigningIn] = useState<boolean>(false);
 
-  useEffect(() => {
-    const subscription = watch((value, { name, type }) => {});
-    return () => subscription.unsubscribe();
-  }, [watch]);
+	const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const onSubmit = (data: SignInFormData) => {
-    setIsSigningIn(true);
-    auth?.login(data.email, data.password, () => {
-      setIsSigningIn(false);
+	const {
+		register,
+		handleSubmit,
+		watch,
+		formState: { isDirty, errors },
+		reset,
+	} = useForm<SignInFormData>({
+		resolver: yupResolver(signInFormSchema),
+	});
 
-      reset(data);
-    });
-  };
+	useEffect(() => {
+		const subscription = watch(() => {});
+		return () => subscription.unsubscribe();
+	}, [watch]);
 
-  return (
-    <Card
-      component="form"
-      onSubmit={handleSubmit(onSubmit)}
-      sx={{ minWidth: 320, maxWidth: 500 }}
-    >
-      <CardContent>
-        <TextField
-          fullWidth
-          placeholder="Email"
-          sx={{ mb: 2 }}
-          {...register("email")}
-          error={errors.email != null}
-          helperText={errors.email?.message}
-        />
+	const onSubmit = (data: SignInFormData): void => {
+		setIsSigningIn(true);
 
-        <TextField
-          fullWidth
-          type={"password"}
-          placeholder="Password"
-          {...register("password")}
-          error={errors.password != null}
-          helperText={errors.password?.message}
-        />
-      </CardContent>
+		authActions?.login(data.email, data.password, () => {
+			setIsSigningIn(false);
 
-      <CardActions>
-        <LoadingButton
-          type="submit"
-          variant="contained"
-          disabled={!isDirty}
-          loading={isSigningIn}
-          sx={{
-            m: 1,
-          }}
-        >
-          Sign In
-        </LoadingButton>
+			reset(data);
+		});
+	};
 
-        <Link href="/auth/reset-password">
-          <Button
-            sx={{
-              m: 1,
-            }}
-          >
-            I forgot my password
-          </Button>
-        </Link>
-      </CardActions>
+	const handleClickShowPassword = (): void => {
+		setShowPassword(!showPassword);
+	};
 
-      <Divider>or</Divider>
+	return (
+		<Card
+			component="form"
+			onSubmit={handleSubmit(onSubmit)}
+			sx={{ minWidth: 320, maxWidth: 500 }}
+		>
+			<CardContent>
+				<TextField
+					fullWidth
+					label={t.common.email}
+					sx={{ mb: 2 }}
+					{...register("email")}
+					error={errors.email != null}
+					helperText={errors.email?.message}
+				/>
 
-      <CardActions
-        sx={{ display: "flex", justifyContent: "center", mt: 1, mb: 1 }}
-      >
-        <Link href="/auth/sign-up">
-          <Button
-            sx={{
-              m: 1,
-            }}
-          >
-            Sign Up
-          </Button>
-        </Link>
+				<TextField
+					fullWidth
+					type={showPassword ? "text" : "password"}
+					label={t.common.password}
+					InputProps={{
+						endAdornment: (
+							<IconButton
+								aria-label="toggle password visibility"
+								onClick={handleClickShowPassword}
+								edge="end"
+							>
+								{showPassword ? <VisibilityOff /> : <Visibility />}
+							</IconButton>
+						),
+					}}
+					{...register("password")}
+					error={errors.password != null}
+					helperText={errors.password?.message}
+				/>
+			</CardContent>
 
-        <GoogleLoginButton setIsLoading={setIsSigningIn} />
-      </CardActions>
-    </Card>
-  );
-}
+			<CardActions>
+				<LoadingButton
+					type="submit"
+					variant="contained"
+					disabled={!isDirty}
+					loading={isSigningIn}
+					sx={{
+						m: 1,
+					}}
+				>
+					{t.auth["sign-in"]}
+				</LoadingButton>
+
+				<Link href="/auth/reset-password" passHref>
+					<Button
+						sx={{
+							m: 1,
+						}}
+					>
+						{t.auth["forgot-password"]}
+					</Button>
+				</Link>
+			</CardActions>
+
+			<Divider>{t.common.or}</Divider>
+
+			<CardActions
+				sx={{ display: "flex", justifyContent: "center", mt: 1, mb: 1 }}
+			>
+				<Link href="/auth/sign-up" passHref>
+					<Button
+						variant="outlined"
+						sx={{
+							m: 1,
+						}}
+					>
+						{t.auth["sign-up"]}
+					</Button>
+				</Link>
+
+				<GoogleLoginButton setIsLoading={setIsSigningIn} />
+			</CardActions>
+		</Card>
+	);
+};
 
 export default SignInForm;
