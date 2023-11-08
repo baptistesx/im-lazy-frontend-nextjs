@@ -242,7 +242,7 @@ const InfoForm = (props: InfoFormProps): ReactElement => {
 						}}
 						sx={{ m: 1 }}
 						{...register("minimumAge")}
-						defaultValue="20"
+						defaultValue="25"
 						error={errors.minimumAge != null}
 						helperText={errors.minimumAge?.message}
 					/>
@@ -257,7 +257,7 @@ const InfoForm = (props: InfoFormProps): ReactElement => {
 						}}
 						sx={{ m: 1 }}
 						{...register("maximumAge")}
-						defaultValue="30"
+						defaultValue="34"
 						error={errors.maximumAge != null}
 						helperText={errors.maximumAge?.message}
 					/>
@@ -278,7 +278,7 @@ const InfoForm = (props: InfoFormProps): ReactElement => {
 					fullWidth
 					id="outlined-required"
 					label={t.workawayBot["english-message"]}
-					defaultValue="Hey! I'm in the area until next week, let's meet?!"
+					defaultValue="Hey! I'm in Madrid with two friends until next week, we're looking for people to hangout, let's meet?! You can pm me on whatsapp +33678108243 :)"
 					multiline
 					rows={4}
 					sx={{ m: 1 }}
@@ -291,7 +291,7 @@ const InfoForm = (props: InfoFormProps): ReactElement => {
 					fullWidth
 					id="outlined-required"
 					label={t.workawayBot["french-message"]}
-					defaultValue="Saluut! Je suis dans le coin jusqu'à la semaine prochaine, t'es chaud de faire un tour en ville?!"
+					defaultValue="Heyy! Je suis sur Madrid avec deux potes jusqu'à la semaine prochaine, on cherche du monde avec qui sortir, ca te chauffe? Tu peux me mp sur whatsapp +33678108243 :)"
 					multiline
 					rows={4}
 					sx={{ m: 1 }}
